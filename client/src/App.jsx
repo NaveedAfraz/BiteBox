@@ -8,6 +8,7 @@ import About from "./pages/about";
 import Contact from "./pages/contact";
 import Menu from "./pages/menu";
 import Restaurants from "./pages/Restaurants";
+import Checkout from "./pages/Checkout";
 function App() {
   const Nav = () => {
     return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/menu" element={<Menu />} />
           <Route path="/restaurants" element={<Restaurants />} />
+          <Route path="/checkout" element={<Checkout />} />
         </Route>
       </Routes>
     </>

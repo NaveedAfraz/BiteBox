@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import SpecialCard from "@/components/SpecialCard";
-import { specialOffers } from "@/config/details";
+import { filterButtons, specialOffers } from "@/config/details";
 import { Menu } from "lucide-react";
 import { useNavigate } from "react-router";
 import ItemCard from "@/components/ItemCard";
@@ -71,7 +71,6 @@ function Restaurants() {
             </CardHeader>
 
             <CardContent className="p-0 space-y-2">
-              {/* Rating & Price for Two */}
               <div className="text-gray-700 text-sm flex items-center space-x-2">
                 <span className="text-green-600 font-semibold">
                   {restaurant.rating}
@@ -81,14 +80,12 @@ function Restaurants() {
                 <span>₹{restaurant.priceForTwo} for two</span>
               </div>
 
-              {/* Cuisines */}
               <div className="text-sm">
                 <span className="text-red-500 font-medium">
                   {restaurant.cuisines.join(", ")}
                 </span>
               </div>
 
-              {/* Outlet & Time */}
               <div className="text-sm flex items-center space-x-2">
                 <span>Outlet {restaurant.location}</span>
                 <span className="mx-1">•</span>
@@ -118,11 +115,22 @@ function Restaurants() {
                     <h2 className="text-lg font-semibold mt-2">{item.name}</h2>
                   </Button>
                 ))}
-              </div>{" "}
-              <div className="w-full">
-                {menu.map((item) => (
-                  <ItemCard key={item.id} />
-                ))}
+              </div>
+              <div className="">
+                <h2 className="text-xl font-semibold mt-2 ml-3">Filter</h2>
+                <div className="flex flex-wrap items-center  w-full gap-3.5 p-2">
+                  {filterButtons.map((button) => (
+                    <Button key={button.id} className="flex items-center gap-2">
+                      {button.icon}
+                      {button.name}
+                    </Button>
+                  ))}
+                </div>
+                <div className="w-full">
+                  {menu.map((item) => (
+                    <ItemCard key={item.id} />
+                  ))}
+                </div>
               </div>
             </div>
           </div>
