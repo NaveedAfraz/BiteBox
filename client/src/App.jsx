@@ -6,15 +6,19 @@ import NavBar from "./components/NavBar";
 import Footer from "./components/footer";
 import About from "./pages/about";
 import Contact from "./pages/contact";
+import Menu from "./pages/menu";
+import Restaurants from "./pages/Restaurants";
 function App() {
   const Nav = () => {
     return (
       <>
-        <NavBar />
-        <div className="flex-1">
-          <Outlet />
+        <div className="flex flex-col min-h-screen">
+          <NavBar />
+          <div className="flex-grow ">
+            <Outlet />
+          </div>
+          <Footer />
         </div>
-        <Footer />
       </>
     );
   };
@@ -25,6 +29,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/menu" element={<Menu />} />
+          <Route path="/restaurants" element={<Restaurants />} />
         </Route>
       </Routes>
     </>

@@ -1,4 +1,14 @@
-import { Award, Zap, Percent, Gift } from "lucide-react";
+import {
+  Award,
+  Zap,
+  Percent,
+  Gift,
+  SortAsc,
+  Filter,
+  Search,
+  Star,
+} from "lucide-react";
+
 
 export const categories = [
   {
@@ -6,60 +16,130 @@ export const categories = [
     name: "Pizza",
     image:
       "https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-4.0.3",
+    description:
+      "Delicious pizza with a crispy crust and a generous amount of cheese.",
+    price: "$10",
+    rating: 4.5,
+    reviews: 100,
+    discount: 20,
+    brand: "Pizza Hut",
   },
   {
     id: 2,
     name: "Pasta",
     image:
       "https://images.unsplash.com/photo-1473093226795-af9932fe5856?ixlib=rb-4.0.3",
+    description:
+      "Delicious pasta with a creamy sauce and a generous amount of cheese.",
+    price: "$10",
+    rating: 4.5,
+    reviews: 100,
+    discount: 20,
+    brand: "Pasta Hut",
   },
   {
     id: 3,
     name: "Chinese",
     image:
       "https://images.unsplash.com/photo-1525755662778-989d0524087e?ixlib=rb-4.0.3",
+    description:
+      "Delicious chinese food with a creamy sauce and a generous amount of cheese.",
+    price: "$10",
+    rating: 4.5,
+    reviews: 100,
+    discount: 20,
+    brand: "Xiao Long Bao",
   },
   {
     id: 4,
     name: "Burgers",
     image:
       "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3",
+    description:
+      "Delicious burgers with a creamy sauce and a generous amount of cheese.",
+    price: "$10",
+    rating: 4.5,
+    reviews: 100,
+    discount: 20,
+    brand: "Burger King",
   },
   {
     id: 5,
     name: "Sushi",
     image:
       "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?ixlib=rb-4.0.3",
+    description:
+      "Delicious sushi with a creamy sauce and a generous amount of cheese.",
+    price: "$10",
+    rating: 4.5,
+    reviews: 100,
+    discount: 20,
+    brand: "Sushi King",
   },
   {
     id: 6,
     name: "Desserts",
     image:
       "https://images.unsplash.com/photo-1488477181946-6428a0291777?ixlib=rb-4.0.3",
+    description:
+      "Delicious desserts with a creamy sauce and a generous amount of cheese.",
+    price: "$10",
+    rating: 4.5,
+    reviews: 100,
+    discount: 20,
+    brand: "Creamy Cream",
   },
   {
     id: 7,
     name: "Indian",
     image:
       "https://images.unsplash.com/photo-1585937421612-70a008356fbe?ixlib=rb-4.0.3",
+    description:
+      "Delicious indian food with a creamy sauce and a generous amount of cheese.",
+    price: "$10",
+    rating: 4.5,
+    reviews: 100,
+    discount: 20,
+    brand: "Adadab",
   },
   {
     id: 8,
     name: "Mexican",
     image:
       "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?ixlib=rb-4.0.3",
+    description:
+      "Delicious mexican food with a creamy sauce and a generous amount of cheese.",
+    price: "$10",
+    rating: 4.5,
+    reviews: 100,
+    discount: 20,
+    brand: "Chilli's Grill",
   },
   {
     id: 9,
     name: "Thai",
     image:
       "https://images.unsplash.com/photo-1559314809-0d155014e29e?ixlib=rb-4.0.3",
+    description:
+      "Delicious thai food with a creamy sauce and a generous amount of cheese.",
+    price: "$10",
+    rating: 4.5,
+    reviews: 100,
+    discount: 20,
+    brand: "Dara's Kitchen",
   },
   {
     id: 10,
     name: "Mediterranean",
     image:
       "https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-4.0.3",
+    description:
+      "Delicious mediterranean food with a creamy sauce and a generous amount of cheese.",
+    price: "$10",
+    rating: 4.5,
+    reviews: 100,
+    discount: 20,
+    brand: "Zest",
   },
 ];
 
@@ -235,5 +315,49 @@ export const contactDetails = [
     id: 3,
     title: "Follow Us",
     details: ["Facebook", "Twitter", "Instagram"],
+  },
+];
+
+export const filterButtons = [
+  {
+    id: 1,
+    name: "Sort by",
+    icon: <SortAsc className="h-6 w-6 text-gray-500" />,
+  },
+  {
+    id: 2,
+    name: "Filter by",
+    icon: <Filter className="h-6 w-6 text-gray-500" />,
+  },
+  {
+    id: 3,
+    name: "Search",
+    icon: <Search className="h-6 w-6 text-gray-500" />,
+  },
+  {
+    id: 5,
+    name: "New Arrivals",
+    icon: <Star className="h-6 w-6 text-gray-500" />,
+
+  },
+  {
+    id: 6,
+    name: "Top Brands",
+    icon: <Star className="h-6 w-6 text-gray-500" />,
+  },
+  {
+    id: 7,
+    name: "Best Sellers",
+    icon: <Star className="h-6 w-6 text-gray-500" />,
+  },
+  {
+    id: 8,
+    name: "Pure Veg",
+    icon: <Star className="h-6 w-6 text-gray-500" />,
+  },
+  {
+    id: 9,
+    name: "Non Veg",
+    icon: <Star className="h-6 w-6 text-gray-500" />,
   },
 ];

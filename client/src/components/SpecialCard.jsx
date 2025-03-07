@@ -3,7 +3,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Clock, X, Tag } from "lucide-react";
 
-const SpecialCard = ({ offerId = "new-user", specialOffers, title }) => {
+const SpecialCard = ({
+  offerId = "new-user",
+  specialOffers,
+  title,
+  restaurantPage,
+}) => {
   return (
     <>
       <h1 className="text-2xl font-bold text-center flex justify-center items-center mb-6">
@@ -43,21 +48,24 @@ const SpecialCard = ({ offerId = "new-user", specialOffers, title }) => {
                           {offer.code}
                         </span>
                       </p>
-                      <div className="flex flex-col mt-1">
-                        <span className="text-xs text-white/80">
-                          {offer.additionalInfo}
-                        </span>
-                        <span className="text-xs bg-white/30 px-2 py-1 rounded-full w-fit mt-1">
-                          {offer.target}
-                        </span>
-                      </div>
+                      {!restaurantPage && (
+                        <div className="flex flex-col mt-1">
+                          <span className="text-xs text-white/80">
+                            {offer.additionalInfo}
+                          </span>
+                          <span className="text-xs bg-white/30 px-2 py-1 rounded-full w-fit mt-1">
+                            {offer.target}
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
 
-                {offer?.expiryTime?.hours !== "00" ||
-                offer?.expiryTime?.minutes !== "00" ||
-                offer?.expiryTime?.seconds !== "00" ? (
+                {!restaurantPage &&
+                (offer?.expiryTime?.hours !== "00" ||
+                  offer?.expiryTime?.minutes !== "00" ||
+                  offer?.expiryTime?.seconds !== "00") ? (
                   <div className="flex flex-col items-center mt-4">
                     <div className="flex items-center justify-center bg-white/20 rounded-lg p-1 mb-1">
                       <Clock className="h-4 w-4 text-white mr-2" />
@@ -86,13 +94,15 @@ const SpecialCard = ({ offerId = "new-user", specialOffers, title }) => {
                     </div>
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center mt-4">
-                    <div className="bg-white/20 px-3 py-1 rounded-lg">
-                      <p className="text-white font-medium text-sm">
-                        Ongoing Offer
-                      </p>
+                  !restaurantPage && (
+                    <div className="flex flex-col items-center mt-4">
+                      <div className="bg-white/20 px-3 py-1 rounded-lg">
+                        <p className="text-white font-medium text-sm">
+                          Ongoing Offer
+                        </p>
+                      </div>
                     </div>
-                  </div>
+                  )
                 )}
               </CardContent>
             </Card>

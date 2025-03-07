@@ -18,11 +18,7 @@ const CardComponent = ({ categories, title, teamMembers }) => {
       </h2>
       <div className="px-5 py-8 bg-white scrollbar-hide">
         <div
-          className={`flex gap-20 overflow-x-auto ${
-            categories
-              ? "justify-center items-center"
-              : "justify-start items-start"
-          } pb-4 scrollbar-hide`}
+          className={`flex gap-16 overflow-x-auto pb-4 scrollbar-hide`}
         >
           {array.map((category) => (
             <Card
@@ -36,10 +32,16 @@ const CardComponent = ({ categories, title, teamMembers }) => {
                     alt={category.name}
                     className="w-full h-[250px] rounded-lg  object-cover"
                   />
-                  <CardHeader className="p-4">
+                  <CardHeader className="p-4 relative">
                     <CardTitle className="text-lg text-center">
                       {category.name}
                     </CardTitle>
+                    <p className="text-sm text-gray-500">
+                      {category.description}
+                    </p>
+                    <p className="text-xl text-gray-500 absolute bottom-[-30px] right-[50%] translate-x-[50%]">
+                      {category.brand}
+                    </p>
                   </CardHeader>
                 </button>
                 {teamMembers && (
