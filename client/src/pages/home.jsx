@@ -9,8 +9,6 @@ import {
 } from "@/config/details";
 import { Link } from "react-router";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Tag, Clock, X } from "lucide-react";
 import CardComponent from "@/components/CardComponent";
 import SpecialCard from "@/components/SpecialCard";
 import Autoplay from "embla-carousel-autoplay";
