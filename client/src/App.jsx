@@ -1,13 +1,32 @@
 import React from "react";
 import "./App.css";
-import { Button } from "./components/ui/button";
+import { Routes, Route, Outlet } from "react-router";
+import Home from "./pages/home";
+import NavBar from "./components/NavBar";
+import Footer from "./components/footer";
+import About from "./pages/about";
+import Contact from "./pages/contact";
 function App() {
+  const Nav = () => {
+    return (
+      <>
+        <NavBar />
+        <div className="flex-1">
+          <Outlet />
+        </div>
+        <Footer />
+      </>
+    );
+  };
   return (
     <>
-      <div className="bg-blue-700 w-full h-100vh">App</div>{" "}
-      <div className="flex flex-col items-center justify-center min-h-svh">
-        <Button>Click me</Button>
-      </div>
+      <Routes>
+        <Route path="/" element={<Nav />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+        </Route>
+      </Routes>
     </>
   );
 }
