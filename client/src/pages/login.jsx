@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { SignIn, SignUp } from "@clerk/clerk-react";
-import { Link } from "react-router"; // Fixed import path
+import { Link, useNavigate } from "react-router"; // Fixed import path
 import { LogIn } from "lucide-react";
 
 function Signup() {
@@ -27,12 +27,17 @@ function Signup() {
 
     return () => clearInterval(interval);
   }, [isResetting]);
-
+  const naviagte = useNavigate();
   return (
     <div>
       <div className="flex-grow mt-15">
         <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-5 py-4 bg-white shadow-md">
-          <h1 className="text-3xl  text-red-500 font-bold">BiteBox</h1>
+          <h1
+            className="text-3xl  text-red-500 font-bold cursor-pointer"
+            onClick={() => naviagte("/")}
+          >
+            BiteBox
+          </h1>
           <span className="flex gap-5">
             <Link
               to="/admin/login"
@@ -73,7 +78,7 @@ function Signup() {
                   routing="path"
                   path="/login"
                   signUpUrl="/sign-up"
-                  fallbackRedirectUrl="/admin/dashboard"
+                  fallbackRedirectUrl="/"
                   appearance={{
                     elements: {
                       formButtonPrimary: "bg-blue-950 hover:bg-blue-800",

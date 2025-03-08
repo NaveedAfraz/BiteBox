@@ -31,6 +31,8 @@ function App() {
       </>
     );
   };
+  console.log(userId);
+
   return (
     <>
       <Routes>
@@ -47,16 +49,9 @@ function App() {
 
         <Route path="/login" element={<Login />} />
         <Route path="/sign-up" element={<Signup />}></Route>
-        
+
         <Route path="/" element={<Nav />}>
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <Home />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/menu" element={<Menu />} />

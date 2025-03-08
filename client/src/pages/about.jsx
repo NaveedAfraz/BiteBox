@@ -7,18 +7,11 @@ import CardComponent from "@/components/CardComponent";
 const About = () => {
   const teamMembers = [
     {
-      name: "John Doe",
+      name: "Syed Naveed Afraz",
       image: "https://via.placeholder.com/150",
-      role: "Founder & CEO",
+      role: "Full Stack Developer",
       description:
-        "John is the founder and CEO of BiteBox. He is responsible for the overall vision and strategy of the company.",
-    },
-    {
-      name: "Jane Smith",
-      image: "https://via.placeholder.com/150",
-      role: "CTO",
-      description:
-        "Jane is the CTO of BiteBox. She is responsible for the technology and infrastructure of the company.",
+        "Naveed is the behind the idea of BiteBox. He is responsible for the technology and infrastructure of the company.",
     },
   ];
   const Values = [
@@ -105,7 +98,7 @@ const About = () => {
 
           <div className="absolute inset-0 bg-white/50 backdrop-blur-sm z-[-1]"></div>
           <div className="max-w-7xl mx-auto">
-            <CardComponent categories={Values} title="Our Values" />
+            <CardComponent teamMembers={Values} title="Our Values" />
           </div>
         </section>
 
@@ -122,8 +115,8 @@ const About = () => {
               Our diverse team brings expertise in technology, design, and
               culinary arts.
             </p>
-            <div className="w-full flex justify-center items-center">
-              {/* <div className="p-6 border rounded-lg">
+
+            {/* <div className="p-6 border rounded-lg">
                 <div className="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden">
                   <div className="w-full h-full bg-blue-100 flex items-center justify-center">
                     Image
@@ -135,8 +128,7 @@ const About = () => {
                   Alex leads our vision for a better food delivery experience.
                 </p>
               </div> */}
-              <CardComponent teamMembers={teamMembers} />
-            </div>
+            <CardComponent teamMembers={teamMembers} />
           </div>
         </section>
 
@@ -155,10 +147,7 @@ const About = () => {
                 Download App
               </Button>
               <Link to="/menu">
-                <Button
-                  variant="outline"
-                  className="border-white text-white rounded-full px-8 py-4"
-                >
+                <Button className="bg-white text-blue-500 rounded-full px-8 py-4 ">
                   Browse Menu
                 </Button>
               </Link>

@@ -12,14 +12,16 @@ const CardComponent = ({ categories, title, teamMembers }) => {
     }
   }, [teamMembers, categories]);
   return (
-    <div className="w-full">
+    <div
+      className={`w-full ${
+        teamMembers ? "flex items-center justify-center flex-col" : null
+      }`}
+    >
       <h2 className="text-3xl font-bold text-gray-800 text-center  mt-12">
         {title}
       </h2>
       <div className="px-5 py-8 bg-white scrollbar-hide">
-        <div
-          className={`flex gap-16 overflow-x-auto pb-4 scrollbar-hide`}
-        >
+        <div className={`flex gap-16 overflow-x-auto pb-4 scrollbar-hide`}>
           {array.map((category) => (
             <Card
               key={category.id}
@@ -36,7 +38,7 @@ const CardComponent = ({ categories, title, teamMembers }) => {
                     <CardTitle className="text-lg text-center">
                       {category.name}
                     </CardTitle>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 mt-1.5">
                       {category.description}
                     </p>
                     <p className="text-xl text-gray-500 absolute bottom-[-30px] right-[50%] translate-x-[50%]">
@@ -50,7 +52,7 @@ const CardComponent = ({ categories, title, teamMembers }) => {
                       {category.role}
                     </p>
                     <p className="text-sm text-gray-500">
-                      {category.description}
+                      {/* {category.description} */}
                     </p>
                   </CardContent>
                 )}

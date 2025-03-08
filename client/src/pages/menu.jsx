@@ -84,7 +84,7 @@ function Menu() {
             ))}
           </div>
         </div>
-        <div className="flex flex-wrap gap-4 w-full ">
+        <div className="flex flex-wrap gap-4 w-full ml-10 lg:ml-0">
           {categories.map((menu) => (
             <MenuComponent key={menu.id} menu={menu} />
           ))}

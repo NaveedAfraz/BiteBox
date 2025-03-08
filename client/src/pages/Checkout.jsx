@@ -1,8 +1,9 @@
 import Address from "@/components/address";
 import Cart from "@/components/cart";
-import React from "react";
+import React, { useState } from "react";
 
 function Checkout() {
+  const [selectedAddress, setSelectedAddress] = useState(false);
   return (
     <div className="relative min-h-screen mt-24">
       {/* Background image covers the full container */}
@@ -20,7 +21,10 @@ function Checkout() {
 
       {/* Content container */}
       <div className="flex md:flex-row flex-col mt-8 mb-3.5">
-        <Address />
+        <Address
+          selectedAddress={selectedAddress}
+          setSelectedAddress={setSelectedAddress}
+        />
         <br></br>
         <Cart />
       </div>
