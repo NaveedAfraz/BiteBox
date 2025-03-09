@@ -7,15 +7,16 @@ import Footer from "./components/footer";
 import About from "./pages/about";
 import Contact from "./pages/contact";
 import Menu from "./pages/menu";
-import Restaurants from "./pages/Restaurants";
+import Restaurants from "./pages/Restaurant";
 import Checkout from "./pages/Checkout";
 import Login from "./pages/login";
 import Signup from "./pages/SignUP";
 import AdminLogin from "./pages/Admin/adminLogin";
 import AdminSignup from "./pages/Admin/AdminSignUP";
-import DashBoard from "./pages/Admin/dashboard";
 import { useAuth } from "@clerk/clerk-react";
 import ProtectedRoute from "./helper/protectRoute";
+import AdminHome from "./pages/Admin/AdminHome";
+import Restaurant from "./pages/Restaurant";
 function App() {
   const { userId } = useAuth();
   const Nav = () => {
@@ -42,7 +43,7 @@ function App() {
           path="/admin/dashboard"
           element={
             <ProtectedRoute>
-              <DashBoard />
+              <AdminHome />
             </ProtectedRoute>
           }
         ></Route>
@@ -56,10 +57,10 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/menu" element={<Menu />} />
           <Route
-            path="/restaurants"
+            path="/restaurant"
             element={
               <ProtectedRoute>
-                <Restaurants />
+                <Restaurant />
               </ProtectedRoute>
             }
           />

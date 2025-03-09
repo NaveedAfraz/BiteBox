@@ -51,7 +51,6 @@ function Menu() {
               {categories.map((category) => (
                 <Card className="w-[300px] h-[400px] flex flex-col items-center justify-center border-0 shadow-lg rounded-lg">
                   <CardHeader>
-                    {" "}
                     <img
                       src={category.image}
                       alt={category.name}

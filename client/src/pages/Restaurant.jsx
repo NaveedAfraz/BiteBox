@@ -20,7 +20,7 @@ import { Menu } from "lucide-react";
 import { useNavigate } from "react-router";
 import ItemCard from "@/components/ItemCard";
 
-function Restaurants() {
+function Restaurant() {
   const restaurant = {
     name: "Home Plate by EatFit",
     rating: 4.2,
@@ -110,7 +110,7 @@ function Restaurants() {
                   <Button
                     key={item.id}
                     variant="transparent"
-                    className="border-b-4  border-gray-200"
+                    className="border-b-4 border-gray-200"
                   >
                     <h2 className="text-lg font-semibold mt-2">{item.name}</h2>
                   </Button>
@@ -140,4 +140,4 @@ function Restaurants() {
   );
 }
 
-export default Restaurants;
+export default Restaurant;
