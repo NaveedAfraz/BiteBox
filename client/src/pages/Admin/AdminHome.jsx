@@ -33,6 +33,7 @@ function AdminHome() {
     { id: "restaurants", icon: "🍽️", label: "Restaurants" },
     { id: "vendorRequests", icon: "📝", label: "Vendor Requests" },
     { id: "users", icon: "👥", label: "Users" },
+    { id: "Revenue", icon: "💰", label: "Revenue" },
     { id: "promotions", icon: "🏷️", label: "Promotions" },
     { id: "messages", icon: "💬", label: "Messages" },
     { id: "Reviews", icon: "⭐", label: "Reviews" },
@@ -42,14 +43,13 @@ function AdminHome() {
     { id: "dashboard", icon: "📊", label: "Dashboard" },
     { id: "menuItems", icon: "🍔", label: "Menu Items" },
     { id: "vendorOrders", icon: "🛍️", label: "Orders" },
-    { id: "vendorRevenue", icon: "💰", label: "Revenue" },
+    { id: "Revenue", icon: "💰", label: "Revenue" },
     { id: "Reviews", icon: "⭐", label: "Reviews" },
   ];
 
   const accountItems = [
     { id: "logout", icon: "🚪", label: "Logout" },
   ];
-
 
   // Choose the main sidebar items based on the user role
   const sidebarItems = userRole === "super_admin" ? superAdminItems : vendorItems;
@@ -140,7 +140,7 @@ function AdminHome() {
             {/* based on vender or owner i need to pass the details from res of api currecnly is it hardcoced and for admin and vendor same component is used just data is different */}
 
             {/* for some of the compononts only vendor can see and vice versa */}
-            <p>{`Currently active tab: ${activeTab}`}</p>
+            {/* <p>{`Currently active tab: ${activeTab}`}</p> */}
             {activeTab === "dashboard" && <Dashboard />} {/* for admin and vendor*/}
 
             {activeTab === "menuItems" && <MenuItems />} {/* for vendor */}
@@ -151,7 +151,7 @@ function AdminHome() {
             {activeTab === "messages" && <Messages />} {/* for admin*/}
             {activeTab === "vendorOrders" && <OrderList />} {/* for vendor */}
             {activeTab === "Reviews" && <Reviews />} {/* for vendor and admin */}
-            {activeTab === "vendorRevenue" && <ChartCircle />}
+            {activeTab === "Revenue" && <ChartCircle />}
           </main>
         </div>
       </div>
