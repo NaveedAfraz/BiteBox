@@ -17,14 +17,16 @@ import {
   LayoutDashboard, UtensilsCrossed, FileText, Users, DollarSign,
   Tag, MessageSquare, Star, ShoppingBag, List
 } from "lucide-react";
-
+import { useUser } from "@clerk/clerk-react";
 function AdminHome() {
-  const [userRole, setUserRole] = useState("super_admin"); // corrected spelling
+  const [userRole, setUserRole] = useState("super_ admin"); // corrected spelling
   const [activeTab, setActiveTab] = useState(
     userRole === "super_admin" ? "dashboard" : "vendorDashboard"
   );
   const { userId } = useAuth();
   const navigate = useNavigate();
+  const { isLoaded, isSignedIn, user } = useUser();
+  // console.log(user, isLoaded, isSignedIn);
 
   // When role changes, set the default tab accordingly
   useEffect(() => {
@@ -46,6 +48,15 @@ function AdminHome() {
     handleResize();
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const [details, setDetails] = useState(null);
+  useEffect(() => {
+    if (user) {
+      setDetails({
+        Name: `${user?.firstName || ""} ${user?.lastName || ""}`.trim(),
+      });
+    }
+  }, [user])
 
 
   const superAdminItems = [
@@ -71,8 +82,8 @@ function AdminHome() {
   const accountItems = [
     {
       id: userId ? "Logout" : "Login",
-      icon: userId ? <LogOutIcon /> : <LogInIcon />,
-      label: userId ? "Logout" : "Login",
+      icon: userId ? <UserButton /> : <LogInIcon />,
+      label: userId ? details?.Name : "Login",
     },
   ];
 
@@ -92,10 +103,6 @@ function AdminHome() {
               </span>
             </div>
           </div>
-          <h2 className="text-lg font-semibold text-gray-800 ml-13">
-            {sidebarItems.find((item) => item.id === activeTab)?.label ||
-              "Dashboard"}
-          </h2>
           <div className="flex items-center absolute right-5">
             <UserButton />
             {!userId && (
@@ -112,12 +119,12 @@ function AdminHome() {
       <div className="flex">
         {/* Sidebar */}
         <div
-          className={`h-full shadow-md transition-all duration-300 bg-black ${close ? "w-20 opacity-80" : "w-52"} md:${close ? "w-20" : "w-52"}`}
+          className={`h-full shadow-md transition-all duration-300 ${close ? "w-20 opacity-80" : "w-58"} md:${close ? "w-20" : "w-52"}`}
         >
-          <nav className={`p-4 bg-amber-50 ${close ? "w-20" : "w-52"}`}>
+          <nav className={`p-4 bg-amber-50 ${close ? "w-20" : "w-58"}`}>
             <div className="flex items-center m-1 flex-wrap">
               <button
-                className="p-2 rounded-md hover:bg-red-500 transition duration-300 mb-5"
+                className="p-2 rounded-md hover:bg-red-100 transition duration-300 ml-0.5"
                 onClick={() => setClose((prev) => !prev)}
               >
                 {close ? (
@@ -127,7 +134,7 @@ function AdminHome() {
                 )}
               </button>
             </div>
-            <ul className="space-y-1">
+            <ul className="space-y-2">
               {sidebarItems.map((item) => (
                 <li key={item.id}>
                   <button
@@ -153,25 +160,27 @@ function AdminHome() {
                 <li key={item.id}>
                   <button
                     onClick={() => {
-                      setActiveTab(item.id);
-                      if (userId) {
-                        navigate("/logout");
-                      } else {
-                        navigate("/login");
+                      if (item.label == "Login") {
+                        setActiveTab(item.id);
+                        if (userId) {
+                          // navigate("/logout");
+                        } else {
+                          navigate("/login");
+                        }
                       }
                     }}
-                    className={`w-full flex items-center px-3 py-2 text-sm rounded-md ${activeTab === item.id
-                      ? "bg-red-100 text-red-700"
-                      : "text-gray-700 hover:bg-gray-100"
-                      }`}
+                    disabled={item.icon && item.label !== "Login"} // Disable only if icon exists and label is not "Login"
+                    className={`w-full flex items-center px-3 py-2 text-sm rounded-md 
+                   ${item.icon && item.label !== "Login" ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
                   >
                     <span className="mr-3">{item.icon}</span>
                     <span className={`${close ? "hidden" : "block"}`}>
-                      {item.label}
+                      <span className="font-bold">{item.label || "Loading..."}</span>
                     </span>
                   </button>
                 </li>
               ))}
+
             </ul>
           </nav>
         </div>

@@ -124,7 +124,7 @@ function MenuComponent({ menu }) {
 
       {/* Card Content */}
       <CardContent className="p-4">
-        <CardTitle className="text-lg font-bold mb-1">{admin ? menu.name : menu.brand}</CardTitle>
+        <CardTitle className="text-lg font-bold mb-1">{admin ? menu.brand : menu.name}</CardTitle>
 
         {/* Rating & Time */}
         {(menu.rating || menu.time) && (

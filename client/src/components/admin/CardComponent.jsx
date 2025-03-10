@@ -49,8 +49,8 @@ const Render = ({ item, title }) => {
 };
 
 function CardComponent({ item, title }) {
-  console.log(item);
-  console.log(title);
+  // console.log(item);
+  // console.log(title);
 
   return (
     <div className="my-4 text-black">

@@ -43,7 +43,7 @@ function Dashboard() {
     { name: "Restaurant 2", joined: Date.now() },
   ]
   return (
-    <>
+    <>   
       <div className='grid grid-cols-1 lg:grid-cols-4 ml-2 md:grid-cols-2'>
         {dashboardCards.map((item) => {
           return (
