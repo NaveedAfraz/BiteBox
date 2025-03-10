@@ -13,7 +13,7 @@ import Restaurants from "./Restaurants";
 
 
 function AdminHome() {
-  const [userRole, setUserRole] = useState("super_admin");
+  const [userRole, setUserRole] = useState("super_ admin");
   const [activeTab, setActiveTab] = useState(
     userRole === "super_admin" ? "dashboard" : "vendorDashboard"
   );
