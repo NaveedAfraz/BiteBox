@@ -11,29 +11,42 @@ import Reviews from "../../components/admin/Reviews";
 import ChartCircle from "@/components/admin/chart";
 import Restaurants from "./Restaurants";
 import { useAuth, UserButton } from "@clerk/clerk-react";
-import { LogIn, LogInIcon, LogOut, LogOutIcon } from "lucide-react";
-import { Link, Navigate, useNavigate } from "react-router";
+import { LogInIcon, LogOutIcon, Menu, X } from "lucide-react";
+import { Link, useNavigate } from "react-router";
 import {
   LayoutDashboard, UtensilsCrossed, FileText, Users, DollarSign,
   Tag, MessageSquare, Star, ShoppingBag, List
 } from "lucide-react";
+
 function AdminHome() {
-  const [userRole, setUserRole] = useState("super_ admin");
+  const [userRole, setUserRole] = useState("super_admin"); // corrected spelling
   const [activeTab, setActiveTab] = useState(
     userRole === "super_admin" ? "dashboard" : "vendorDashboard"
   );
-
   const { userId } = useAuth();
+  const navigate = useNavigate();
+
   // When role changes, set the default tab accordingly
   useEffect(() => {
-    if (userRole === "super_admin") {
-      setActiveTab("dashboard");
-    } else {
-      setActiveTab("vendorDashboard");
-    }
+    setActiveTab(userRole === "super_admin" ? "dashboard" : "vendorDashboard");
   }, [userRole]);
 
-  // Define menu items for each role as an array of objects
+  // Automatically close sidebar on small screens
+  const [close, setClose] = useState(true);
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setClose(true);
+      } else {
+        // alert("hk")
+        setClose(false)
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
 
   const superAdminItems = [
     { id: "dashboard", icon: <LayoutDashboard />, label: "Dashboard" },
@@ -56,19 +69,21 @@ function AdminHome() {
   ];
 
   const accountItems = [
-    { id: `${userId ? "Logout" : "Login"}`, icon: userId ? <LogOutIcon /> : <LogIn />, label: `${userId ? "Logout" : "Login"}` },
+    {
+      id: userId ? "Logout" : "Login",
+      icon: userId ? <LogOutIcon /> : <LogInIcon />,
+      label: userId ? "Logout" : "Login",
+    },
   ];
-  console.log(accountItems);
 
-  const navigate = useNavigate()
+  // Choose sidebar items based on role
   const sidebarItems = userRole === "super_admin" ? superAdminItems : vendorItems;
 
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* Sidebar */}
-      <div className="flex">
-        <div className="w-64 bg-white shadow-md">
-          <div className="p-4 border-b">
+    <div className="min-h-screen">
+      <header className="shadow w-full">
+        <div className="flex items-center px-6 py-4">
+          <div className="border-b">
             <h1 className="text-xl font-bold text-red-500">BiteBox Admin</h1>
             <div className="mt-2 text-sm text-gray-600">
               Logged in as:{" "}
@@ -77,28 +92,59 @@ function AdminHome() {
               </span>
             </div>
           </div>
-
-          <nav className="p-4">
-            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
-              Main
-            </p>
+          <h2 className="text-lg font-semibold text-gray-800 ml-13">
+            {sidebarItems.find((item) => item.id === activeTab)?.label ||
+              "Dashboard"}
+          </h2>
+          <div className="flex items-center absolute right-5">
+            <UserButton />
+            {!userId && (
+              <div className="flex gap-3 ml-3 items-center justify-center">
+                <Link to="/login" className="font-bold text-lg">
+                  Login
+                </Link>
+                <LogInIcon />
+              </div>
+            )}
+          </div>
+        </div>
+      </header>
+      <div className="flex">
+        {/* Sidebar */}
+        <div
+          className={`h-full shadow-md transition-all duration-300 bg-black ${close ? "w-20 opacity-80" : "w-52"} md:${close ? "w-20" : "w-52"}`}
+        >
+          <nav className={`p-4 bg-amber-50 ${close ? "w-20" : "w-52"}`}>
+            <div className="flex items-center m-1 flex-wrap">
+              <button
+                className="p-2 rounded-md hover:bg-red-500 transition duration-300 mb-5"
+                onClick={() => setClose((prev) => !prev)}
+              >
+                {close ? (
+                  <Menu className="h-5 w-5" />
+                ) : (
+                  <X className="h-5 w-5" />
+                )}
+              </button>
+            </div>
             <ul className="space-y-1">
               {sidebarItems.map((item) => (
                 <li key={item.id}>
                   <button
                     onClick={() => setActiveTab(item.id)}
-                    className={`w-full flex items-center px-3 font-semi-bold py-2 text-md rounded-md ${activeTab === item.id
+                    className={`w-full flex items-center px-3 font-semibold py-2 text-md rounded-md ${activeTab === item.id
                       ? "bg-red-100"
                       : "text-gray-700 hover:bg-gray-100"
                       }`}
                   >
                     <span className="mr-3">{item.icon}</span>
-                    {item.label}
+                    <span className={`${close ? "hidden" : "block"}`}>
+                      {item.label}
+                    </span>
                   </button>
                 </li>
               ))}
             </ul>
-
             <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mt-6 mb-2">
               Account
             </p>
@@ -107,9 +153,12 @@ function AdminHome() {
                 <li key={item.id}>
                   <button
                     onClick={() => {
-                      setActiveTab(item.id)
-
-                        `${userId ? navigate("/logout") : navigate("/login")}`
+                      setActiveTab(item.id);
+                      if (userId) {
+                        navigate("/logout");
+                      } else {
+                        navigate("/login");
+                      }
                     }}
                     className={`w-full flex items-center px-3 py-2 text-sm rounded-md ${activeTab === item.id
                       ? "bg-red-100 text-red-700"
@@ -117,7 +166,9 @@ function AdminHome() {
                       }`}
                   >
                     <span className="mr-3">{item.icon}</span>
-                    {item.label}
+                    <span className={`${close ? "hidden" : "block"}`}>
+                      {item.label}
+                    </span>
                   </button>
                 </li>
               ))}
@@ -126,43 +177,18 @@ function AdminHome() {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 overflow-auto">
-          <header className="bg-white shadow">
-            <div className="flex justify-between items-center px-6 py-4">
-              <h2 className="text-lg font-semibold text-gray-800">
-                {sidebarItems.find((item) => item.id === activeTab)?.label ||
-                  "Dashboard"}
-              </h2>
-              <div className="flex items-center">
-                <UserButton />
-                {!userId && (
-                  <>
-                    <div className="flex gap-3 ml-3 items-center justify-center">
-                      <Link to="/login" className="font-bold text-lg">
-                        Login
-                      </Link>
-                      <LogIn />{" "}
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-          </header>
+        <div className="flex-1 w-full overflow-auto">
 
           <main className="p-6">
-            {/* based on vender or owner i need to pass the details from res of api currecnly is it hardcoced and for admin and vendor same component is used just data is different */}
-
-            {/* for some of the compononts only vendor can see and vice versa */}
-            {/* <p>{`Currently active tab: ${activeTab}`}</p> */}
-            {activeTab === "dashboard" && <Dashboard />} {/* for admin and vendor*/}
-            {activeTab === "menuItems" && <MenuItems />} {/* for vendor */}
-            {activeTab === "restaurants" && <Restaurants />} {/* for admin */}
-            {activeTab === "vendorRequests" && <Requests />} {/* for admin */}
-            {activeTab === "users" && <UserList />} {/* for admin */}
-            {activeTab === "promotions" && <SpecialCard specialOffers={specialOffers} />} {/* for admin and vendor */}
-            {activeTab === "messages" && <Messages />} {/* for admin*/}
-            {activeTab === "vendorOrders" && <OrderList />} {/* for vendor */}
-            {activeTab === "Reviews" && <Reviews />} {/* for vendor and admin */}
+            {activeTab === "dashboard" && <Dashboard />}
+            {activeTab === "menuItems" && <MenuItems />}
+            {activeTab === "restaurants" && <Restaurants />}
+            {activeTab === "vendorRequests" && <Requests />}
+            {activeTab === "users" && <UserList />}
+            {activeTab === "promotions" && <SpecialCard specialOffers={specialOffers} />}
+            {activeTab === "messages" && <Messages />}
+            {activeTab === "vendorOrders" && <OrderList />}
+            {activeTab === "Reviews" && <Reviews />}
             {activeTab === "Revenue" && <ChartCircle />}
           </main>
         </div>
@@ -171,4 +197,4 @@ function AdminHome() {
   );
 }
 
-export default AdminHome
+export default AdminHome;

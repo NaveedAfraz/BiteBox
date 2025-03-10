@@ -24,9 +24,7 @@ const Render = ({ item, title }) => {
       );
     case "reviews":
       return (
-
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6"> {/* 2-column grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {item.map((review) => (
             <Card key={review.id} className="">
               <CardContent className="p-6 text-black">
@@ -44,7 +42,6 @@ const Render = ({ item, title }) => {
             </Card>
           ))}
         </div>
-
       );
     default:
       return null;
