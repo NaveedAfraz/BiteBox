@@ -33,7 +33,9 @@ function App() {
     );
   };
   console.log(userId);
+   
 
+  
   return (
     <>
       <Routes>
@@ -42,9 +44,9 @@ function App() {
         <Route
           path="/admin/dashboard"
           element={
-            <ProtectedRoute>
-              <AdminHome />
-            </ProtectedRoute>
+
+            <AdminHome />
+
           }
         ></Route>
 
