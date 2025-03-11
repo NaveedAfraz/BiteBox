@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import { useUser } from "@clerk/clerk-react";
 function AdminHome() {
-  const [userRole, setUserRole] = useState("super_ admin"); // corrected spelling
+  const [userRole, setUserRole] = useState("super_admin"); // corrected spelling
   const [activeTab, setActiveTab] = useState(
     userRole === "super_admin" ? "dashboard" : "vendorDashboard"
   );
@@ -28,12 +28,12 @@ function AdminHome() {
   const { isLoaded, isSignedIn, user } = useUser();
   // console.log(user, isLoaded, isSignedIn);
 
-  // When role changes, set the default tab accordingly
+ 
   useEffect(() => {
     setActiveTab(userRole === "super_admin" ? "dashboard" : "vendorDashboard");
   }, [userRole]);
 
-  // Automatically close sidebar on small screens
+
   const [close, setClose] = useState(true);
   useEffect(() => {
     const handleResize = () => {
@@ -169,7 +169,7 @@ function AdminHome() {
                         }
                       }
                     }}
-                    disabled={item.icon && item.label !== "Login"} // Disable only if icon exists and label is not "Login"
+                    disabled={item.icon && item.label !== "Login"} 
                     className={`w-full flex items-center px-3 py-2 text-sm rounded-md 
                    ${item.icon && item.label !== "Login" ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
                   >
@@ -180,7 +180,6 @@ function AdminHome() {
                   </button>
                 </li>
               ))}
-
             </ul>
           </nav>
         </div>
