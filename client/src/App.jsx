@@ -13,12 +13,14 @@ import Login from "./pages/login";
 import Signup from "./pages/SignUP";
 import AdminLogin from "./pages/Admin/adminLogin";
 import AdminSignup from "./pages/Admin/AdminSignUP";
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth, useUser } from "@clerk/clerk-react";
 import ProtectedRoute from "./helper/protectRoute";
 import AdminHome from "./pages/Admin/AdminHome";
 import Restaurant from "./pages/Restaurant";
+import VerifyEmail from "./pages/Admin/verifyEmail";
 function App() {
   const { userId } = useAuth();
+  const { user, isLoaded, updateUserMetadata } = useUser();
   const Nav = () => {
     return (
       <>
@@ -33,9 +35,23 @@ function App() {
     );
   };
   // console.log(userId);
-   
+  if (!isLoaded) return <div>Loading user data...</div>;
+  console.log(user);
+  let idd = "123"
+  const handleUpdate = async () => {
+    try {
+      // Use the update method on the user object
+      await user.update({
+        publicMetadata: {
+          role: "customer",
+        },
+      });
+      console.log("User metadata updated successfully");
+    } catch (error) {
+      console.error("Error updating metadata:", error);
+    }
+  };
 
-  
   return (
     <>
       <Routes>
@@ -51,6 +67,8 @@ function App() {
         ></Route>
 
         <Route path="/login" element={<Login />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
+
         <Route path="/sign-up" element={<Signup />}></Route>
 
         <Route path="/" element={<Nav />}>
@@ -76,6 +94,15 @@ function App() {
           />
         </Route>
       </Routes>
+      <button
+        onClick={() => {
+          user?.update({
+            unsafeMetadata: { idd },
+          })
+        }}
+      >
+        Update birthday
+      </button>
     </>
   );
 }
