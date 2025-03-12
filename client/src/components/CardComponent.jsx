@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const CardComponent = ({ categories, title, teamMembers }) => {
-  console.log(categories);
+//  console.log(categories);
   const [array, setArray] = useState([]);
   useEffect(() => {
     if (teamMembers) {

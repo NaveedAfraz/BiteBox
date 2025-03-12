@@ -40,12 +40,12 @@ function Login() {
           BiteBox
         </h1>
         <div className="flex gap-5">
-          <Link
+          {/* <Link
             to="/admin/login"
             className="hover:text-orange-300 transition-colors flex items-center gap-2 font-bold p-1 px-3 rounded-lg bg-gray-200 text-black"
           >
             Admin
-          </Link>
+          </Link> */}
           <Link
             to="/sign-up"
             className="text-black hover:text-orange-300 transition-colors flex items-center gap-2 font-medium"

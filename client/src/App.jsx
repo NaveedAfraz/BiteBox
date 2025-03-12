@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
-import { Routes, Route, Outlet } from "react-router";
+import { Routes, Route, Outlet, useNavigate } from "react-router";
 import Home from "./pages/home";
 import NavBar from "./components/NavBar";
 import Footer from "./components/footer";
@@ -18,9 +18,12 @@ import ProtectedRoute from "./helper/protectRoute";
 import AdminHome from "./pages/Admin/AdminHome";
 import Restaurant from "./pages/Restaurant";
 import VerifyEmail from "./pages/Admin/verifyEmail";
+import RoleSelectionModal from "./components/admin/RoleSelectionModal";
 function App() {
   const { userId } = useAuth();
   const { user, isLoaded, updateUserMetadata } = useUser();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
   const Nav = () => {
     return (
       <>
@@ -34,35 +37,70 @@ function App() {
       </>
     );
   };
-  // console.log(userId);
-  if (!isLoaded) return <div>Loading user data...</div>;
+
+  useEffect(() => {
+    const userRole = user?.unsafeMetadata?.role;
+    // setRole(userRole);
+    console.log(userRole);
+    // dispatch(userRole)
+    if (userRole === "admin") {
+      sessionStorage.removeItem('selectedRole');
+      navigate("/admin/dashboard");
+    } else if (userRole === "customer") {
+      sessionStorage.removeItem('selectedRole');
+      navigate("/");
+    } else if (userRole === "vendor") {
+      sessionStorage.removeItem('selectedRole');
+      navigate("/admin/dashboard");
+    }
+  }, [isLoaded, user, navigate])
+
+
+  useEffect(() => {
+    const updateUserRole = async () => {
+      // Get the selected role from sessionStorage
+      const selectedRole = sessionStorage.getItem('selectedRole');
+
+      if (isLoaded && user && selectedRole && !user.unsafeMetadata) {
+
+        try {
+          await user.update({
+            unsafeMetadata: { role: selectedRole }
+          });
+          console.log("Updated user role to:", selectedRole);
+          sessionStorage.removeItem('selectedRole');
+        } catch (error) {
+          console.error("Failed to update user role:", error);
+        }
+      }
+      else if (isLoaded && user && (!user.unsafeMetadata || !user.unsafeMetadata.role)) {
+        console.log("role already");
+        setIsModalOpen(true);
+      }
+    };
+    updateUserRole();
+  }, [user, isLoaded]);
   console.log(user);
-  let idd = "123"
-  const handleUpdate = async () => {
+  const handleRoleSelect = async (role) => {
     try {
-      // Use the update method on the user object
-      await user.update({
-        publicMetadata: {
-          role: "customer",
-        },
-      });
-      console.log("User metadata updated successfully");
+      await user.update({ unsafeMetadata: { role } });
+      setIsModalOpen(false);
     } catch (error) {
-      console.error("Error updating metadata:", error);
+      console.error("Error updating role:", error);
     }
   };
+  if (!isLoaded && !user?.id) return <div>Loading user data...</div>;
 
   return (
     <>
+      <RoleSelectionModal isOpen={isModalOpen} onRoleSelect={handleRoleSelect} />
       <Routes>
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/signup" element={<AdminSignup />} />
         <Route
           path="/admin/dashboard"
           element={
-
             <AdminHome />
-
           }
         ></Route>
 
@@ -94,15 +132,6 @@ function App() {
           />
         </Route>
       </Routes>
-      <button
-        onClick={() => {
-          user?.update({
-            unsafeMetadata: { idd },
-          })
-        }}
-      >
-        Update birthday
-      </button>
     </>
   );
 }

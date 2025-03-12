@@ -10,17 +10,16 @@ function CustomSignUpForm() {
   const { signUp, setActive, isLoaded: isSignUpLoaded } = useSignUp();
   const { signIn, isLoaded: isSignInLoaded } = useSignIn();
   const navigate = useNavigate();
+  const { loginAuth, loggedIn } = useAuth();
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("customer");
+  const [role, setRole] = useState();
   const [error, setError] = useState(null);
   const [processing, setProcessing] = useState(false);
   const location = useLocation();
   const { toggleAuth } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  const { loginAuth } = useAuth();
-  const { user, updateUserMetadata } = useUser();
-
   useEffect(() => {
     if (location.pathname === "/login") {
       dispatch(toggleAuthState("Login"));
@@ -28,6 +27,11 @@ function CustomSignUpForm() {
       dispatch(toggleAuthState("Sign Up"));
     }
   }, [location.pathname]);
+  // if (user) {
+  //   user.update({
+  //     unsafeMetadata: { role: "customer" },
+  //   });
+  // }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -59,29 +63,27 @@ function CustomSignUpForm() {
         const result = await signIn.create({
           identifier: email,
           password: password,
-
         });
         console.log(result);
-
-        const user = result.user || result.createdSessionId?.user;
-        const userRole = user?.unsafeMetadata?.role;
-        // console.log(user, userRole);
-
-        // await updateUserMetadata({ role: "customer" });
-        if (userRole !== role) {
-          await signIn.reload();
-          throw new Error("Role mismatch - use correct account type");
+        const formData = {
+          email,
+          password,
+          role,
         }
-        // try {
-        //   // Update auth state with user data
-        //   loginAuth.mutate({ user });
-        // } catch (error) {
-        //   console.log(error);
-        // }
+        if (result.status === "complete") {
+          sessionStorage.setItem('selectedRole', role);
+          // alert(formData.email)
+          loginAuth.mutate({ formData });
+          await setActive({ session: result.createdSessionId });
+        }
       }
-    } catch (err) {
-      console.log(err)
-      setError(err.errors ? err.errors[0].message : err.message);
+    } catch (signInErr) {
+      console.log("Sign-in error:", signInErr);
+      if (signInErr.message?.includes("verification strategy is not valid")) {
+        setError("This email was registered with a social account. Please sign in with Google using this email.");
+      } else {
+        setError(signInErr.errors ? signInErr.errors[0].message : signInErr.message);
+      }
     } finally {
       setProcessing(false);
     }
@@ -132,7 +134,7 @@ function CustomSignUpForm() {
         disabled={processing}
       />
 
-      {
+      {location.pathname === "sign-up" &&
         <select
           className="w-full border p-2 mb-4 rounded"
           value={role}

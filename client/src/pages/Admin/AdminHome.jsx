@@ -18,19 +18,22 @@ import {
   Tag, MessageSquare, Star, ShoppingBag, List
 } from "lucide-react";
 import { useUser } from "@clerk/clerk-react";
+import { useSelector } from "react-redux";
 function AdminHome() {
-  const [userRole, setUserRole] = useState("super_admin"); // corrected spelling
+  const { isLoaded, isSignedIn, user } = useUser();
+  const [userRole, setUserRole] = useState(user?.unsafeMetadata?.role);
+  console.log(userRole);
+
   const [activeTab, setActiveTab] = useState(
-    userRole === "super_admin" ? "dashboard" : "vendorDashboard"
+    userRole === "admin" ? "dashboard" : "vendorDashboard"
   );
   const { userId } = useAuth();
   const navigate = useNavigate();
-  const { isLoaded, isSignedIn, user } = useUser();
+
   // console.log(user, isLoaded, isSignedIn);
 
- 
   useEffect(() => {
-    setActiveTab(userRole === "super_admin" ? "dashboard" : "vendorDashboard");
+    setActiveTab(userRole === "admin" ? "dashboard" : "vendorDashboard");
   }, [userRole]);
 
 
@@ -88,7 +91,7 @@ function AdminHome() {
   ];
 
   // Choose sidebar items based on role
-  const sidebarItems = userRole === "super_admin" ? superAdminItems : vendorItems;
+  const sidebarItems = userRole === "admin" ? superAdminItems : vendorItems;
 
   return (
     <div className="min-h-screen">
@@ -99,7 +102,7 @@ function AdminHome() {
             <div className="mt-2 text-sm text-gray-600">
               Logged in as:{" "}
               <span className="text-md font-bold">
-                {userRole === "super_admin" ? "Super Admin" : "Vendor"}
+                {userRole === "admin" ? "Super Admin" : "Vendor"}
               </span>
             </div>
           </div>
@@ -169,7 +172,7 @@ function AdminHome() {
                         }
                       }
                     }}
-                    disabled={item.icon && item.label !== "Login"} 
+                    disabled={item.icon && item.label !== "Login"}
                     className={`w-full flex items-center px-3 py-2 text-sm rounded-md 
                    ${item.icon && item.label !== "Login" ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
                   >

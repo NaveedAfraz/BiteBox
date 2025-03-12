@@ -43,12 +43,6 @@ function Signup() {
           </h1>
           <span className="flex gap-5">
             <Link
-              to="/admin/login"
-              className="hover:text-orange-300 transition-colors duration-300 flex items-center gap-2 font-bold p-1 px-3 rounded-lg text-black bg-gray-200"
-            >
-              Admin
-            </Link>
-            <Link
               to="/login"
               className="text-black hover:text-orange-300 transition-colors duration-300 flex items-center gap-2 font-medium"
             >
