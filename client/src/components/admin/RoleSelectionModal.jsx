@@ -8,13 +8,20 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { useSignUp, useSignIn, useUser, useClerk } from "@clerk/clerk-react";
 
 function RoleSelectionModal({ isOpen, onRoleSelect }) {
   const [selectedRole, setSelectedRole] = useState("");
-
+  const { signUp, setActive, isLoaded: isSignUpLoaded } = useSignUp();
   const handleSubmit = () => {
     if (selectedRole) {
+      const formData = {
+        email: signUp.email,
+        password: signUp.password,
+        role: selectedRole,
+      };
       onRoleSelect(selectedRole);
+      signUp.mutate({ formData })
     }
   };
   console.log("ruunning");

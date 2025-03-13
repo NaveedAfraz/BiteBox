@@ -19,6 +19,7 @@ import AdminHome from "./pages/Admin/AdminHome";
 import Restaurant from "./pages/Restaurant";
 import VerifyEmail from "./pages/Admin/verifyEmail";
 import RoleSelectionModal from "./components/admin/RoleSelectionModal";
+import OAuthCallback from "./helper/googleRedirect";
 function App() {
   const { userId } = useAuth();
   const { user, isLoaded, updateUserMetadata } = useUser();
@@ -97,6 +98,8 @@ function App() {
       <Routes>
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/signup" element={<AdminSignup />} />
+
+        <Route path="/sso-callback" element={<OAuthCallback />} />
         <Route
           path="/admin/dashboard"
           element={
