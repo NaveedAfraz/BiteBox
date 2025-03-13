@@ -16,7 +16,9 @@ app.use(express.urlencoded({ extended: true }));
 
 dotenv.config();
 const authRoute = require("./routes/auth/authRoute");
-app.use("/api", authRoute);
+const restaurantRoute = require("./routes/restaurants/restaurant");
+app.use("/api/auth", authRoute);
+app.use("/api/restaurant", restaurantRoute);
 const port = 3006;
 app.listen(port, () => {
   console.log(`Server is running on port http://localhost:${port}`);

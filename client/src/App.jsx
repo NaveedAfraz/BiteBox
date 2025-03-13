@@ -23,7 +23,7 @@ import OAuthCallback from "./helper/googleRedirect";
 function App() {
   // const { userId } = useAuth();
   const { user, isLoaded, updateUserMetadata } = useUser();
-  const [isModalOpen, setIsModalOpen] = useState();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const Nav = () => {
     return (
@@ -81,11 +81,12 @@ function App() {
     };
     updateUserRole();
   }, [user, isLoaded]);
- // console.log(user);
+  // console.log(user);
+
   const handleRoleSelect = async (role) => {
     try {
       await user.update({ unsafeMetadata: { role } });
-      setIsModalOpen(false);
+      // setIsModalOpen(false);
     } catch (error) {
       console.error("Error updating role:", error);
     }
@@ -94,7 +95,7 @@ function App() {
 
   return (
     <>
-      <RoleSelectionModal isOpen={isModalOpen} onRoleSelect={handleRoleSelect} />
+      <RoleSelectionModal isOpen={isModalOpen} onRoleSelect={handleRoleSelect} setIsModalOpen={setIsModalOpen} />
       <Routes>
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/signup" element={<AdminSignup />} />
