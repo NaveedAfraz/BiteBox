@@ -22,7 +22,7 @@ import { useSelector } from "react-redux";
 function AdminHome() {
   const { isLoaded, isSignedIn, user } = useUser();
   const [userRole, setUserRole] = useState(user?.unsafeMetadata?.role);
-  console.log(userRole);
+  console.log(user);
 
   const [activeTab, setActiveTab] = useState(
     userRole === "admin" ? "dashboard" : "vendorDashboard"
@@ -178,7 +178,7 @@ function AdminHome() {
                   >
                     <span className="mr-3">{item.icon}</span>
                     <span className={`${close ? "hidden" : "block"}`}>
-                      <span className="font-bold">{item.label || "Loading..."}</span>
+                      <span className="font-bold">{item.label ? item.label : "Name Not Provided"}</span>
                     </span>
                   </button>
                 </li>

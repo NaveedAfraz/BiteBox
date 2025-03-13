@@ -43,22 +43,26 @@ const useAuth = () => {
     }
   })
 
-  const loggedIn = useQuery({
-    queryKey: ["loggedIn"],
-    queryFn: async ({ data }) => {
-      try {
-        const response = await axios.get(`http://localhost:3006/api/auth/loggedIn/${data.email}`, {}, {
-          withCredentials: true
-        })
-        return response.data;
-      } catch (err) {
-        console.log(err);
-
-        throw new Error("Failed to fetch loggedIn status");
+  const useLoggedIn = (email) => useQuery({
+    queryKey: ["loggedIn", email],
+    queryFn: async () => {
+      if (email) {
+        try {
+          const response = await axios.get(`http://localhost:3006/api/auth/loggedIn/${email}`, {
+            withCredentials: true
+          });
+          console.log("Response from server:", response.data);
+          return response.data;
+        } catch (err) {
+          console.log(err);
+          throw new Error("Failed to fetch loggedIn status");
+        }
       }
-    }
-  })
-  return { loginAuth, loggedIn, signupAuth }
+      return null;
+    },
+    enabled: !!email,
+  });
+  return { loginAuth, useLoggedIn, signupAuth };
 }
 
 export default useAuth;

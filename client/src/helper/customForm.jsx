@@ -10,13 +10,13 @@ function CustomSignUpForm() {
   const { signUp, setActive, isLoaded: isSignUpLoaded } = useSignUp();
   const { signIn, isLoaded: isSignInLoaded } = useSignIn();
   const navigate = useNavigate();
-  const { loginAuth, loggedIn, signupAuth } = useAuth();
-
+  const { loginAuth, useLoggedIn, signupAuth } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState();
   const [error, setError] = useState(null);
   const [processing, setProcessing] = useState(false);
+  const { data: loggedInData, isLoading, isError, error: loggedInError, refetch: refetchLoggedIn } = useLoggedIn(email);
   const location = useLocation();
   const { toggleAuth } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -28,8 +28,29 @@ function CustomSignUpForm() {
       dispatch(toggleAuthState("Sign Up"));
     }
   }, [location.pathname]);
-  
-  // console.log(loggedIn.data);
+
+  const checkUserAuthentication = async (email) => {
+    try {
+      await refetchLoggedIn();
+      if (loggedInData) {
+        console.log("User authenticated:", loggedInData);
+        // You might want to set some state or perform some action based on this data
+      } else {
+        console.log("User not authenticated");
+      }
+    } catch (error) {
+      console.error("Error checking authentication:", error);
+      setError("Error checking authentication. Please try again.");
+    }
+  };
+
+  useEffect(() => {
+    if (email) {
+      checkUserAuthentication(email);
+    }
+  }, [email, loggedInData]);
+
+  // console.log(loggedInData);
   const { signOut } = useClerk()
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -64,13 +85,12 @@ function CustomSignUpForm() {
         }
       } else {
         // Handle Login
-        if (!loggedIn?.data && !loggedIn?.data?.email) {
+        if (!loggedInData && !loggedInData?.email) {
           alert("Please sign up")
           // await signOut({ redirectUrl: '/login' });
           // loginAuth.mutate({ formData });
           return;
         } else {
-          alert("Please enter your email")
           const result = await signIn.create({
             identifier: email,
             password: password,
@@ -85,8 +105,6 @@ function CustomSignUpForm() {
 
           if (result.status === "complete") {
             sessionStorage.setItem('selectedRole', role);
-            console.log(loggedIn.data);
-
             await setActive({ session: result.createdSessionId });
           }
         }
@@ -119,6 +137,9 @@ function CustomSignUpForm() {
   if (!isSignUpLoaded || !isSignInLoaded) {
     return <div>Loading authentication system...</div>;
   }
+
+  // if (isLoading) return <div>Loading...</div>;
+  // if (isError) return <div>Error: {loggedInError.message}</div>;
 
   return (
     <>

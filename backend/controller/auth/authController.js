@@ -1,10 +1,10 @@
 const pool = require("../../db");
 
 const loginIn = async (req, res) => {
-  try { 
+  try {
     let { username, password, role, email } = req.body;
     console.log(role, username, password, email);
- 
+
     if (!role) {
       role = "customer"; // Default role if not provided in the request body.
     }
@@ -21,17 +21,17 @@ const loginIn = async (req, res) => {
     const [rows] = await pool.execute(query, [email]);
     console.log(rows);
 
-    if (rows.length === 0 && password === null) { 
+    if (rows.length === 0 && password === null) {
       const query1 = "INSERT INTO USERS (email, role) VALUES ( ?, ?)";
       const values2 = [email, role];
 
       // Execute the query
       const result = await pool.query(query1, values2);
 
-      if (result.affectedRows === 0) { 
+      if (result.affectedRows === 0) {
         console.log("No rows affected");
         return res
-          .status(500) 
+          .status(500)
           .json({ message: "Failed to insert user into the database" });
       }
       return res
@@ -49,6 +49,7 @@ const loginIn = async (req, res) => {
 const signUp = async (req, res) => {
   try {
     const { email, role } = req.body;
+    console.log(email, role);
 
     if (!email || !role) {
       return res.status(400).json({ message: "Email and role are required" });

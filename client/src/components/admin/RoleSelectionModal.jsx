@@ -9,23 +9,30 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useSignUp, useSignIn, useUser, useClerk } from "@clerk/clerk-react";
+import useAuth from "@/hooks/auth/useAuth";
 
 function RoleSelectionModal({ isOpen, onRoleSelect }) {
   const [selectedRole, setSelectedRole] = useState("");
   const { signUp, setActive, isLoaded: isSignUpLoaded } = useSignUp();
+  const { signupAuth } = useAuth()
+  const { user } = useUser()
+ // console.log(user);
+
   const handleSubmit = () => {
     if (selectedRole) {
       const formData = {
-        email: signUp.email,
-        password: signUp.password,
+        email: user.primaryEmailAddress.emailAddress,
+        password: user.password,
         role: selectedRole,
       };
       onRoleSelect(selectedRole);
-      signUp.mutate({ formData })
+      console.log(formData);
+
+      signupAuth.mutate({ formData })
     }
   };
-  console.log("ruunning");
-  console.log(isOpen);
+  // console.log("ruunning");
+  // console.log(isOpen);
 
   return (
     <Dialog open={isOpen} onOpenChange={() => { /* disable closing by clicking outside */ }}>
