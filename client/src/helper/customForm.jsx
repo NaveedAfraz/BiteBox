@@ -106,6 +106,7 @@ function CustomSignUpForm() {
           if (result.status === "complete") {
             sessionStorage.setItem('selectedRole', role);
             await setActive({ session: result.createdSessionId });
+            // navigate("/"); 
           }
         }
       }

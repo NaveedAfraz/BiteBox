@@ -43,14 +43,62 @@ const Render = ({ item, title }) => {
           ))}
         </div>
       );
+    case "AddItems":
+      return (
+        <div className="flex flex-col space-y-3 w-[40vw]">
+          <input
+            type="text"
+            placeholder="Item Name"
+            className="border p-2 rounded"
+          />
+
+          <input
+            type="number"
+            placeholder="Price"
+            className="border p-2 rounded"
+          />
+
+          <input
+            type="number"
+            placeholder="Quantity"
+            className="border p-2 rounded"
+          />
+
+          <select className="border p-2 rounded">
+            <option value="" disabled selected>Select Category</option>
+            <option value="electronics">Electronics</option>
+            <option value="clothing">Clothing</option>
+            <option value="food">Food</option>
+          </select>
+
+          <textarea
+            placeholder="Description"
+            className="border p-2 rounded"
+            rows="3"
+          ></textarea>
+
+          <div className="border p-2 rounded">
+            <label className="block mb-2 text-sm">Item Photo</label>
+            <input
+              type="file"
+              accept="image/*"
+              className="w-full text-sm"
+            />
+          </div>
+
+          <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold p-2 rounded">
+            Add Item
+          </button>
+        </div>
+      )
     default:
       return null;
   }
 };
 
 function CardComponent({ item, title }) {
-  // console.log(item);
-  // console.log(title);
+  console.log(item);
+  console.log(title);
 
   return (
     <div className="my-4 text-black">

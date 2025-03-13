@@ -54,7 +54,7 @@ function App() {
       sessionStorage.removeItem('selectedRole');
       navigate("/admin/dashboard");
     }
-  }, [isLoaded, user, navigate])
+  }, [isLoaded, user])
 
 
   useEffect(() => {
@@ -90,7 +90,7 @@ function App() {
       console.error("Error updating role:", error);
     }
   };
-  if (!isLoaded && !user?.id) return <div>Loading user data...</div>;
+  // if (!isLoaded && !user?.id) return <div>Loading user data...</div>;
 
   return (
     <>
