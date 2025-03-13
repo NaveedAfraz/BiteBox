@@ -15,7 +15,7 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
 dotenv.config();
-const authRoute = require("./routes/auth/controller");
+const authRoute = require("./routes/auth/authRoute");
 app.use("/api", authRoute);
 const port = 3006;
 app.listen(port, () => {
