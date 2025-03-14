@@ -1,7 +1,10 @@
 import React from 'react';
 import { Card, CardContent, CardHeader } from '../ui/card';
+import { Input } from '../ui/input';
+import { Select, SelectContent, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select';
+import { Label } from '@radix-ui/react-select';
 
-const Render = ({ item, title }) => {
+const Render = ({ item, title, formAction }) => {
   //console.log(item);
   const { icon: IconComponent, value, description, trend } = item;
 
@@ -45,64 +48,81 @@ const Render = ({ item, title }) => {
       );
     case "AddItems":
       return (
-        <div className="flex flex-col space-y-3 w-[40vw]">
-          <input
-            type="text"
-            placeholder="Item Name"
-            className="border p-2 rounded"
-          />
-
-          <input
-            type="number"
-            placeholder="Price"
-            className="border p-2 rounded"
-          />
-
-          <input
-            type="number"
-            placeholder="Quantity"
-            className="border p-2 rounded"
-          />
-
-          <select className="border p-2 rounded">
-            <option value="" disabled selected>Select Category</option>
-            <option value="electronics">Electronics</option>
-            <option value="clothing">Clothing</option>
-            <option value="food">Food</option>
-          </select>
-
-          <textarea
-            placeholder="Description"
-            className="border p-2 rounded"
-            rows="3"
-          ></textarea>
-
-          <div className="border p-2 rounded">
-            <label className="block mb-2 text-sm">Item Photo</label>
-            <input
-              type="file"
-              accept="image/*"
-              className="w-full text-sm"
+        <form action={formAction}>
+          <div className="flex flex-col space-y-3 w-[40vw]">
+            <Input
+              type="text"
+              name="name"
+              placeholder="Item Name"
+              className="border p-2 rounded"
             />
-          </div>
 
-          <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold p-2 rounded">
-            Add Item
-          </button>
-        </div>
+            <Input
+              type="number"
+              name="price"
+              placeholder="Price"
+              className="border p-2 rounded"
+            />
+
+            <Input
+              type="number"
+              name="quantity"
+              placeholder="Quantity"
+              className="border p-2 rounded"
+            />
+
+            <div className="space-y-2">
+              <label htmlFor="category">Category</label>
+              <Select name="category" defaultValue="burger">
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="burger">Burger</SelectItem>
+                  <SelectItem value="pizza">Pizza</SelectItem>
+                  <SelectItem value="drink">Drink</SelectItem>
+                  <SelectItem value="sides">Sides</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <textarea
+              placeholder="Description"
+              name="description"
+              className="border p-2 rounded"
+              rows="3"
+            ></textarea>
+
+            <div className="border p-2 rounded">
+              <label className="block mb-2 text-sm">Item Photo</label>
+              <input
+                type="file"
+                name="photo"
+                placeholder="Upload Photo"
+                required={true}
+                accept="image/*"
+                className="w-full text-sm"
+              />
+            </div>
+
+            <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold p-2 rounded">
+              Add Item
+            </button>
+          </div>
+        </form >
       )
     default:
       return null;
   }
 };
 
-function CardComponent({ item, title }) {
+function CardComponent({ item, title, formAction }) {
   // console.log(item);
   // console.log(title);
 
   return (
     <div className="my-4 text-black">
-      <Render item={item} title={title} />
+      <Render item={item} title={title} formAction={formAction} />
     </div>
   );
 }

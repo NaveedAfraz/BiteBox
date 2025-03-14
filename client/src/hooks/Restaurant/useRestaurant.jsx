@@ -76,7 +76,23 @@ const useRestaurant = () => {
   //   }
   // })
 
-  return { Add_Adresses, fetchRestaurant }
+  const addItem = useMutation({
+    mutationFn: async (formData) => {
+      try {
+        console.log(formData);
+        const response = await axios.post("http://localhost:3006/api/restaurant/addItem", {
+          ...formData,
+        }, {
+          withCredentials: true,
+        });
+        console.log(response);
+        return response.data;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  })
+  return { Add_Adresses, fetchRestaurant, addItem }
 };
 
 export default useRestaurant;

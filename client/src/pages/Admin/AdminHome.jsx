@@ -24,11 +24,14 @@ import { userDetails } from "@/store/auth";
 import useRestaurant from "@/hooks/Restaurant/useRestaurant";
 function AdminHome() {
   const { isLoaded, isSignedIn, user } = useUser();
-  const [userRole, setUserRole] = useState(user?.unsafeMetadata?.role);
-  // console.log(user);
-  const { userInfo } = useSelector((state) => state.auth);
-  // console.log(userInfo);
 
+  const [userRole, setUserRole] = useState(user?.unsafeMetadata?.role);
+  //console.log(userRole);
+  const { userInfo } = useSelector((state) => state.auth);
+  //console.log(userInfo);
+  useEffect(() => {
+    setUserRole(user?.unsafeMetadata?.role);
+  }, [user]) 
   // let restaurantData?.data?.userID = 22
 
   const { loginAuth, useLoggedIn } = useAuth();
@@ -43,10 +46,11 @@ function AdminHome() {
   const { fetchRestaurant } = useRestaurant();
 
 
+  //console.log(userRole);
 
 
   const { data: restaurantData } = fetchRestaurant({ userID: userInfo?.userId });
-  console.log(restaurantData);
+  // console.log(restaurantData);
 
   const [close, setClose] = useState(true);
   useEffect(() => {
@@ -72,7 +76,7 @@ function AdminHome() {
     }
   }, [user])
 
-  console.log(restaurantData);
+  //console.log(restaurantData);
   const superAdminItems = [
     { id: "dashboard", icon: <LayoutDashboard />, label: "Dashboard" },
     { id: "restaurants", icon: <UtensilsCrossed />, label: "Restaurants" },
@@ -103,7 +107,7 @@ function AdminHome() {
   //console.log(activeTab);
 
   // Choose sidebar items based on role
-  const sidebarItems = userRole === "admin" ? superAdminItems : vendorItems;
+  let sidebarItems = userRole === "admin" ? superAdminItems : vendorItems;
   // const [searchParams] = useSearchParams();
   return (
     <div className="min-h-screen">
@@ -120,7 +124,7 @@ function AdminHome() {
           </div>
           <div className="flex items-center absolute right-5">
             <UserButton />
-            {!restaurantData?.restaurant.restaurantID && (
+            {!userInfo?.userId && (
               <div className="flex gap-3 ml-3 items-center justify-center">
                 <Link to="/login" className="font-bold text-lg">
                   Login
@@ -150,10 +154,9 @@ function AdminHome() {
               </button>
             </div>
             <ul className="space-y-2">
-              {sidebarItems.map((item) => (
+              {sidebarItems && sidebarItems.map((item) => (
                 <li key={item.id}>
                   <Link to={`?tab=${item.id}`}
-
                     onClick={() => setActiveTab(item.id)}
                     className={`w-full flex items-center px-3 font-semibold py-2 text-md rounded-md ${activeTab === item.id
                       ? "bg-red-100"

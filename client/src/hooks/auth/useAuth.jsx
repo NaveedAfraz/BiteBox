@@ -47,6 +47,8 @@ const useAuth = () => {
   const useLoggedIn = (email) => useQuery({
     queryKey: ["loggedIn", email],
     queryFn: async () => {
+      console.log(email);
+
       if (email) {
         try {
           const response = await axios.get(`http://localhost:3006/api/auth/loggedIn/${email}`, {
