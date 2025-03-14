@@ -93,8 +93,10 @@ const addrestaurant = async (req, res) => {
 };
 
 const fetchRestaurants = async function (req, res) {
+  const connection = await pool.getConnection();
   try {
     const { id } = req.params;
+    connection.beginTransaction();
     if (!id) {
       return res.status(404).json({
         message: "Restaurant ID is required",
@@ -103,7 +105,7 @@ const fetchRestaurants = async function (req, res) {
     console.log(id);
 
     const q = "SELECT * FROM Restaurant WHERE userID = ?";
-    const [restaurantResult] = await pool.execute(q, [id]);
+    const [restaurantResult] = await connection.execute(q, [id]);
     console.log(restaurantResult);
 
     if (restaurantResult.length === 0) {
@@ -114,12 +116,35 @@ const fetchRestaurants = async function (req, res) {
 
     const restaurantID = restaurantResult[0].restaurantID;
     const itemsQuery = "SELECT * FROM items WHERE restaurantID = ?";
-    const [itemsResult] = await pool.execute(itemsQuery, [restaurantID]);
-    console.log(itemsResult);
-    res.json({
+    const ordersQuery = "SELECT * FROM orders WHERE restaurantID = ?";
+    const reviewsQuery = "SELECT * FROM reviews WHERE restaurantID = ?";
+    const [ordersResult] = await connection.execute(ordersQuery, [
+      restaurantID,
+    ]);
+
+    const ordersDetailsQuery =
+      "SELECT * FROM orderDetails WHERE orderID IN (SELECT orderID FROM orders WHERE restaurantID = ?)";
+    const [ordersDetailsResult] = await connection.execute(ordersDetailsQuery, [
+      restaurantID,
+    ]);
+    console.log(ordersDetailsResult, "ordersDetailsResult");
+
+    const [itemsResult] = await connection.execute(itemsQuery, [restaurantID]);
+    console.log(itemsResult, "items: ");
+
+    const [reviewsResult] = await connection.execute(reviewsQuery, [
+      restaurantID,
+    ]); // Fetch reviews
+    console.log(reviewsResult, "reviews: "); // Log reviews
+
+    connection.commit();
+    return res.status(200).json({
       message: "Restaurants and items fetched successfully",
       restaurant: restaurantResult[0],
       items: itemsResult,
+      orders: ordersResult,
+      ordersDetails: ordersDetailsResult,
+      reviews: reviewsResult,
       success: true,
     });
   } catch (err) {
@@ -127,8 +152,6 @@ const fetchRestaurants = async function (req, res) {
     return res.status(500).json({ message: "Server error" });
   }
 };
-
-//const fetchitems = (req, res) => {};
 
 const additem = async function () {
   try {
@@ -213,8 +236,6 @@ const fetchByCategory = async function (req, res) {
   }
 };
 
-// need to calculate by reviews of customers
-// best sellers api i need to makke this
 const fetchTopByBrand = async function (req, res) {
   try {
     const { brand } = req.query;
@@ -235,10 +256,8 @@ const fetchTopByBrand = async function (req, res) {
   }
 };
 
-// Express example
 const sortingANDsearching = async (req, res) => {
   const { search, sort, order, foodType } = req.query;
-  // 1) Build WHERE conditions for filtering (foodType, search)
   try {
     let query;
     let values = [];
@@ -253,7 +272,6 @@ const sortingANDsearching = async (req, res) => {
       values.push(foodType, `%${search}%`);
     }
 
-    // 2) Build ORDER BY clause for sorting
     switch (sort) {
       case "name":
         query += " ORDER BY Name";
@@ -270,7 +288,6 @@ const sortingANDsearching = async (req, res) => {
         break;
     }
 
-    // 3) Execute query and return results
     const [result] = await pool.execute(query, values);
     if (result.length === 0) {
       return res.status(404).json({ message: "No items found" });
@@ -286,10 +303,45 @@ const sortingANDsearching = async (req, res) => {
   }
 };
 
+const fetchAllrestaurants = async (req, res) => {
+  try {
+    const query = `SELECT * FROM restaurant`;
+    const [result] = await pool.execute(query);
+    res.json({
+      message: "Restaurant fetched successfully",
+      data: result,
+      success: true,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+const fetchAllUSers = async (req, res) => {
+  const { userID } = req.query;
+  if (!userID) {
+    return res.status(400).json({ message: "User ID is required" });
+  }
+  try {
+    const query = "SELECT * FROM USERS WHERE userID != ?";
+    const [result] = await pool.execute(query);
+    res.json({
+      message: "Users fetched successfully",
+      data: result,
+      success: true,
+    });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
 module.exports = {
   addrestaurant,
   fetchRestaurants,
   additem,
+  fetchAllrestaurants,
   fetchByCategory,
   fetchTopByBrand,
   sortingANDsearching,

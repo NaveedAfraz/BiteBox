@@ -27,13 +27,13 @@ function AdminHome() {
   const [userRole, setUserRole] = useState(user?.unsafeMetadata?.role);
   // console.log(user);
   const { userInfo } = useSelector((state) => state.auth);
-  console.log(userInfo);
+  // console.log(userInfo);
 
   // let restaurantData?.data?.userID = 22
 
   const { loginAuth, useLoggedIn } = useAuth();
   const { data: loggedInData } = useLoggedIn(user?.primaryEmailAddress?.emailAddress);
-  // console.log(loggedInData?.restaurantData?.data?.userID);
+  //console.log(loggedInData);
   const dispatch = useDispatch()
 
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -42,10 +42,11 @@ function AdminHome() {
   const navigate = useNavigate();
   const { fetchRestaurant } = useRestaurant();
 
-  // console.log(restaurantData?.data?.userID);
+
 
 
   const { data: restaurantData } = fetchRestaurant({ userID: userInfo?.userId });
+  console.log(restaurantData);
 
   const [close, setClose] = useState(true);
   useEffect(() => {
@@ -71,7 +72,7 @@ function AdminHome() {
     }
   }, [user])
 
-
+  console.log(restaurantData);
   const superAdminItems = [
     { id: "dashboard", icon: <LayoutDashboard />, label: "Dashboard" },
     { id: "restaurants", icon: <UtensilsCrossed />, label: "Restaurants" },
@@ -94,9 +95,9 @@ function AdminHome() {
 
   const accountItems = [
     {
-      id: restaurantData?.data?.userID ? "Logout" : "Login",
-      icon: restaurantData?.data?.userID ? <UserButton /> : <LogInIcon />,
-      label: restaurantData?.data?.userID ? details?.Name : "Login",
+      id: restaurantData?.restaurant.restaurantID ? "Logout" : "Login",
+      icon: restaurantData?.restaurant.restaurantID ? <UserButton /> : <LogInIcon />,
+      label: restaurantData?.restaurant.restaurantID ? details?.Name : "Login",
     },
   ];
   //console.log(activeTab);
@@ -119,7 +120,7 @@ function AdminHome() {
           </div>
           <div className="flex items-center absolute right-5">
             <UserButton />
-            {!restaurantData?.data?.userID && (
+            {!restaurantData?.restaurant.restaurantID && (
               <div className="flex gap-3 ml-3 items-center justify-center">
                 <Link to="/login" className="font-bold text-lg">
                   Login

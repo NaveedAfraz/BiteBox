@@ -12,13 +12,13 @@ function MenuItems() {
   console.log(categories)
   return (
     <>
-      <div className='h-[40%] flex  items-center justify-center'>
+      <div className='flex items-center justify-center'>
         <CardComponent title="AddItems" item="" />
       </div>
       <div className="flex flex-wrap gap-4 w-full ml-10 lg:ml-0">
-        {categories.map((menu) => (
+        {menuItems.length !== 0 ? menuItems.map((menu) => (
           <MenuComponent key={menu.id} menu={menu} />
-        ))}
+        )) : <p className="text-center text-lg w-full mt-2.5 text-gray-500">No Menu Items</p>}
       </div>
     </>
   )
