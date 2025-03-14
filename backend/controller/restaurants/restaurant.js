@@ -70,9 +70,10 @@ const addrestaurant = async (req, res) => {
 
     if (result3.affectedRows === 1) {
       await connection.commit();
-      return res
-        .status(201)
-        .json({ message: "Restaurant added successfully and Address linked" , success: true});
+      return res.status(201).json({
+        message: "Restaurant added successfully and Address linked",
+        success: true,
+      });
     } else {
       await connection.rollback();
       return res
@@ -140,4 +141,114 @@ const additem = async function () {
   }
 };
 
-module.exports = { addrestaurant, additem };
+const fetchByCategory = async function (req, res) {
+  try {
+    const { category, restaurantID } = req.query;
+    if (!category) {
+      return res.status(400).json({ message: "Category is required" });
+    }
+    let q;
+    let values = [];
+    if (!restaurantID) {
+      q = "SELECT * FROM items WHERE category = ?";
+      values.push(category);
+    } else {
+      q = "SELECT * FROM items WHERE category = ? AND RestaurantID = ?";
+      values.push(category, restaurantID);
+    }
+    const [result] = await pool.query(q, values);
+    if (result.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No items found in this category" });
+    }
+    console.log(result);
+    return res
+      .status(200)
+      .json({ message: "Items found", data: result, success: true });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+// need to calculate by reviews of customers
+// best sellers api i need to makke this
+const fetchTopByBrand = async function (req, res) {
+  try {
+    const { brand } = req.query;
+    if (!brand) {
+      return res.status(400).json({ message: "Brand is required" });
+    }
+    const q = "SELECT * FROM Item WHERE Name LIKE?";
+    const result = await pool.query(q, [`%${brand}%`]);
+    if (result.length === 0) {
+      return res.status(404).json({ message: "No items found by this brand" });
+    }
+    return res
+      .status(200)
+      .json({ message: "Items found", data: result, success: true });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Express example
+const sortingANDsearching = async (req, res) => {
+  const { search, sort, order, foodType } = req.query;
+  // 1) Build WHERE conditions for filtering (foodType, search)
+  try {
+    let query;
+    let values = [];
+    if (foodType && !search) {
+      query = `SELECT * FROM items WHERE foodType = ?`;
+      values.push(foodType);
+    } else if (search && !foodType) {
+      query = `SELECT * FROM items WHERE Name LIKE ?`;
+      values.push(`%${search}%`);
+    } else {
+      query = `SELECT * FROM items WHERE foodType = ? AND Name LIKE?`;
+      values.push(foodType, `%${search}%`);
+    }
+
+    // 2) Build ORDER BY clause for sorting
+    switch (sort) {
+      case "name":
+        query += " ORDER BY Name";
+        break;
+      case "price":
+        const orderBy = order === "desc" ? "DESC" : "ASC";
+        query += ` ORDER BY ${sort} ${orderBy}`;
+        break;
+      case "discountedPrice":
+        query += " ORDER BY DiscountedPrice";
+        break;
+      default:
+        query += " ORDER BY Name";
+        break;
+    }
+
+    // 3) Execute query and return results
+    const [result] = await pool.execute(query, values);
+    if (result.length === 0) {
+      return res.status(404).json({ message: "No items found" });
+    }
+    res.json({
+      message: "Items fetched successfully",
+      data: result[0],
+      success: true,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+module.exports = {
+  addrestaurant,
+  additem,
+  fetchByCategory,
+  fetchTopByBrand,
+  sortingANDsearching,
+};

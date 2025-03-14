@@ -39,22 +39,22 @@ function App() {
     );
   };
 
-  useEffect(() => {
-    const userRole = user?.unsafeMetadata?.role;
-    // setRole(userRole);
-    console.log(userRole);
-    // dispatch(userRole)
-    if (userRole === "admin") {
-      sessionStorage.removeItem('selectedRole');
-      navigate("/admin/dashboard");
-    } else if (userRole === "customer") {
-      sessionStorage.removeItem('selectedRole');
-      navigate("/");
-    } else if (userRole === "vendor") {
-      sessionStorage.removeItem('selectedRole');
-      navigate("/admin/dashboard");
-    }
-  }, [isLoaded, user])
+  // useEffect(() => {
+  //   const userRole = user?.unsafeMetadata?.role;
+  //   // setRole(userRole);
+  //   console.log(userRole);
+  //   // dispatch(userRole)
+  //   if (userRole === "admin") {
+  //     sessionStorage.removeItem('selectedRole');
+  //     navigate("/admin/dashboard");
+  //   } else if (userRole === "customer") {
+  //     sessionStorage.removeItem('selectedRole');
+  //     navigate("/");
+  //   } else if (userRole === "vendor") {
+  //     sessionStorage.removeItem('selectedRole');
+  //     navigate("/admin/dashboard");
+  //   }
+  // }, [user])
 
 
   useEffect(() => {
@@ -63,7 +63,6 @@ function App() {
       const selectedRole = sessionStorage.getItem('selectedRole');
 
       if (isLoaded && user && selectedRole && !user.unsafeMetadata) {
-
         try {
           await user.update({
             unsafeMetadata: { role: selectedRole }

@@ -86,7 +86,7 @@ const EditDialogContent = ({ menu, onSubmit, onClose }) => {
 function MenuComponent({ menu }) {
   const [open, setOpen] = useState(false);
 
-  let admin = true;
+  let admin = false;
 
   const handleDelete = (e) => {
     e.stopPropagation();
@@ -124,7 +124,11 @@ function MenuComponent({ menu }) {
 
       {/* Card Content */}
       <CardContent className="p-4">
-        <CardTitle className="text-lg font-bold mb-1">{admin ? menu.brand : menu.name}</CardTitle>
+
+        <CardTitle className="text-lg font-bold mb-1">
+          <p className="text-sm text-gray-500">{menu.brand}</p>
+          <p>{menu.name}</p>
+        </CardTitle>
 
         {/* Rating & Time */}
         {(menu.rating || menu.time) && (

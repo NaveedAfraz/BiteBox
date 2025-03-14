@@ -7,7 +7,9 @@ import {
   Filter,
   Search,
   Star,
+  SortDesc,
 } from "lucide-react";
+import { FaSortAmountUp, FaSortNumericDownAlt, FaSortNumericUpAlt } from "react-icons/fa";
 
 
 export const categories = [
@@ -321,42 +323,41 @@ export const contactDetails = [
 export const filterButtons = [
   {
     id: 1,
-    name: "Sort by",
+    name: "A-Z",
     icon: <SortAsc className="h-6 w-6 text-gray-500" />,
   },
   {
     id: 2,
-    name: "Filter by",
-    icon: <Filter className="h-6 w-6 text-gray-500" />,
+    name: "Z-A",
+    icon: <SortDesc className="h-6 w-6 text-gray-500" />,
   },
   {
     id: 3,
+    name: "Price (High to Low)",
+    icon: <FaSortNumericUpAlt className="h-6 w-6 text-gray-500" />,
+  },
+  {
+    id: 4,
+    name: "Price (Low to High)",
+    icon: <FaSortNumericDownAlt className="h-6 w-6 text-gray-500" />,
+  },
+  {
+    id: 5,
     name: "Search",
     icon: <Search className="h-6 w-6 text-gray-500" />,
   },
   {
-    id: 5,
-    name: "New Arrivals",
-    icon: <Star className="h-6 w-6 text-gray-500" />,
-
-  },
-  {
     id: 6,
-    name: "Top Brands",
-    icon: <Star className="h-6 w-6 text-gray-500" />,
-  },
-  {
-    id: 7,
     name: "Best Sellers",
     icon: <Star className="h-6 w-6 text-gray-500" />,
   },
   {
-    id: 8,
+    id: 7,
     name: "Pure Veg",
     icon: <Star className="h-6 w-6 text-gray-500" />,
   },
   {
-    id: 9,
+    id: 8,
     name: "Non Veg",
     icon: <Star className="h-6 w-6 text-gray-500" />,
   },

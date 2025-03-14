@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const CardComponent = ({ categories, title, teamMembers }) => {
-//  console.log(categories);
+  //  console.log(categories);
   const [array, setArray] = useState([]);
   useEffect(() => {
     if (teamMembers) {
@@ -11,11 +11,12 @@ const CardComponent = ({ categories, title, teamMembers }) => {
       setArray(categories);
     }
   }, [teamMembers, categories]);
+  console.log(array);
+
   return (
     <div
-      className={`w-full ${
-        teamMembers ? "flex items-center justify-center flex-col" : null
-      }`}
+      className={`w-full ${teamMembers ? "flex items-center justify-center flex-col" : null
+        }`}
     >
       <h2 className="text-3xl font-bold text-gray-800 text-center  mt-12">
         {title}

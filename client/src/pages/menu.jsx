@@ -69,7 +69,7 @@ function Menu() {
       <section className="flex flex-col mx-auto px-4 mt-14 mb-10 ml-0 lg:ml-30">
         <div className="flex flex-col px-4 mt-14 mx-auto  w-full mb-10">
           <div className="flex flex-col mb-4">
-            <h1 className="text-2xl font-bold">Nearest Restaurants</h1>
+            <h1 className="text-2xl font-bold">For You</h1>
             <p className="text-gray-500">
               These are the top picks from our chefs
             </p>

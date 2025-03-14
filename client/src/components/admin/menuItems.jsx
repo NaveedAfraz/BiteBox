@@ -6,9 +6,6 @@ import { Button } from '../ui/button';
 import CardComponent from './CardComponent';
 function MenuItems() {
   console.log(categories)
-  const controls = {
-
-  }
   return (
     <>
       <div className='h-[40%] flex  items-center justify-center'>
