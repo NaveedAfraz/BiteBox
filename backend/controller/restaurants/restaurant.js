@@ -23,7 +23,7 @@ const addrestaurant = async (req, res) => {
     }
     connection = await pool.getConnection();
     if (!Name || !addressType || !city || !street || !postalCode || !email) {
-      console.log(address, city, street, postalCode);
+      console.log(city, street, postalCode);
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -38,17 +38,20 @@ const addrestaurant = async (req, res) => {
     const [rows] = await connection.execute(q, [Name]);
 
     if (rows.length > 0) {
+      console.log(rows);
+
       return res.status(400).json({ message: "Restaurant already exists" });
     }
 
     const q1 =
-      "INSERT INTO Restaurant (Name , PhoneNumber,Cuisine,OpeningHours,ClosingHours) VALUES (?,?,?,?, ?)";
+      "INSERT INTO Restaurant (Name , PhoneNumber,Cuisine,OpeningHours,ClosingHours,userID) VALUES (?,?,?,?, ?,?)";
     const [result] = await connection.execute(q1, [
       Name,
       PhoneNumber,
       Cuisine,
       OpeningHours,
       ClosingHours,
+      userID,
     ]);
     const restaurantID = result.insertId;
     console.log(userID);
@@ -88,6 +91,44 @@ const addrestaurant = async (req, res) => {
     if (connection) connection.release();
   }
 };
+
+const fetchRestaurants = async function (req, res) {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(404).json({
+        message: "Restaurant ID is required",
+      });
+    }
+    console.log(id);
+
+    const q = "SELECT * FROM Restaurant WHERE userID = ?";
+    const [restaurantResult] = await pool.execute(q, [id]);
+    console.log(restaurantResult);
+
+    if (restaurantResult.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No restaurants found for this user" });
+    }
+
+    const restaurantID = restaurantResult[0].restaurantID;
+    const itemsQuery = "SELECT * FROM items WHERE restaurantID = ?";
+    const [itemsResult] = await pool.execute(itemsQuery, [restaurantID]);
+    console.log(itemsResult);
+    res.json({
+      message: "Restaurants and items fetched successfully",
+      restaurant: restaurantResult[0],
+      items: itemsResult,
+      success: true,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+//const fetchitems = (req, res) => {};
 
 const additem = async function () {
   try {
@@ -247,6 +288,7 @@ const sortingANDsearching = async (req, res) => {
 
 module.exports = {
   addrestaurant,
+  fetchRestaurants,
   additem,
   fetchByCategory,
   fetchTopByBrand,

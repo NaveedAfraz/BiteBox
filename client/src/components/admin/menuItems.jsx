@@ -4,7 +4,11 @@ import MenuComponent from '@/components/menuComponent'
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import CardComponent from './CardComponent';
+import { useSelector } from 'react-redux';
 function MenuItems() {
+  const { menuItems } = useSelector(state => state.restaurant)
+  console.log(menuItems);
+
   console.log(categories)
   return (
     <>

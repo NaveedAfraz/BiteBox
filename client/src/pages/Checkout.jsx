@@ -20,12 +20,11 @@ function Checkout() {
       <div className="absolute inset-0 bg-white/50 backdrop-blur-sm z-[-1]" />
 
       {/* Content container */}
-      <div className="flex md:flex-row flex-col mt-8 mb-3.5">
+      <div className="flex md:flex-row flex-col mb-3.5 items-center md:items-stretch justify-center">
         <Address
           selectedAddress={selectedAddress}
           setSelectedAddress={setSelectedAddress}
         />
-        <br></br>
         <Cart />
       </div>
     </div>

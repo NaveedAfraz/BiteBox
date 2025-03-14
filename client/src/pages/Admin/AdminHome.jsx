@@ -10,32 +10,42 @@ import OrderList from "@/components/admin/OrderList";
 import Reviews from "../../components/admin/Reviews";
 import ChartCircle from "@/components/admin/chart";
 import Restaurants from "./Restaurants";
-import { useAuth, UserButton } from "@clerk/clerk-react";
+import { UserButton } from "@clerk/clerk-react";
 import { LogInIcon, LogOutIcon, Menu, X } from "lucide-react";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import {
   LayoutDashboard, UtensilsCrossed, FileText, Users, DollarSign,
   Tag, MessageSquare, Star, ShoppingBag, List
 } from "lucide-react";
 import { useUser } from "@clerk/clerk-react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import useAuth from "@/hooks/auth/useAuth";
+import { userDetails } from "@/store/auth";
+import useRestaurant from "@/hooks/Restaurant/useRestaurant";
 function AdminHome() {
   const { isLoaded, isSignedIn, user } = useUser();
   const [userRole, setUserRole] = useState(user?.unsafeMetadata?.role);
-  console.log(user);
+  // console.log(user);
+  const { userInfo } = useSelector((state) => state.auth);
+  console.log(userInfo);
 
-  const [activeTab, setActiveTab] = useState(
-    userRole === "admin" ? "dashboard" : "vendorDashboard"
-  );
-  const { userId } = useAuth();
+  // let restaurantData?.data?.userID = 22
+
+  const { loginAuth, useLoggedIn } = useAuth();
+  const { data: loggedInData } = useLoggedIn(user?.primaryEmailAddress?.emailAddress);
+  // console.log(loggedInData?.restaurantData?.data?.userID);
+  const dispatch = useDispatch()
+
+  const [activeTab, setActiveTab] = useState("dashboard");
+  //alert(activeTab);
+
   const navigate = useNavigate();
+  const { fetchRestaurant } = useRestaurant();
 
-  // console.log(user, isLoaded, isSignedIn);
+  // console.log(restaurantData?.data?.userID);
 
-  useEffect(() => {
-    setActiveTab(userRole === "admin" ? "dashboard" : "vendorDashboard");
-  }, [userRole]);
 
+  const { data: restaurantData } = fetchRestaurant({ userID: userInfo?.userId });
 
   const [close, setClose] = useState(true);
   useEffect(() => {
@@ -84,15 +94,16 @@ function AdminHome() {
 
   const accountItems = [
     {
-      id: userId ? "Logout" : "Login",
-      icon: userId ? <UserButton /> : <LogInIcon />,
-      label: userId ? details?.Name : "Login",
+      id: restaurantData?.data?.userID ? "Logout" : "Login",
+      icon: restaurantData?.data?.userID ? <UserButton /> : <LogInIcon />,
+      label: restaurantData?.data?.userID ? details?.Name : "Login",
     },
   ];
+  //console.log(activeTab);
 
   // Choose sidebar items based on role
   const sidebarItems = userRole === "admin" ? superAdminItems : vendorItems;
-
+  // const [searchParams] = useSearchParams();
   return (
     <div className="min-h-screen">
       <header className="shadow w-full">
@@ -108,7 +119,7 @@ function AdminHome() {
           </div>
           <div className="flex items-center absolute right-5">
             <UserButton />
-            {!userId && (
+            {!restaurantData?.data?.userID && (
               <div className="flex gap-3 ml-3 items-center justify-center">
                 <Link to="/login" className="font-bold text-lg">
                   Login
@@ -140,7 +151,8 @@ function AdminHome() {
             <ul className="space-y-2">
               {sidebarItems.map((item) => (
                 <li key={item.id}>
-                  <button
+                  <Link to={`?tab=${item.id}`}
+
                     onClick={() => setActiveTab(item.id)}
                     className={`w-full flex items-center px-3 font-semibold py-2 text-md rounded-md ${activeTab === item.id
                       ? "bg-red-100"
@@ -151,7 +163,7 @@ function AdminHome() {
                     <span className={`${close ? "hidden" : "block"}`}>
                       {item.label}
                     </span>
-                  </button>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -165,7 +177,7 @@ function AdminHome() {
                     onClick={() => {
                       if (item.label == "Login") {
                         setActiveTab(item.id);
-                        if (userId) {
+                        if (restaurantData?.data?.userID) {
                           // navigate("/logout");
                         } else {
                           navigate("/login");

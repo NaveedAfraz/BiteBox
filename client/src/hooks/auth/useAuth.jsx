@@ -1,12 +1,14 @@
+import { userDetails } from "@/store/auth";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { useDispatch } from "react-redux";
 
 const useAuth = () => {
+  const dispatch = useDispatch()
   const loginAuth = useMutation({
     mutationFn: async ({ formData }) => {
       try {
         console.log(formData);
-
         const response = await axios.post("http://localhost:3006/api/auth/login", {
           email: formData.email,
           password: formData.password,
@@ -27,7 +29,6 @@ const useAuth = () => {
     mutationFn: async ({ formData }) => {
       try {
         console.log(formData);
-
         const response = await axios.post("http://localhost:3006/api/auth/signup", {
           email: formData.email,
           role: formData.role,
@@ -52,6 +53,7 @@ const useAuth = () => {
             withCredentials: true
           });
           console.log("Response from server:", response.data);
+          dispatch(userDetails(response.data))
           return response.data;
         } catch (err) {
           console.log(err);

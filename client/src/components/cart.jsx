@@ -81,7 +81,7 @@ function Cart() {
   const totalAmount = subtotal + deliveryFee + platformFee + taxAndCharges;
 
   return (
-    <div className="shadow-md rounded-lg w-full max-w-xl mx-auto z-[3] border border-orange-400 ">
+    <div className="shadow-md rounded-b-2xl p-2 md:rounded-bl-none bg-white md:rounded-r-2xl w-full max-w-xl z-[3] ">
       {/* Cart Header */}
       <div className="p-4 border-b">
         <h2 className="text-xl font-bold">Your Cart</h2>

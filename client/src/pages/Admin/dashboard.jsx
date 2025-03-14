@@ -1,4 +1,3 @@
-
 import CardComponent from '@/components/admin/CardComponent';
 import { Chart } from '@/components/ui/charts';
 import { DollarSign, ShoppingCart, Users, BarChart3 } from 'lucide-react';

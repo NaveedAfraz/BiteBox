@@ -10,17 +10,20 @@ import {
 import { Button } from "@/components/ui/button";
 import { useSignUp, useSignIn, useUser, useClerk } from "@clerk/clerk-react";
 import useAuth from "@/hooks/auth/useAuth";
-import useAddresses from "@/hooks/Restaurant/useAddress";
+import useAddresses from "@/hooks/Restaurant/useRestaurant";
 import { Input } from "../ui/input";
+import useRestaurant from "@/hooks/Restaurant/useRestaurant";
 
 function RoleSelectionModal({ isOpen, onRoleSelect, setIsModalOpen }) {
   const [selectedRole, setSelectedRole] = useState("");
   const { signUp, setActive, isLoaded: isSignUpLoaded } = useSignUp();
-  const { Add_Adresses } = useAddresses();
+  const { Add_Adresses } = useRestaurant();
   const { signupAuth } = useAuth()
+
   const { user } = useUser()
   const [showInputs, setShowInputs] = useState(false);
-
+  // const { loginAuth, useLoggedIn } = useAuth();
+  // const { data: loggedInData } = useLoggedIn(user?.primaryEmailAddress?.emailAddress);
   const [formData, setFormData] = useState({
     city: "",
     street: "",
