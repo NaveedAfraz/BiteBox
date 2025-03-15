@@ -28,7 +28,7 @@ function AdminHome() {
   const [userRole, setUserRole] = useState(user?.unsafeMetadata?.role);
   //console.log(userRole);
   const { userInfo } = useSelector((state) => state.auth);
-  console.log(userInfo);
+  //  console.log(userInfo);
 
   useEffect(() => {
     setUserRole(user?.unsafeMetadata?.role);
@@ -37,7 +37,7 @@ function AdminHome() {
 
   const { loginAuth, useLoggedIn } = useAuth();
   const { data: loggedInData } = useLoggedIn(user?.primaryEmailAddress?.emailAddress);
- // console.log(loggedInData);
+  // console.log(loggedInData);
   const dispatch = useDispatch()
 
   const [activeTab, setActiveTab] = useState("dashboard");

@@ -4,8 +4,18 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Check, X, Store, Pizza } from "lucide-react";
+import { useSelector } from 'react-redux';
+import useRestaurant from '@/hooks/Restaurant/useRestaurant';
 
 function Requests() {
+  const { fetchAllRestaurant, approveORrejectRestaurant } = useRestaurant()
+  const { userInfo } = useSelector((state) => state.auth);
+  const { data: AllRestaurant } = fetchAllRestaurant()
+  console.log(AllRestaurant);
+  const filteredRestaurent = AllRestaurant?.data.filter(restaurant => restaurant.Status == "pending")
+  console.log(filteredRestaurent);
+  const { menuItems, restaurantDetails } = useSelector(state => state.restaurant);
+  console.log(menuItems);
 
   const pendingItems = [
     {
@@ -29,41 +39,66 @@ function Requests() {
   ];
 
   // Mock data for shops awaiting approval
-  const pendingShops = [
-    {
-      id: 101,
-      name: "Taco Fiesta",
-      description: "Authentic Mexican street food",
-      owner: "Maria Rodriguez",
-      email: "maria@tacofiesta.com",
-      submittedDate: "2025-03-07",
-      logo: "/api/placeholder/100/100"
-    },
-    {
-      id: 102,
-      name: "Sushi World",
-      description: "Premium Japanese cuisine",
-      owner: "Kenji Tanaka",
-      email: "kenji@sushiworld.com",
-      submittedDate: "2025-03-08",
-      logo: "/api/placeholder/100/100"
-    }
-  ];
+  // const pendingShops = [
+  //   {
+  //     id: 101,
+  //     name: "Taco Fiesta",
+  //     description: "Authentic Mexican street food",
+  //     owner: "Maria Rodriguez",
+  //     email: "maria@tacofiesta.com",
+  //     submittedDate: "2025-03-07",
+  //     logo: "/api/placeholder/100/100"
+  //   },
+  //   {
+  //     id: 102,
+  //     name: "Sushi World",
+  //     description: "Premium Japanese cuisine",
+  //     owner: "Kenji Tanaka",
+  //     email: "kenji@sushiworld.com",
+  //     submittedDate: "2025-03-08",
+  //     logo: "/api/placeholder/100/100"
+  //   }
+  // ];
 
   const handleApproveItem = (id) => {
     console.log(`Approved item ${id}`);
+
+    let formData = new FormData();
+    formData.append("status", "approved");
+    formData.append("itemId", id);
+    formData.append("title", "item")
+    console.log(formData.get("status"), formData.get("itemId"));
+    approveORrejectRestaurant.mutate(formData);
   };
 
   const handleRejectItem = (id) => {
     console.log(`Rejected item ${id}`);
+    let formData = new FormData();
+    formData.append("status", "rejected");
+    formData.append("itemId", id);
+    formData.append("title", "item")
+    approveORrejectRestaurant.mutate(formData);
   };
 
   const handleApproveShop = (id) => {
     console.log(`Approved shop ${id}`);
+    let formData = new FormData();
+    formData.append("status", "approved");
+    formData.append("restaurantId", id);
+    formData.append("title", "restaurant")
+    console.log(formData.get("status"), formData.get("restaurantId"));
+    approveORrejectRestaurant.mutate(formData);
+
   };
 
   const handleRejectShop = (id) => {
     console.log(`Rejected shop ${id}`);
+    let formData = new FormData();
+    formData.append("status", "rejected");
+    formData.append("restaurantId", id);
+    formData.append("title", "restaurant")
+    console.log(formData.get("status"), formData.append("restaurantId", id));
+    approveORrejectRestaurant.mutate(formData);
   };
 
   return (
@@ -80,7 +115,7 @@ function Requests() {
           <TabsTrigger value="shops" className="flex items-center gap-2">
             <Store className="h-4 w-4" />
             New Shop Approval
-            <Badge variant="secondary" className="ml-2">{pendingShops.length}</Badge>
+            <Badge variant="secondary" className="ml-2">{filteredRestaurent ? filteredRestaurent.length : 0}</Badge>
           </TabsTrigger>
         </TabsList>
 
@@ -129,7 +164,7 @@ function Requests() {
 
         <TabsContent value="shops" className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {pendingShops.map((shop) => (
+            {filteredRestaurent.length != 0 && filteredRestaurent.map((shop) => (
               <Card key={shop.id}>
                 <CardHeader className="flex flex-row items-center gap-4">
                   <img
@@ -162,7 +197,7 @@ function Requests() {
                   <Button
                     variant="destructive"
                     size="sm"
-                    onClick={() => handleRejectShop(shop.id)}
+                    onClick={() => handleRejectShop(shop.restaurantID)}
                     className="flex items-center gap-1"
                   >
                     <X className="h-4 w-4" /> Reject
@@ -170,7 +205,7 @@ function Requests() {
                   <Button
                     variant="default"
                     size="sm"
-                    onClick={() => handleApproveShop(shop.id)}
+                    onClick={() => handleApproveShop(shop.restaurantID)}
                     className="flex items-center gap-1"
                   >
                     <Check className="h-4 w-4" /> Approve

@@ -7,7 +7,12 @@ import CardComponent from './CardComponent';
 import { useSelector } from 'react-redux';
 import useRestaurant from '@/hooks/Restaurant/useRestaurant';
 function MenuItems() {
-  const { menuItems } = useSelector(state => state.restaurant);
+  const { menuItems, restaurantDetails } = useSelector(state => state.restaurant);
+  // console.log(restaurantDetails);
+  const { fetchRestaurant, deleteRestaurant } = useRestaurant()
+  // console.log(menuItems);
+
+  // const { refetch } = fetchRestaurant()
   const { addItem } = useRestaurant();
   const [imageUrl, setImageUrl] = React.useState(null);
   const [message, setMessage] = React.useState('');
@@ -59,10 +64,11 @@ function MenuItems() {
         description: formData.get("description"),
         foodType: formData.get("foodType"),
         photoUrl: imageUrl,
+        restaurantID: restaurantDetails.restaurantID,
       };
 
       addItem.mutate(itemData)
-
+      // setTimeout(() => { refetch() }, 1000)
       return { message: "Item added successfully!", error: null };
 
     } catch (error) {

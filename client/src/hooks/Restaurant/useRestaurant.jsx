@@ -1,4 +1,4 @@
-import { setMenuItems } from "@/store/restaurant";
+import { setMenuItems, setRestaurantDetails } from "@/store/restaurant";
 import { Mutation, useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useDispatch } from "react-redux";
@@ -52,6 +52,7 @@ const useRestaurant = () => {
         });
         console.log(response);
         dispatch(setMenuItems(response.data.items))
+        dispatch(setRestaurantDetails(response.data.restaurant))
         return response.data;
       } catch (error) {
         console.log(error);
@@ -63,7 +64,6 @@ const useRestaurant = () => {
   const fetchAllRestaurant = () => useQuery({
     queryKey: ["restaurant"],
     queryFn: async () => {
-
       try {
         const response = await axios.get(`http://localhost:3006/api/restaurant/fetchAllRestaurants`, {
           withCredentials: true,
@@ -110,7 +110,93 @@ const useRestaurant = () => {
       }
     }
   })
-  return { Add_Adresses, getAllUsers, fetchRestaurant, fetchAllRestaurant, addItem }
+
+  const updateUserStatus = useMutation({
+    mutationFn: async (formData) => {
+      try {
+        // console.log(formData);
+        const response = await axios.put(`http://localhost:3006/api/restaurant/updateUserStatus/${formData.userID}`, {
+          status: formData.status,
+        }, {
+          withCredentials: true,
+        });
+
+        console.log(response);
+        return response.data;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  })
+  const deleteRestaurant = useMutation({
+    mutationFn: async (formData) => {
+      console.log(formData.restaurantID);
+      try {
+        const response = await axios.delete(`http://localhost:3006/api/restaurant/deleteRestaurant/${formData.restaurantID}`,
+          { withCredentials: true },
+        );
+        console.log(response);
+        return response.data;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  })
+
+  const deleteItem = useMutation({
+    mutationFn: async (formData) => {
+      try {
+        const response = await axios.delete(`http://localhost:3006/api/restaurant/deleteItem/${formData.itemID}`, {
+          withCredentials: true,
+        });
+        console.log(response);
+        return response.data;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  });
+
+  const updateItem = useMutation({
+    mutationFn: async ({ formdata }) => {
+      try {
+        console.log(formdata);
+
+        const response = await axios.put(`http://localhost:3006/api/restaurant/updateItem/${formdata.id}`, {
+          ...formdata,
+        }, {
+          withCredentials: true,
+        });
+        console.log(response);
+        return response.data;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  });
+
+  const approveORrejectRestaurant = useMutation({
+    mutationFn: async (formData) => {
+      try {
+
+        // console.log(formData.get("status"), formData.get("restaurantId"));
+        const response = await axios.put(`http://localhost:3006/api/restaurant/approveORreject`, {
+          restaurantID: formData.get("restaurantId"),
+          status: formData.get("status"),
+          title: formData.get("title"),
+          itemID: formData.get("itemId")
+        }, {
+          withCredentials: true,
+        });
+        console.log(response);
+        return response.data;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  })
+
+  return { Add_Adresses, getAllUsers, fetchRestaurant, fetchAllRestaurant, addItem, updateUserStatus, deleteRestaurant, updateItem, deleteItem, approveORrejectRestaurant }
 };
 
 export default useRestaurant;

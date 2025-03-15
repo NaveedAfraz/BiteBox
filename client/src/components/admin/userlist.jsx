@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -16,24 +16,63 @@ import {
 } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose
+} from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
 import { useSelector } from 'react-redux';
 import useRestaurant from '@/hooks/Restaurant/useRestaurant';
 
 const UserList = () => {
-  // Sample user data - replace with your actual data source
-  const users = [
-    { id: 1, name: "Sarah Johnson", email: "sarah.j@example.com", role: "Customer", status: "active", avatar: "/api/placeholder/32/32" },
-    { id: 2, name: "Michael Chen", email: "michael.c@example.com", role: "Customer", status: "active", avatar: "/api/placeholder/32/32" },
-    { id: 3, name: "Aisha Patel", email: "aisha.p@example.com", role: "Restaurant Owner", status: "active", avatar: "/api/placeholder/32/32" },
-    { id: 4, name: "Carlos Rodriguez", email: "carlos.r@example.com", role: "Delivery Driver", status: "offline", avatar: "/api/placeholder/32/32" },
-    { id: 5, name: "Emma Wilson", email: "emma.w@example.com", role: "Customer", status: "active", avatar: "/api/placeholder/32/32" },
-  ];
-  const { userInfo } = useSelector(state => state.auth)
-  console.log(userInfo);
-  const { getAllUsers } = useRestaurant()
-  const { data: AllUsers } = getAllUsers({ userID: userInfo.userId })
+  const { userInfo } = useSelector(state => state.auth);
+  const { getAllUsers, updateUserStatus } = useRestaurant();
+  const { data: AllUsers, refetch } = getAllUsers({ userID: userInfo?.userId });
+  //console.log(userInfo);
   console.log(AllUsers);
 
+  // State for dialog
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [newStatus, setNewStatus] = useState('');
+
+
+  const handleEditUser = (user) => {
+    setSelectedUser(user);
+    setNewStatus(user.status || 'active');
+    setIsDialogOpen(true);
+  };
+
+  const handleStatusUpdate = async () => {
+    if (!selectedUser || !newStatus) return;
+    try {
+      updateUserStatus.mutate(
+        {
+          userID: selectedUser.userID,
+          status: newStatus
+        })
+      setIsDialogOpen(false);
+      setTimeout(() => {
+         refetch(); 
+        // console.log("heloF");
+      }, 1000)
+
+    } catch (error) {
+      console.error("Error updating user status:", error);
+    }
+  };
 
   return (
     <Card className="w-full h-[80vh] overflow-hidden">
@@ -53,31 +92,81 @@ const UserList = () => {
           </TableHeader>
           <TableBody>
             {AllUsers && AllUsers.data.map((user) => (
-              <TableRow key={user.id}>
+              <TableRow key={user.userID}>
                 <TableCell className="flex items-center gap-3">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={user.avatar} alt={user.name} />
-                    <AvatarFallback>{user.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                    <AvatarImage src={user.avatar} alt={user.userName} />
+                    {user.userName ? (
+                      <AvatarFallback>
+                        {user.userName.split(' ').map(n => n[0].toUpperCase()).join('')}
+                      </AvatarFallback>
+                    ) : null}
                   </Avatar>
                   <div>
-                    <div className="font-medium">{user.name}</div>
+                    <div className="font-medium">{user.userName}</div>
                     <div className="text-sm text-gray-500">{user.email}</div>
                   </div>
                 </TableCell>
                 <TableCell>{user.role}</TableCell>
                 <TableCell>
                   <Badge variant={user.status === 'active' ? 'default' : 'secondary'}>
-                    {user.status}
+                    {user.status || 'active'}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right">
-                  <button className="text-sm text-blue-600 hover:underline">Edit</button>
+                  <button
+                    className="text-sm text-blue-600 hover:underline"
+                    onClick={() => handleEditUser(user)}
+                  >
+                    Edit
+                  </button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </CardContent>
+
+      {/* Edit User Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogTitle>Edit User Status</DialogTitle>
+          <DialogDescription>
+            Update the status for {selectedUser?.userName}
+          </DialogDescription>
+
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="status" className="text-right">
+                Status
+              </Label>
+              <div className="col-span-3">
+                <Select
+                  value={newStatus}
+                  onValueChange={setNewStatus}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="blocked">Blocked</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleStatusUpdate}>
+              Update Status
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 };

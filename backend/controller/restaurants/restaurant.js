@@ -16,8 +16,8 @@ const addrestaurant = async (req, res) => {
       email,
       image,
     } = req.body;
-    console.log(image,"image");
-    
+    console.log(image, "image");
+
     if (!Name || !PhoneNumber || !Cuisine || !OpeningHours || !image) {
       console.log(Name, PhoneNumber, Cuisine, OpeningHours, image);
       return res
@@ -40,14 +40,24 @@ const addrestaurant = async (req, res) => {
     const q = "SELECT * FROM Restaurant WHERE Name = ?";
     const [rows] = await connection.execute(q, [Name]);
 
-    if (rows.length > 0) {
-      console.log(rows);
+    if (rows.status === "pending") {
+      return res
+        .status(400)
+        .json({ message: "Restaurant is on pending approval" });
+    }
 
+    if (rows.length > 0 && rows.status === "rejected") {
+      return res.status(400).json({ message: "Restaurant is rejected" });
+    }
+
+    if (rows.length > 0 && rows.status === "approved") {
+      console.log(rows);
       return res.status(400).json({ message: "Restaurant already exists" });
     }
     console.log(userID, "userID");
+    let status = "pending";
     const q1 =
-      "INSERT INTO Restaurant (Name , PhoneNumber,Cuisine,OpeningHours,ClosingHours,userID,RestaurantImage) VALUES (?,?,?,?,?,?,?)";
+      "INSERT INTO Restaurant (Name , PhoneNumber,Cuisine,OpeningHours,ClosingHours,userID,RestaurantImage,status) VALUES (?,?,?,?,?,?,?,?)";
     const [result] = await connection.execute(q1, [
       Name,
       PhoneNumber,
@@ -56,6 +66,7 @@ const addrestaurant = async (req, res) => {
       ClosingHours,
       userID,
       image,
+      status,
     ]);
     const restaurantID = result.insertId;
 
@@ -90,6 +101,70 @@ const addrestaurant = async (req, res) => {
     console.log(err, "error creating restaurant for");
     if (connection) await connection.rollback();
     return res.status(500).json({ message: "Servefr error" });
+  } finally {
+    if (connection) connection.release();
+  }
+};
+
+const approvalORreject = async (req, res) => {
+  let connection;
+  try {
+    const { title, restaurantID, itemID, status } = req.body;
+    console.log(title, restaurantID, itemID, status);
+
+    if (!title || !status) {
+      return res.status(400).json({
+        message: "Title and status (status) are required",
+      });
+    }
+
+    if (title === "restaurant" && !restaurantID) {
+      return res.status(400).json({
+        message: "Restaurant ID is required for restaurant update",
+      });
+    }
+
+    if (title === "item" && !itemID) {
+      return res.status(400).json({
+        message: "Item ID is required for item update",
+      });
+    }
+
+    connection = await pool.getConnection();
+    await connection.beginTransaction();
+
+    let result;
+    if (title === "restaurant") {
+      const query = "UPDATE Restaurant SET status = ? WHERE restaurantID = ?";
+      [result] = await connection.execute(query, [status, restaurantID]);
+    } else if (title === "item") {
+      const query = "UPDATE Item SET status = ? WHERE itemID = ?";
+      [result] = await connection.execute(query, [status, itemID]);
+    } else {
+      return res.status(400).json({
+        message: "Invalid title provided. Must be 'item' or 'restaurant'.",
+      });
+    }
+
+    console.log("Update result:", result);
+
+    if (result.affectedRows === 1) {
+      await connection.commit();
+      return res.status(200).json({
+        message: `${title} status updated successfully`,
+      });
+    } else {
+      await connection.rollback();
+      return res
+        .status(404)
+        .json({ message: `${title} not found or update failed` });
+    }
+  } catch (err) {
+    console.log("Error approving or rejecting:", err);
+    await connection.rollback();
+    return res
+      .status(500)
+      .json({ message: "Server error", error: err.message });
   } finally {
     if (connection) connection.release();
   }
@@ -158,7 +233,15 @@ const fetchRestaurants = async function (req, res) {
 const cloudinary = require("../../cloudinary");
 const additem = async function (req, res) {
   try {
-    const { name, price, quantity, category, description, photoUrl } = req.body;
+    const {
+      name,
+      price,
+      quantity,
+      category,
+      description,
+      photoUrl,
+      restaurantID,
+    } = req.body;
     console.log(name, price, quantity, category, description, photoUrl);
 
     // const q1 = "SELECT * FROM Restaurant WHERE Name = ?";
@@ -174,9 +257,10 @@ const additem = async function (req, res) {
       });
       photoUrlUrl = uploadedResponse.secure_url;
     }
-    let restaurantID = 26;
+    // let restaurantID = 31;
+    let status = "pending";
     const q =
-      "INSERT INTO items (Name, Amount, quantity, category, `desc`, img,restaurantID) VALUES (?,?,?,?,?,?,?)";
+      "INSERT INTO items (Name, Amount, quantity, category, `desc`, img,restaurantID,status) VALUES (?,?,?,?,?,?,?,?)";
     const params = [
       name,
       price,
@@ -185,6 +269,7 @@ const additem = async function (req, res) {
       description,
       photoUrlUrl,
       restaurantID,
+      status,
     ];
     const result = await pool.query(q, params);
     console.log(result);
@@ -319,6 +404,8 @@ const fetchAllUsers = async (req, res) => {
   try {
     const query = "SELECT * FROM USERS WHERE userID != ?";
     const [result] = await pool.execute(query, [userID]);
+    console.log(result);
+
     res.json({
       message: "Users fetched successfully",
       data: result,
@@ -330,13 +417,260 @@ const fetchAllUsers = async (req, res) => {
   }
 };
 
+const updateUser = async (req, res) => {
+  try {
+    const { userID } = req.params;
+    const { status } = req.body;
+    console.log(userID, status);
+
+    if (!userID || !status) {
+      return res.status(400).json({ message: "ALL FILEDS ARE required" });
+    }
+
+    const query = "UPDATE USERS SET status =? WHERE userID =?";
+    const [result] = await pool.execute(query, [status, userID]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "internal Server Error" });
+  }
+};
+
+const deleteRestaurant = async (req, res) => {
+  try {
+    const { restaurantID } = req.params;
+    console.log(restaurantID);
+    if (!restaurantID) {
+      return res.status(400).json({ message: "Restaurant ID is required" });
+    }
+    const query = "DELETE FROM Restaurant WHERE restaurantID =?";
+    const [result] = await pool.execute(query, [restaurantID]);
+    console.log(result);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Restaurant not found" });
+    }
+    res.json({ message: "Restaurant deleted successfully" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "internal Server Error" });
+  }
+};
+// Delete item endpoint
+// Add this to your Express router in the backend
+const deleteItem = async (req, res) => {
+  try {
+    const { itemID } = req.params;
+
+    if (!itemID) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+
+    const query = "DELETE FROM items WHERE itemID =?";
+    const [result] = await pool.execute(query, [itemID]);
+    console.log(result);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Item deleted successfully",
+      data: result,
+    });
+  } catch (error) {
+    console.error("Error deleting item:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while deleting item",
+      error: error.message,
+    });
+  }
+};
+
+// Update item endpoint
+// Add this to your Express router in the backend
+const updateItem = async (req, res) => {
+  try {
+    const { itemID } = req.params;
+    if (!itemID) {
+      return res.status(404).json({
+        success: false,
+        message: "Item ID not found",
+      });
+    }
+    const { name, description, price } = req.body;
+    console.log(name, description, price, itemID);
+
+    if (!name || !description || !price) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
+      });
+    }
+
+    const query =
+      "UPDATE items SET Name = ?, `desc` = ?, Amount = ? WHERE itemID = ?";
+    const [result] = await pool.execute(query, [
+      name,
+      description,
+      price,
+      itemID,
+    ]);
+    console.log(result);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Item updated successfully",
+      data: result,
+    });
+  } catch (error) {
+    console.error("Error updating item:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while updating item",
+      error: error.message,
+    });
+  }
+};
+
+const insertreviews = async (req, res) => {
+  try {
+    const { restaurantID } = req.params;
+    const { rating, review } = req.body;
+    console.log(restaurantID, rating, review);
+    if (!restaurantID || !rating || !review) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
+      });
+    }
+    const query =
+      "INSERT INTO reviews (userID,itemID,title,rating,review) VALUES (?,?,?,?,?)";
+
+    const [result] = await pool.execute(query, [
+      req.user.userID,
+      restaurantID,
+      "Sample Review",
+      rating,
+      review,
+    ]);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Restaurant not found" });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Review added successfully",
+      data: result,
+    });
+  } catch (error) {
+    console.error("Error getting reviews:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while getting reviews",
+      error: error.message,
+    });
+  }
+};
+
+const deleteReview = async (req, res) => {
+  try {
+    const { reviewID } = req.params;
+
+    if (!reviewID) {
+      return res.status(400).json({
+        success: false,
+        message: "Review ID is required",
+      });
+    }
+
+    const query = "DELETE FROM reviews WHERE reviewID = ?";
+    const [result] = await pool.execute(query, [reviewID]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Review not found" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Review deleted successfully",
+      data: result,
+    });
+  } catch (error) {
+    console.error("Error deleting review:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while deleting review",
+      error: error.message,
+    });
+  }
+};
+const getReviews = async (req, res) => {
+  try {
+    const { restaurantID, itemID } = req.query; // Fetch from query params
+
+    if (!restaurantID && !itemID) {
+      return res.status(400).json({
+        success: false,
+        message: "Either restaurantID or itemID is required",
+      });
+    }
+
+    let query;
+    let values;
+
+    if (itemID) {
+      // Fetch reviews for a specific item
+      query = "SELECT * FROM reviews WHERE itemID = ?";
+      values = [itemID];
+    } else {
+      // Fetch all reviews for a restaurant's items
+      query = `
+        SELECT r.* FROM reviews r
+        JOIN menu_items m ON r.itemID = m.itemID
+        WHERE m.restaurantID = ?
+      `;
+      values = [restaurantID];
+    }
+
+    const [rows] = await pool.execute(query, values);
+
+    return res.status(200).json({
+      success: true,
+      message: "Reviews fetched successfully",
+      data: rows,
+    });
+  } catch (error) {
+    console.error("Error fetching reviews:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while fetching reviews",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   addrestaurant,
   fetchRestaurants,
   additem,
   fetchAllrestaurants,
+  approvalORreject,
   fetchByCategory,
   fetchTopByBrand,
+  updateUser,
   fetchAllUsers,
   sortingANDsearching,
+  deleteRestaurant,
+  deleteItem,
+  updateItem,
+  getReviews,
+  deleteReview,
+  insertreviews,
 };

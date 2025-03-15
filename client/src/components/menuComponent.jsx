@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useActionState, useState } from "react";
 import {
   Card,
   CardHeader,
@@ -19,13 +19,12 @@ import {
 import { Input } from "./ui/input";
 import { useSelector } from "react-redux";
 import { useUser } from "@clerk/clerk-react";
+import useRestaurant from "@/hooks/Restaurant/useRestaurant";
+import { Label } from "./ui/label";
 
-const EditDialogContent = ({ menu, onSubmit, onClose }) => {
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(true);
-    onClose();
-  };
+const EditDialogContent = ({ menu, onSubmit, onClose, formAction, prevData }) => {
+  //console.log(formAction);
+  console.log(prevData);
 
   return (
     <>
@@ -37,33 +36,38 @@ const EditDialogContent = ({ menu, onSubmit, onClose }) => {
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="grid gap-4 py-4">
+        <form action={formAction} className="grid gap-4 py-4">
+          <Label htmlFor="ItemName">Item Name</Label>
           <Input
-            label="Brand Name"
-            defaultValue={menu.brand}
+            label="ItemName"
+            name="ItemName"
+            placeholder="Item Name"
+            defaultValue={prevData.name}
+            // defaultValue={menu.brand}
             className="col-span-3"
           />
 
+          <Label htmlFor="Description">Description</Label>
           <Input
             label="Description"
-            defaultValue={menu.description}
+            name="ItemDescription"
+            placeholder="Item Description"
+            defaultValue={prevData.description}
             className="col-span-3"
           />
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4">
+            <Label htmlFor="Price">Amount</Label>
             <Input
               label="Price"
+              name="price"
+              placeholder="Price"
               type="number"
-              defaultValue={menu.price}
-            />
-            <Input
-              label="Preparation Time (mins)"
-              type="number"
-              defaultValue={menu.time}
+              defaultValue={menu.Amount}
             />
           </div>
 
-          <div className="flex justify-end gap-2 mt-4">
+          <div className="flex justify-end gap-2 items-center mt-8">
             <Button
               type="button"
               variant="outline"
@@ -90,14 +94,27 @@ function MenuComponent({ menu }) {
   const { user, isLoaded, updateUserMetadata } = useUser();
   const admin = user?.unsafeMetadata?.role;
   console.log(admin);
+  const { deleteItem, updateItem } = useRestaurant()
   const { restaurantDetails } = useSelector((state) => state.restaurant)
   // let admin = true;
   // console.log(restaurantDetails);
+  const [prevData, setPrevData] = useState({
+    brand: menu.brand,
+    name: menu.Name,
+    description: menu.desc,
+    price: menu.Amount,
+    category: menu.category,
+    photoUrl: menu.photoUrl,
+    time: menu.time,
+  })
+  const handleDelete = (menu) => {
+    // e.stopPropagation();
+    // alert("Delete");
+    console.log(menu.itemID);
 
-  const handleDelete = (e) => {
-    e.stopPropagation();
-    alert("Delete");
+    deleteItem.mutate({ itemID: menu.itemID });
   }
+
 
   const handleCardClick = () => {
     if (open) {
@@ -105,11 +122,30 @@ function MenuComponent({ menu }) {
     }
   }
 
-  const handleSubmit = (saved) => {
-    // Handle the form submission result
-    console.log("Form was saved:", saved);
-  }
   console.log(menu.img);
+  const handleSubmit = (prevState, formData) => {
+    console.log(menu);
+
+    const updatedMenu = {
+      id: menu.itemID,
+      name: formData.get("ItemName"),
+      description: formData.get("ItemDescription"),
+      price: parseFloat(formData.get("price")),
+      category: formData.get("category"),
+      photoUrl: menu.photoUrl,
+      brand: formData.get("brand"),
+    }
+    setPrevData(updatedMenu)
+    console.log(updatedMenu);
+    updateItem.mutate({ formdata: updatedMenu });
+    setOpen(false)
+    // setTimeout(() => refetch(), 1000)
+    // onClose();
+  };
+
+  let initialState = null
+  const [state, formAction, isPending] = useActionState(handleSubmit, initialState);
+
 
   return (
     <Card
@@ -171,7 +207,7 @@ function MenuComponent({ menu }) {
           <div className="w-full relative bottom-[-20px] z-20 flex gap-2">
             <Button
               variant="destructive"
-              onClick={handleDelete}
+              onClick={() => handleDelete(menu)}
             >
               <Trash2 className="h-4 w-4" />
             </Button>
@@ -180,7 +216,10 @@ function MenuComponent({ menu }) {
               <DialogTrigger asChild>
                 <Button
                   variant="secondary"
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={(e) => {
+                    e.stopPropagation()
+
+                  }}
                 >
                   <Edit className="h-4 w-4" />
                 </Button>
@@ -189,6 +228,8 @@ function MenuComponent({ menu }) {
               <EditDialogContent
                 menu={menu}
                 onSubmit={handleSubmit}
+                prevData={prevData}
+                formAction={formAction}
                 onClose={() => setOpen(false)}
               />
             </Dialog>
