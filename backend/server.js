@@ -7,8 +7,8 @@ const cloudinary = require("./cloudinary");
 
 app.use(
   cors({
-    origin: "http://localhost:5173", // allow requests from your client
-    credentials: true, // allow credentials (cookies, auth headers)
+    origin: "http://localhost:5173",
+    credentials: true,
   })
 );
 app.use(express.json({ limit: "10mb" }));
@@ -17,6 +17,8 @@ app.use(express.urlencoded({ extended: true }));
 dotenv.config();
 const authRoute = require("./routes/auth/authRoute");
 const restaurantRoute = require("./routes/restaurants/restaurant");
+const pool = require("./db");
+
 app.use("/api/auth", authRoute);
 app.use("/api/restaurant", restaurantRoute);
 const port = 3006;

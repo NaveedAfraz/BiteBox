@@ -85,7 +85,18 @@ const Render = ({ item, title, formAction }) => {
                 </SelectContent>
               </Select>
             </div>
-
+            <div className="space-y-2">
+              <label htmlFor="category">Item Type</label>
+              <Select name="foodtype" defaultValue="burger">
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="drink">Veg</SelectItem>
+                  <SelectItem value="sides">non-veg</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
             <textarea
               placeholder="Description"
               name="description"

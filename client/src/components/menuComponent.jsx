@@ -85,6 +85,7 @@ const EditDialogContent = ({ menu, onSubmit, onClose }) => {
 
 function MenuComponent({ menu }) {
   const [open, setOpen] = useState(false);
+  console.log(menu);
 
   let admin = false;
 
@@ -103,6 +104,7 @@ function MenuComponent({ menu }) {
     // Handle the form submission result
     console.log("Form was saved:", saved);
   }
+  console.log(menu.img);
 
   return (
     <Card
@@ -111,15 +113,15 @@ function MenuComponent({ menu }) {
     >
       <div className="relative w-full h-40">
         <img
-          src={menu.image}
+          src={menu.img}
           alt={menu.name}
           className="h-full w-full object-cover"
         />
-        {menu.discount && (
+        {/* {menu. && (
           <span className="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">
             {menu.discount}
           </span>
-        )}
+        )}*/}
       </div>
 
       {/* Card Content */}
@@ -127,7 +129,7 @@ function MenuComponent({ menu }) {
 
         <CardTitle className="text-lg font-bold mb-1">
           <p className="text-sm text-gray-500">{menu.brand}</p>
-          <p>{menu.name}</p>
+          <p>{menu.Name}</p>
         </CardTitle>
 
         {/* Rating & Time */}
@@ -140,22 +142,27 @@ function MenuComponent({ menu }) {
         )}
 
         {/* Description */}
-        {menu.description && (
+        {menu.desc && (
           <CardDescription className="text-sm text-gray-600 mb-2">
-            {menu.description}
+            {menu.desc}
           </CardDescription>
         )}
 
         {/* Offer & Price */}
-        {menu.offer && (
+        {menu.discountedAmount && (
           <p className="text-sm font-semibold text-green-600 mb-1">
-            {menu.offer}
+            {menu.discountedAmount}
           </p>
         )}
-        {menu.price && (
-          <p className="text-sm font-semibold text-gray-800">{menu.price}</p>
+        {menu.quantity && (
+          <p className="text-sm text-gray-500">Quantity: {menu.quantity}</p>)}
+        {menu.Amount && (
+          <p className="text-sm font-semibold text-gray-800">{menu.Amount}</p>
         )}
-        {admin && (
+        {menu.foodType && (
+          <p className="text-sm font-semibold text-gray-800">{menu.foodType}</p>
+        )}
+        {admin ? (
           <div className="w-full relative bottom-[-20px] z-20 flex gap-2">
             <Button
               variant="destructive"
@@ -181,9 +188,14 @@ function MenuComponent({ menu }) {
               />
             </Dialog>
           </div>
-        )}
+        ) : <div className="">
+          <Button
+            variant="default"
+            onClick={(e) => { e.stopPropagation() }}
+          >Add</Button>
+        </div>}
       </CardContent>
-    </Card>
+    </Card >
   );
 }
 

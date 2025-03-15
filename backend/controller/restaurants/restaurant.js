@@ -152,53 +152,42 @@ const fetchRestaurants = async function (req, res) {
     return res.status(500).json({ message: "Server error" });
   }
 };
-
-const additem = async function () {
+const cloudinary = require("../../cloudinary");
+const additem = async function (req, res) {
   try {
-    const {
-      restaurantID,
-      Name,
+    const { name, price, quantity, category, description, photoUrl } = req.body;
+    console.log(name, price, quantity, category, description, photoUrl);
+
+    // const q1 = "SELECT * FROM Restaurant WHERE Name = ?";
+    // const [result1] = await pool.query(q1, [name]);
+    // if (result1.length === 0) {
+    //   return res.status(400).json({ message: "Restaurant does not exist" });
+    // }
+
+    let photoUrlUrl = "";
+    if (photoUrl) {
+      const uploadedResponse = await cloudinary.uploader.upload(photoUrl, {
+        upload_preset: "bitebox_menu_items",
+      });
+      photoUrlUrl = uploadedResponse.secure_url;
+    }
+    let restaurantID = 26;
+    const q =
+      "INSERT INTO items (Name, Amount, quantity, category, `desc`, img,restaurantID) VALUES (?,?,?,?,?,?,?)";
+    const params = [
+      name,
       price,
-      discountedprice,
       quantity,
-      description,
       category,
-    } = req.body;
-
-    if (
-      !restaurantID ||
-      !Name ||
-      !price ||
-      !discountedprice ||
-      !quantity ||
-      !description ||
-      !category
-    ) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
-
-    const q = "SELECT * FROM Restaurant WHERE Name = ?";
-    const [result] = await pool.query(q, [Name]);
-    if (result.length === 0) {
-      return res.status(400).json({ message: "Restaurant does not exist" });
-    }
-
-    const q1 =
-      "INSERT INTO Item (Name, Price, DiscountedPrice, Quantity, Description, Category, RestaurantID) VALUES (?,?,?,?,?,?,?)";
-    const result1 = await pool.query(q1, [
-      Name,
-      price,
-      discountedprice,
-      quantity,
       description,
-      category,
+      photoUrlUrl,
       restaurantID,
-    ]);
-
-    if (result1.affectedRows >= 1) {
-      return res.status(201).json({ message: "Item added successfully" });
-    }
-    return res.status(500).json({ message: "Failed to add item" });
+    ];
+    const result = await pool.query(q, params);
+    console.log(result);
+    
+    return res.json({ message: "Item created successfully" });
+ 
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: "Server error" });

@@ -7,28 +7,71 @@ import CardComponent from './CardComponent';
 import { useSelector } from 'react-redux';
 import useRestaurant from '@/hooks/Restaurant/useRestaurant';
 function MenuItems() {
-  const { menuItems } = useSelector(state => state.restaurant)
-  console.log(menuItems);
-  const { addItem } = useRestaurant()
-  let initialState = null;
-  const handleSubmit = (prevState, formData) => {
-    console.log(prevState);
-    const itemData = {
-      name: formData.get("name"),
-      price: formData.get("price"),
-      quantity: formData.get("quantity"),
-      category: formData.get("category"),
-      description: formData.get("description"),
-      photo: formData.get("photo")?.name || null,  
-    };
-    console.log(itemData);
-    
-    return {
-      message: "Item added successfully!",
-      itemData: itemData
-    };
-  }
-  const [state, formAction, isPending] = useActionState(handleSubmit, initialState)
+  const { menuItems } = useSelector(state => state.restaurant);
+  const { addItem } = useRestaurant();
+  const [imageUrl, setImageUrl] = React.useState(null);
+  const [message, setMessage] = React.useState('');
+
+  const CLOUD_NAME = 'dvntoejlv';
+  const UPLOAD_PRESET = 'bitebox_menu_items';
+
+  const handleImageUpload = async (file) => {
+    if (!file) return null;
+
+    const data = new FormData();
+    data.append('file', file);
+    data.append('upload_preset', UPLOAD_PRESET);
+
+    try {
+      setMessage('Uploading image...');
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+        { method: 'POST', body: data }
+      );
+
+      const result = await response.json();
+      if (result.secure_url) {
+        setImageUrl(result.secure_url);
+        return result.secure_url;
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      setMessage('Failed to upload image.');
+      return null;
+    }
+  };
+
+  const handleSubmit = async (prevState, formData) => {
+    try {
+      const photoFile = formData.get('photo');
+      let imageUrl = null;
+
+      if (photoFile.size > 0) {
+        imageUrl = await handleImageUpload(photoFile);
+        if (!imageUrl) throw new Error('Image upload failed');
+      }
+
+      const itemData = {
+        name: formData.get("name"),
+        price: Number(formData.get("price")),
+        quantity: Number(formData.get("quantity")),
+        category: formData.get("category"),
+        description: formData.get("description"),
+        foodType: formData.get("foodType"),
+        photoUrl: imageUrl,
+      };
+
+      addItem.mutate(itemData)
+
+      return { message: "Item added successfully!", error: null };
+
+    } catch (error) {
+      console.error('Submission error:', error);
+      return { message: null, error: error.message };
+    }
+  };
+
+  const [state, formAction, isPending] = useActionState(handleSubmit, null);
 
   return (
     <>
