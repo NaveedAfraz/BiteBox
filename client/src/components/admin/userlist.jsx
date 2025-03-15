@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { useSelector } from 'react-redux';
+import useRestaurant from '@/hooks/Restaurant/useRestaurant';
 
 const UserList = () => {
   // Sample user data - replace with your actual data source
@@ -26,6 +28,12 @@ const UserList = () => {
     { id: 4, name: "Carlos Rodriguez", email: "carlos.r@example.com", role: "Delivery Driver", status: "offline", avatar: "/api/placeholder/32/32" },
     { id: 5, name: "Emma Wilson", email: "emma.w@example.com", role: "Customer", status: "active", avatar: "/api/placeholder/32/32" },
   ];
+  const { userInfo } = useSelector(state => state.auth)
+  console.log(userInfo);
+  const { getAllUsers } = useRestaurant()
+  const { data: AllUsers } = getAllUsers({ userID: userInfo.userId })
+  console.log(AllUsers);
+
 
   return (
     <Card className="w-full h-[80vh] overflow-hidden">
@@ -44,7 +52,7 @@ const UserList = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {users.map((user) => (
+            {AllUsers && AllUsers.data.map((user) => (
               <TableRow key={user.id}>
                 <TableCell className="flex items-center gap-3">
                   <Avatar className="h-8 w-8">

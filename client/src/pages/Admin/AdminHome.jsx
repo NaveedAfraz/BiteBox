@@ -28,15 +28,16 @@ function AdminHome() {
   const [userRole, setUserRole] = useState(user?.unsafeMetadata?.role);
   //console.log(userRole);
   const { userInfo } = useSelector((state) => state.auth);
-  //console.log(userInfo);
+  console.log(userInfo);
+
   useEffect(() => {
     setUserRole(user?.unsafeMetadata?.role);
-  }, [user]) 
+  }, [user])
   // let restaurantData?.data?.userID = 22
 
   const { loginAuth, useLoggedIn } = useAuth();
   const { data: loggedInData } = useLoggedIn(user?.primaryEmailAddress?.emailAddress);
-  //console.log(loggedInData);
+ // console.log(loggedInData);
   const dispatch = useDispatch()
 
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -44,10 +45,7 @@ function AdminHome() {
 
   const navigate = useNavigate();
   const { fetchRestaurant } = useRestaurant();
-
-
   //console.log(userRole);
-
 
   const { data: restaurantData } = fetchRestaurant({ userID: userInfo?.userId });
   // console.log(restaurantData);
@@ -99,9 +97,9 @@ function AdminHome() {
 
   const accountItems = [
     {
-      id: restaurantData?.restaurant.restaurantID ? "Logout" : "Login",
-      icon: restaurantData?.restaurant.restaurantID ? <UserButton /> : <LogInIcon />,
-      label: restaurantData?.restaurant.restaurantID ? details?.Name : "Login",
+      id: restaurantData?.restaurant?.restaurantID ? "Logout" : "Login",
+      icon: restaurantData?.restaurant?.restaurantID ? <UserButton /> : <LogInIcon />,
+      label: restaurantData?.restaurant?.restaurantID ? details?.Name : "Login",
     },
   ];
   //console.log(activeTab);

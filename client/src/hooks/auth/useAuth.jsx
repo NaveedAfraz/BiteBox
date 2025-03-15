@@ -13,6 +13,7 @@ const useAuth = () => {
           email: formData.email,
           password: formData.password,
           role: formData.role,
+          username: formData.username
         }, {
           withCredentials: true
         })
@@ -32,6 +33,7 @@ const useAuth = () => {
         const response = await axios.post("http://localhost:3006/api/auth/signup", {
           email: formData.email,
           role: formData.role,
+          username: formData.username
         }, {
           withCredentials: true
         })
@@ -48,7 +50,6 @@ const useAuth = () => {
     queryKey: ["loggedIn", email],
     queryFn: async () => {
       console.log(email);
-
       if (email) {
         try {
           const response = await axios.get(`http://localhost:3006/api/auth/loggedIn/${email}`, {

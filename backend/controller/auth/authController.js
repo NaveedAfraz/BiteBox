@@ -22,8 +22,9 @@ const loginIn = async (req, res) => {
     console.log(rows);
 
     if (rows.length === 0 && password === null) {
-      const query1 = "INSERT INTO USERS (email, role) VALUES ( ?, ?)";
-      const values2 = [email, role];
+      const query1 =
+        "INSERT INTO USERS (email, role ,userName) VALUES ( ?, ?,?)";
+      const values2 = [email, role, username];
 
       // Execute the query
       const result = await pool.query(query1, values2);
@@ -48,13 +49,13 @@ const loginIn = async (req, res) => {
 
 const signUp = async (req, res) => {
   try {
-    const { email, role } = req.body;
-    console.log(email, role);
+    const { email, role, username } = req.body;
+    console.log(email, role,username)
 
     if (!email || !role) {
       return res.status(400).json({ message: "Email and role are required" });
     }
-
+ 
     const checkUserQuery = "SELECT * FROM USERS WHERE email = ?";
     const [existingUsers] = await pool.execute(checkUserQuery, [email]);
 
@@ -62,8 +63,13 @@ const signUp = async (req, res) => {
       return res.status(409).json({ message: "User already exists" });
     }
 
-    const insertUserQuery = "INSERT INTO USERS (email, role) VALUES (?, ?)";
-    const [result] = await pool.execute(insertUserQuery, [email, role]);
+    const insertUserQuery =
+      "INSERT INTO USERS (email, role,userName) VALUES (?,?, ?)";
+    const [result] = await pool.execute(insertUserQuery, [
+      email,
+      role,
+      username,
+    ]);
 
     if (result.affectedRows === 1) {
       return res.status(201).json({

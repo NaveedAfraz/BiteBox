@@ -17,6 +17,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "./ui/input";
+import { useSelector } from "react-redux";
+import { useUser } from "@clerk/clerk-react";
 
 const EditDialogContent = ({ menu, onSubmit, onClose }) => {
   const handleSubmit = (e) => {
@@ -85,9 +87,12 @@ const EditDialogContent = ({ menu, onSubmit, onClose }) => {
 
 function MenuComponent({ menu }) {
   const [open, setOpen] = useState(false);
-  console.log(menu);
-
-  let admin = false;
+  const { user, isLoaded, updateUserMetadata } = useUser();
+  const admin = user?.unsafeMetadata?.role;
+  console.log(admin);
+  const { restaurantDetails } = useSelector((state) => state.restaurant)
+  // let admin = true;
+  // console.log(restaurantDetails);
 
   const handleDelete = (e) => {
     e.stopPropagation();
@@ -162,7 +167,7 @@ function MenuComponent({ menu }) {
         {menu.foodType && (
           <p className="text-sm font-semibold text-gray-800">{menu.foodType}</p>
         )}
-        {admin ? (
+        {admin == "vendor" || admin == "admin" ? (
           <div className="w-full relative bottom-[-20px] z-20 flex gap-2">
             <Button
               variant="destructive"
@@ -192,7 +197,7 @@ function MenuComponent({ menu }) {
           <Button
             variant="default"
             onClick={(e) => { e.stopPropagation() }}
-          >Add</Button>
+          ></Button>
         </div>}
       </CardContent>
     </Card >

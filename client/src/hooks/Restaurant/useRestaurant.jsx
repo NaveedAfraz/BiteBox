@@ -29,12 +29,12 @@ const useRestaurant = () => {
           building: formData.building,
           additionalInfo: formData.additionalInfo,
           addressType: formData.addressType,
-          email: formData.email
+          email: formData.email,
+          image: restaurantData.ImageUrl
         }, {
           withCredentials: true,
         });
         console.log(response);
-
         return response.data;
       } catch (error) {
         console.log(error);
@@ -60,21 +60,39 @@ const useRestaurant = () => {
     enabled: !!userID
   })
 
-  // const getItems = (restaurantID) => useQuery({
-  //   queryKey: ["items"],
-  //   queryFn: async () => {
-  //     console.log(restaurantID);
-  //     try {
-  //       const response = await axios.get(`http://localhost:3006/api/restaurant/fetchItems/${restaurantID}`, {
-  //         withCredentials: true,
-  //       });
-  //       console.log(response);
-  //       return response.data;
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   }
-  // })
+  const fetchAllRestaurant = () => useQuery({
+    queryKey: ["restaurant"],
+    queryFn: async () => {
+
+      try {
+        const response = await axios.get(`http://localhost:3006/api/restaurant/fetchAllRestaurants`, {
+          withCredentials: true,
+        });
+        console.log(response);
+        // dispatch(setMenuItems(response.data.items))
+        return response.data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  })
+
+  const getAllUsers = ({ userID }) => useQuery({
+    queryKey: ["allUsers"],
+    queryFn: async () => {
+      console.log(userID);
+
+      try {
+        const response = await axios.get(`http://localhost:3006/api/restaurant/fetchAllUsers/${userID}`, {
+          withCredentials: true,
+        });
+        console.log(response);
+        return response.data;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  })
 
   const addItem = useMutation({
     mutationFn: async (formData) => {
@@ -92,7 +110,7 @@ const useRestaurant = () => {
       }
     }
   })
-  return { Add_Adresses, fetchRestaurant, addItem }
+  return { Add_Adresses, getAllUsers, fetchRestaurant, fetchAllRestaurant, addItem }
 };
 
 export default useRestaurant;

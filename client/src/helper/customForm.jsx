@@ -13,6 +13,7 @@ function CustomSignUpForm() {
   const { loginAuth, useLoggedIn, signupAuth } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
   const [role, setRole] = useState();
   const [error, setError] = useState(null);
   const [processing, setProcessing] = useState(false);
@@ -20,7 +21,8 @@ function CustomSignUpForm() {
   const location = useLocation();
   const { toggleAuth } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-
+  const { user } = useUser()
+  console.log(user, "ua");
   useEffect(() => {
     if (location.pathname === "/login") {
       dispatch(toggleAuthState("Login"));
@@ -51,12 +53,13 @@ function CustomSignUpForm() {
   }, [email, loggedInData]);
 
   // console.log(loggedInData);
-  const { signOut } = useClerk()
+  // const { signOut } = useClerk()
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
-    setProcessing(true);
 
+    if (username.trim().length === 0) return alert("Please enter username");
+    setProcessing(true);
     try {
       if (toggleAuth !== "Login") {
         // Handle Sign Up
@@ -70,6 +73,7 @@ function CustomSignUpForm() {
           email,
           password,
           role,
+          username,
         }
         if (result.status === "missing_requirements") {
           if (result.unverifiedFields.includes("email_address")) {
@@ -100,6 +104,7 @@ function CustomSignUpForm() {
             email,
             password,
             role,
+            username,
           }
           console.log(role);
 
@@ -149,7 +154,15 @@ function CustomSignUpForm() {
         className="max-w-md mx-auto p-6 bg-white rounded-lg shadow"
       >
         <h2 className="text-2xl font-bold mb-4">{toggleAuth}</h2>
-
+        <input
+          type="username"
+          placeholder="Username"
+          className="w-full border p-2 mb-4 rounded"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
+          disabled={processing}
+        />
         <input
           type="email"
           placeholder="Email"

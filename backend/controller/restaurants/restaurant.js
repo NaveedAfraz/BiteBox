@@ -14,9 +14,12 @@ const addrestaurant = async (req, res) => {
       postalCode,
       addressType,
       email,
+      image,
     } = req.body;
-    if (!Name || !PhoneNumber || !Cuisine || !OpeningHours) {
-      console.log(Name, PhoneNumber, Cuisine, OpeningHours);
+    console.log(image,"image");
+    
+    if (!Name || !PhoneNumber || !Cuisine || !OpeningHours || !image) {
+      console.log(Name, PhoneNumber, Cuisine, OpeningHours, image);
       return res
         .status(400)
         .json({ message: "All Restrdents fields are required" });
@@ -42,9 +45,9 @@ const addrestaurant = async (req, res) => {
 
       return res.status(400).json({ message: "Restaurant already exists" });
     }
-
+    console.log(userID, "userID");
     const q1 =
-      "INSERT INTO Restaurant (Name , PhoneNumber,Cuisine,OpeningHours,ClosingHours,userID) VALUES (?,?,?,?, ?,?)";
+      "INSERT INTO Restaurant (Name , PhoneNumber,Cuisine,OpeningHours,ClosingHours,userID,RestaurantImage) VALUES (?,?,?,?,?,?,?)";
     const [result] = await connection.execute(q1, [
       Name,
       PhoneNumber,
@@ -52,12 +55,12 @@ const addrestaurant = async (req, res) => {
       OpeningHours,
       ClosingHours,
       userID,
+      image,
     ]);
     const restaurantID = result.insertId;
-    console.log(userID);
 
     const q2 =
-      "INSERT INTO Address (Street,  City, PostalCode, AddressType, UserID) VALUES (?,?,?,?,?)";
+      "INSERT INTO Address (Street, City, PostalCode, AddressType, UserID) VALUES (?,?,?,?,?)";
     const [result2] = await connection.execute(q2, [
       street,
       city,
@@ -84,9 +87,9 @@ const addrestaurant = async (req, res) => {
         .json({ message: "Failed to update restaurant with address" });
     }
   } catch (err) {
-    console.log(err);
+    console.log(err, "error creating restaurant for");
     if (connection) await connection.rollback();
-    return res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Servefr error" });
   } finally {
     if (connection) connection.release();
   }
@@ -148,10 +151,10 @@ const fetchRestaurants = async function (req, res) {
       success: true,
     });
   } catch (err) {
-    console.log(err);
     return res.status(500).json({ message: "Server error" });
   }
 };
+
 const cloudinary = require("../../cloudinary");
 const additem = async function (req, res) {
   try {
@@ -185,9 +188,8 @@ const additem = async function (req, res) {
     ];
     const result = await pool.query(q, params);
     console.log(result);
-    
+
     return res.json({ message: "Item created successfully" });
- 
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: "Server error" });
@@ -294,7 +296,7 @@ const sortingANDsearching = async (req, res) => {
 
 const fetchAllrestaurants = async (req, res) => {
   try {
-    const query = `SELECT * FROM restaurant`;
+    const query = `SELECT * FROM Restaurant`;
     const [result] = await pool.execute(query);
     res.json({
       message: "Restaurant fetched successfully",
@@ -307,14 +309,16 @@ const fetchAllrestaurants = async (req, res) => {
   }
 };
 
-const fetchAllUSers = async (req, res) => {
-  const { userID } = req.query;
+const fetchAllUsers = async (req, res) => {
+  const { userID } = req.params;
+  console.log(userID);
+
   if (!userID) {
     return res.status(400).json({ message: "User ID is required" });
   }
   try {
     const query = "SELECT * FROM USERS WHERE userID != ?";
-    const [result] = await pool.execute(query);
+    const [result] = await pool.execute(query, [userID]);
     res.json({
       message: "Users fetched successfully",
       data: result,
@@ -333,5 +337,6 @@ module.exports = {
   fetchAllrestaurants,
   fetchByCategory,
   fetchTopByBrand,
+  fetchAllUsers,
   sortingANDsearching,
 };

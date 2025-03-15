@@ -23,7 +23,7 @@ import OAuthCallback from "./helper/googleRedirect";
 function App() {
   // const { userId } = useAuth();
   const { user, isLoaded, updateUserMetadata } = useUser();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const navigate = useNavigate();
   const Nav = () => {
     return (
