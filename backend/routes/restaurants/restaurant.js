@@ -22,7 +22,7 @@ const router = express.Router();
 
 router.post("/AddrestaurantAndAddresses", addrestaurant);
 
-router.get("/sort", sortingANDsearching);
+router.post("/sort", sortingANDsearching);
 router.get("/fetchRestaurant/:id", fetchRestaurants);
 router.get("/fetchAllRestaurants", fetchAllRestaurantsRandItems);
 router.get("/fetchAllUsers/:userID", fetchAllUsers);
@@ -34,7 +34,7 @@ router.put("/updateItem/:itemID", updateItem);
 router.delete("/deleteItem/:itemID", deleteItem);
 router.put("/approveORreject", approvalORreject);
 router.get("/fetchPendingRejectedItems", fetchPendingRejectedItems);
-router.get("/sortingANDsearching", sortingANDsearching);
+ 
 
 router.delete("/reviews/:reviewID", deleteReview);
 router.get("/reviews/:restaurantID", getReviews);

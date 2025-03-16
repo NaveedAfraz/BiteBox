@@ -333,7 +333,12 @@ const fetchTopByBrand = async function (req, res) {
 };
 
 const sortingANDsearching = async (req, res) => {
-  const { search, sort, order, foodType } = req.query;
+  const { search, sort, order, foodType } = req.body;
+  console.log(search, sort, order, foodType);
+
+  if (!search && !sort && !order && !foodType) {
+    return res.status(400).json({ message: "At least one filter is required" });
+  }
   try {
     let query;
     let values = [];
@@ -344,30 +349,33 @@ const sortingANDsearching = async (req, res) => {
       query = `SELECT * FROM items WHERE Name LIKE ?`;
       values.push(`%${search}%`);
     } else {
-      query = `SELECT * FROM items WHERE foodType = ? AND Name LIKE?`;
-      values.push(foodType, `%${search}%`);
-    }
-
-    switch (sort) {
+      query = `SELECT * FROM items`
+       
+    } 
+    
+    switch (sort) { 
       case "name":
         query += " ORDER BY Name";
         break;
-      case "price":
+      case "sort": 
         const orderBy = order === "desc" ? "DESC" : "ASC";
         query += ` ORDER BY ${sort} ${orderBy}`;
         break;
-      case "discountedPrice":
+      case "discountedPrice": 
         query += " ORDER BY DiscountedPrice";
         break;
       default:
         query += " ORDER BY Name";
         break;
-    }
+    } 
+    console.log(query); 
 
     const [result] = await pool.execute(query, values);
+   console.log(result);
     if (result.length === 0) {
-      return res.status(404).json({ message: "No items found" });
+      return res.status(405).json({ message: "No items found" });
     }
+
     res.json({
       message: "Items fetched successfully",
       data: result[0],
@@ -384,8 +392,8 @@ const fetchAllRestaurantsRandItems = async (req, res) => {
     // First, fetch all restaurants
     const restaurantQuery = `SELECT * FROM Restaurant`;
     const [restaurants] = await pool.execute(restaurantQuery);
-    console.log(restaurants,"rest");
-    
+    console.log(restaurants, "rest");
+
     // For each restaurant, fetch up to 5 random items
     for (const restaurant of restaurants) {
       const itemsQuery = `
@@ -393,13 +401,13 @@ const fetchAllRestaurantsRandItems = async (req, res) => {
         WHERE restaurantID= ?  
         ORDER BY RAND() 
         LIMIT 5
-      `; 
+      `;
       const [items] = await pool.execute(itemsQuery, [restaurant.restaurantID]);
-      
+
       // Add items to the restaurant object
       restaurant.menuItems = items;
     }
-    
+
     res.json({
       message: "Restaurants with menu items fetched successfully",
       data: restaurants,
@@ -678,14 +686,12 @@ const fetchPendingRejectedItems = async (req, res) => {
       "SELECT * FROM items WHERE status = 'Pending' OR status = 'rejected'";
     const [rows] = await pool.execute(query);
     console.log(rows, "rejected items");
-    
-    return res
-      .status(200)
-      .json({
-        success: true,
-        message: "rejected and pending items fetched",
-        Items: rows,
-      });
+
+    return res.status(200).json({
+      success: true,
+      message: "rejected and pending items fetched",
+      Items: rows,
+    });
   } catch (error) {
     console.error("Error fetching pending restaurants:", error);
     return res.status(500).json({

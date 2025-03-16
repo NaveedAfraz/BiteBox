@@ -17,6 +17,8 @@ import useRestaurant from "@/hooks/Restaurant/useRestaurant";
 import { useDispatch, useSelector } from "react-redux";
 import { setMenuItems, setRestaurantDetails } from "@/store/restaurant";
 import { useLocation, useSearchParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 function Menu() {
   const { fetchAllRestaurant, deleteRestaurant } = useRestaurant()
   const { userInfo } = useSelector((state) => state.auth);
@@ -32,85 +34,85 @@ function Menu() {
   const { menuItems, restaurantDetails } = useSelector((state) => state.restaurant)
   console.log(menuItems, restaurantDetails, "menuItems");
   const location = useLocation()
-  const [searchParams, setSearchParams] = useSearchParams()
-  const [type, setType] = useState("")
-  
-  useEffect(() => {
-    console.log("Menu component rendering");
-  }, [])
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("name");
+  const [order, setOrder] = useState("asc");
+  const [foodType, setFoodType] = useState("");
 
-  const handlefilter = ({ e, button }) => {
-    console.log(button, "filter");
+  // If you also want to update the URL query parameters (optional)
+  const [searchParams, setSearchParams] = useSearchParams();
 
+  // API function: Send a POST request with the filter values
+  const fetchFilteredItems = async () => {
+    const response = await axios.post(
+      "http://localhost:3006/api/restaurant/sort",
+      { search, sort, order, foodType },
+      { withCredentials: true }
+    );
+    return response.data;
+  };
 
-    // let i = 0
-    // let newStr
-    // // console.log(i, "filter");
-    // for (i in category) {
-    //   if (category[i] === " ") {
-    //     console.log("filter", category.slice(0, i));
-    //     newStr = category.slice(0, i -1) + category.slice(i + 1)
-    //     console.log(newStr, "filter");
-    //   }
-    // }
-    // console.log(category, "filter");
+  // TanStack Query: Initially disabled; will run only on refetch
+  const { data, refetch, isLoading, isError, error } = useQuery({
+    queryKey: ["filteredItems", { search, sort, order, foodType }],
+    queryFn: fetchFilteredItems,
+    enabled: false,
+  });
 
-    let category = e.target.textContent.trim();
-    let newStr = category.split(" ").join("");
-
-    // Read existing categories from query param
-    let existingCategory = searchParams.get("category");
-    let categoriesArray = existingCategory ? existingCategory.split(",") : [];
-
-    // Define opposite filter pairs
-    const oppositeFilters = {
-      "A-Z": "Z-A",
-      "Z-A": "A-Z",
-      "Price(HightoLow)": "Price(LowtoHigh)",
-      "Price(LowtoHigh)": "Price(HightoLow)",
+  // Update query params (optional)
+  const updateURL = () => {
+    const params = {
+      search,
+      sort,
+      order,
+      foodType,
     };
+    setSearchParams(params);
+  };
 
-    // 1. Remove opposite if present
-    const opposite = oppositeFilters[newStr];
-    if (opposite && categoriesArray.includes(opposite)) {
-      categoriesArray = categoriesArray.filter((item) => item !== opposite);
+  // When a filter button is clicked, update the corresponding state.
+  // For example, each button in filterButtons might have a "filterType" (one of: search, sort, order, foodType)
+  // and a "value" to set.
+  const handlefilter = (filterType, value) => {
+
+    console.log("handlefilter");
+    console.log(filterType, value);
+
+    console.log(order, foodType, sort);
+
+    switch (filterType) {
+      case "search":
+        setSearch(value);
+        break;
+      case "sort":
+        setSort(value);
+        break;
+      case "order":
+        setOrder(value);
+        break;
+      // case "foodType":
+      //   setFoodType(value);
+      //  break;
+      default:
+        break;
     }
+    updateURL();
+    refetch();
+  };
 
-    // 2. If new filter is already in array, remove it (toggle off)
-    if (categoriesArray.includes(newStr)) {
-      categoriesArray = categoriesArray.filter((item) => item !== newStr);
-    } else {
-      // 3. Otherwise, add it
-      categoriesArray.push(newStr);
-    }
+  // useEffect(() => {
+  //   console.log("runEffect");
 
+  //   refetch();
+  // }, [search, sort, order, foodType, refetch]);
 
+  // if (isLoading) {
+  //   return <div>Loading...</div>;
+  // }
 
-    let sortBy = "name";
-    let orderBy = "asc";
-
-    if (newStr === "A-Z") {
-      sortBy = "name";
-      orderBy = "asc";
-    } else if (newStr === "Z-A") {
-      sortBy = "name";
-      orderBy = "desc";
-    } else if (newStr === "Price(HightoLow)") {
-      sortBy = "price";
-      orderBy = "desc";
-    } else if (newStr === "Price(LowtoHigh)") {
-      sortBy = "price";
-      orderBy = "asc";
-    } else {
-      setType(newStr);
-    }
-
-    searchParams.set("category", categoriesArray.join(","));
-    setSearchParams(searchParams);
-    console.log(newStr, "filter");
-  }
-  console.log(type, "filter");
-
+  // if (isError) {
+  //   return <div>Error: {error.message}</div>;
+  // }
   return (
     <div className="min-h-screen flex flex-col ">
       <main className="flex-grow pt-24 ">
@@ -173,7 +175,7 @@ function Menu() {
           </div>
           <div className="flex flex-wrap items-center  w-full gap-3.5 p-2">
             {filterButtons.map((button) => (
-              <Button key={button.id} onClick={(e) => handlefilter({ e, button })} className="flex itemsm-center gap-2">
+              <Button key={button.id} onClick={(e) => handlefilter(button.filterType, button.value)} className="flex itemsm-center gap-2">
                 {button.icon}
                 {button.name}
               </Button>
