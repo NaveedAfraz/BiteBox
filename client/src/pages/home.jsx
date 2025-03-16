@@ -19,9 +19,18 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { useSelector } from "react-redux";
+import useRestaurant from "@/hooks/Restaurant/useRestaurant";
 function Home() {
   //console.log(specialOffers);
+  const { fetchAllRestaurant, deleteRestaurant } = useRestaurant()
+  const { menuItems, restaurantDetails } = useSelector((state) => state.restaurant)
+  console.log(menuItems, restaurantDetails, "menuItems");
+  const { data: AllRestaurant, isLoading } = fetchAllRestaurant()
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
   return (
     <>
       <div className="min-h-screen w-full flex flex-col justify-center items-center">
@@ -71,12 +80,12 @@ function Home() {
       <div>
         <div className="px-5 py-16 bg-white">
           <div className="flex gap-8 overflow-x-auto pb-4 scrollbar-hide">
-            <CardComponent categories={categories} title="Food Categories" />
+            <CardComponent categories={menuItems} title="Food Categories" />
           </div>
         </div>
       </div>
       <div className="px-5 py-16 bg-white">
-        <CardComponent categories={bestSellers} title="Best Sellers" />
+        <CardComponent categories={menuItems} title="Best Sellers" />
       </div>
 
       <div className="flex flex-col gap-4 justify-center items-center p-10 mt-10 relative">

@@ -2,17 +2,30 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const CardComponent = ({ categories, title, teamMembers }) => {
-  //  console.log(categories);
+  console.log(categories, title);
   const [array, setArray] = useState([]);
+  console.log(title);
+
   useEffect(() => {
     if (teamMembers) {
       setArray(teamMembers);
+
+    } else if (title === "Food Categories") {
+
+      const formattedCategories = categories.map((restaurant) => ({
+        Name: restaurant.Name,
+        img: restaurant.img, // Rename RestaurantImage to img
+        desc: restaurant.Cuisine, // Use Cuisine as description
+        // brand: restaurant.status, // Assign status to brand for UI compatibility
+        category: restaurant.category,
+      }));
+      setArray(formattedCategories);
     } else {
       setArray(categories);
     }
   }, [teamMembers, categories]);
   console.log(array);
-
+  //
   return (
     <div
       className={`w-full ${teamMembers ? "flex items-center justify-center flex-col" : null
@@ -26,25 +39,26 @@ const CardComponent = ({ categories, title, teamMembers }) => {
           {array.map((category) => (
             <Card
               key={category.id}
-              className="min-w-[300px] border-0 shadow-lg hover:-translate-y-2 transition-transform cursor-pointer hover:!bg-transparent"
+              className="min-w-[300px] border-0 shadow-lg hover:-translate-y-2 transition-transform cursor-pointer hover:!bg-transparent "
             >
               <CardContent className="p-2">
                 <button className="relative" onClick={() => alert("hello")}>
                   <img
-                    src={category.image}
+                    src={category.img}
                     alt={category.name}
                     className="w-full h-[250px] rounded-lg  object-cover"
                   />
                   <CardHeader className="p-4 relative">
-                    <CardTitle className="text-lg text-center">
-                      {category.name}
-                    </CardTitle>
+                    {title != undefined && !title.split(" ").includes("Food") && <CardTitle className="text-lg text-center">
+                      {category.Name}
+                    </CardTitle>}
                     <p className="text-sm text-gray-500 mt-1.5">
-                      {category.description}
+                      {category.desc}
                     </p>
-                    <p className="text-xl text-gray-500 absolute bottom-[-30px] right-[50%] translate-x-[50%]">
-                      {category.brand}
+                    {title != undefined  && title.split(" ").includes("Food") && <p className="text-xl   font-bold absolute bottom-[-0px] right-[50%] translate-x-[50%]">
+                      {category.category}
                     </p>
+                    }
                   </CardHeader>
                 </button>
                 {teamMembers && (

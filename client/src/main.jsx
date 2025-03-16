@@ -14,15 +14,15 @@ if (!PUBLISHABLE_KEY) {
 }
 const queryClient = new QueryClient();
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <Router>
-      <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
-        <Provider store={store}
-        >
-          <QueryClientProvider client={queryClient}><App /></QueryClientProvider>
 
-        </Provider>
-      </ClerkProvider>
-    </Router>
-  </StrictMode>
+  <Router>
+    <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
+      <Provider store={store}
+      >
+        <QueryClientProvider client={queryClient}><App /></QueryClientProvider>
+
+      </Provider>
+    </ClerkProvider>
+  </Router>
+
 );

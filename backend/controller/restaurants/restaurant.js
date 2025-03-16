@@ -379,13 +379,30 @@ const sortingANDsearching = async (req, res) => {
   }
 };
 
-const fetchAllrestaurants = async (req, res) => {
+const fetchAllRestaurantsRandItems = async (req, res) => {
   try {
-    const query = `SELECT * FROM Restaurant`;
-    const [result] = await pool.execute(query);
+    // First, fetch all restaurants
+    const restaurantQuery = `SELECT * FROM Restaurant`;
+    const [restaurants] = await pool.execute(restaurantQuery);
+    console.log(restaurants,"rest");
+    
+    // For each restaurant, fetch up to 5 random items
+    for (const restaurant of restaurants) {
+      const itemsQuery = `
+        SELECT * FROM items
+        WHERE restaurantID= ?  
+        ORDER BY RAND() 
+        LIMIT 5
+      `; 
+      const [items] = await pool.execute(itemsQuery, [restaurant.restaurantID]);
+      
+      // Add items to the restaurant object
+      restaurant.menuItems = items;
+    }
+    
     res.json({
-      message: "Restaurant fetched successfully",
-      data: result,
+      message: "Restaurants with menu items fetched successfully",
+      data: restaurants,
       success: true,
     });
   } catch (error) {
@@ -393,7 +410,6 @@ const fetchAllrestaurants = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
-
 const fetchAllUsers = async (req, res) => {
   const { userID } = req.params;
   console.log(userID);
@@ -684,7 +700,7 @@ module.exports = {
   addrestaurant,
   fetchRestaurants,
   additem,
-  fetchAllrestaurants,
+  fetchAllRestaurantsRandItems,
   approvalORreject,
   fetchByCategory,
   fetchTopByBrand,

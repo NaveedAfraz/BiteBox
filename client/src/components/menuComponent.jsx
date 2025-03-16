@@ -89,11 +89,13 @@ const EditDialogContent = ({ menu, onSubmit, onClose, formAction, prevData }) =>
   )
 }
 
-function MenuComponent({ menu , refetch }) {
+function MenuComponent({ menu, refetch }) {
   const [open, setOpen] = useState(false);
   const { user, isLoaded, updateUserMetadata } = useUser();
   const admin = user?.unsafeMetadata?.role;
-  console.log(admin);
+  // console.log(admin);
+  console.log(menu, "menu");
+
   const { deleteItem, updateItem } = useRestaurant()
   const { restaurantDetails } = useSelector((state) => state.restaurant)
   // let admin = true;
@@ -115,6 +117,7 @@ function MenuComponent({ menu , refetch }) {
     await deleteItem.mutateAsync({ itemID: menu.itemID });
     refetch();
   }
+  //console.log(menu);
 
 
   const handleCardClick = () => {
@@ -123,7 +126,7 @@ function MenuComponent({ menu , refetch }) {
     }
   }
 
-  console.log(menu.img);
+  // console.log(menu.img);
   const handleSubmit = (prevState, formData) => {
     console.log(menu);
 
@@ -239,7 +242,7 @@ function MenuComponent({ menu , refetch }) {
           <Button
             variant="default"
             onClick={(e) => { e.stopPropagation() }}
-          ></Button>
+          >Add</Button>
         </div>}
       </CardContent>
     </Card >

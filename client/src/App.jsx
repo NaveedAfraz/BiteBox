@@ -20,41 +20,46 @@ import Restaurant from "./pages/Restaurant";
 import VerifyEmail from "./pages/Admin/verifyEmail";
 import RoleSelectionModal from "./components/admin/RoleSelectionModal";
 import OAuthCallback from "./helper/googleRedirect";
+const Nav = () => {
+  console.log("...");
+  return (
+    <>
+      <div className="flex flex-col min-h-screen">
+        <NavBar />
+        <div className="flex-grow ">
+          <Outlet />
+        </div>
+        <Footer />
+      </div>
+    </>
+  );
+};
 function App() {
   // const { userId } = useAuth();
   const { user, isLoaded, updateUserMetadata } = useUser();
   const [isModalOpen, setIsModalOpen] = useState(false)
   const navigate = useNavigate();
-  const Nav = () => {
-    return (
-      <>
-        <div className="flex flex-col min-h-screen">
-          <NavBar />
-          <div className="flex-grow ">
-            <Outlet />
-          </div>
-          <Footer />
-        </div>
-      </>
-    );
-  };
 
   useEffect(() => {
-    const userRole = user?.unsafeMetadata?.role;
-    // setRole(userRole);
-    console.log(userRole);
-    // dispatch(userRole)
-    if (userRole === "admin") {
-      sessionStorage.removeItem('selectedRole');
-      navigate("/admin/dashboard");
-    } else if (userRole === "customer") {
-      sessionStorage.removeItem('selectedRole');
-      navigate("/");
-    } else if (userRole === "vendor") {
-      sessionStorage.removeItem('selectedRole');
-      navigate("/admin/dashboard");
-    }
-  }, [user])
+
+
+  }, [])
+  // useEffect(() => {
+  //   const userRole = user?.unsafeMetadata?.role;
+  //   // setRole(userRole);
+  //   console.log(userRole);
+  //   // dispatch(userRole)
+  //   if (userRole === "admin") {
+  //     sessionStorage.removeItem('selectedRole');
+  //     navigate("/admin/dashboard");
+  //   } else if (userRole === "customer") {
+  //     sessionStorage.removeItem('selectedRole');
+  //     navigate("/");
+  //   } else if (userRole === "vendor") {
+  //     sessionStorage.removeItem('selectedRole');
+  //     navigate("/admin/dashboard");
+  //   }
+  // }, [user])
 
 
   useEffect(() => {
@@ -112,7 +117,8 @@ function App() {
 
         <Route path="/sign-up" element={<Signup />}></Route>
 
-        <Route path="/" element={<Nav />}>
+
+        <Route element={<Nav />}>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />

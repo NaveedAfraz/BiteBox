@@ -11,11 +11,11 @@ const restaurantSlice = createSlice({
   initialState,
   reducers: {
     setRestaurantDetails: (state, action) => {
-      console.log(action.payload);
-
+      console.log(action.payload,"setRestaurantDetails");
       state.restaurantDetails = action.payload;
     },
     setMenuItems: (state, action) => {
+      console.log(action.payload,"setRestaurantDetails");
       state.menuItems = action.payload;
     },
   },

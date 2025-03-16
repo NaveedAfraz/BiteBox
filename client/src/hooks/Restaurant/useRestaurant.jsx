@@ -1,6 +1,7 @@
 import { setMenuItems, setRestaurantDetails } from "@/store/restaurant";
 import { Mutation, useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
 const useRestaurant = () => {
@@ -60,7 +61,7 @@ const useRestaurant = () => {
     },
     enabled: !!userID
   })
-  
+
   const getPendingRejectedItems = useQuery({
     queryKey: ["items"],
     queryFn: async () => {
@@ -68,13 +69,14 @@ const useRestaurant = () => {
         const response = await axios.get(`http://localhost:3006/api/restaurant/fetchPendingRejectedItems`, {
           withCredentials: true,
         });
-        console.log(response);
+        //console.log(response);
         return response.data;
       } catch (error) {
         console.log(error);
       }
     }
   })
+
 
   const fetchAllRestaurant = () => useQuery({
     queryKey: ["restaurant"],
@@ -83,8 +85,15 @@ const useRestaurant = () => {
         const response = await axios.get(`http://localhost:3006/api/restaurant/fetchAllRestaurants`, {
           withCredentials: true,
         });
-        //console.log(response);
-        // dispatch(setMenuItems(response.data.items))
+        console.log(response.data);
+        if (response.data?.data) {
+          const restaurantList = response.data.data;
+          const items = restaurantList.flatMap((restaurant) => restaurant.menuItems || []);
+
+          // Dispatching Redux actions directly inside the API call
+          dispatch(setRestaurantDetails(restaurantList));
+          dispatch(setMenuItems(items));
+        }
         return response.data;
       } catch (error) {
         console.log(error);
@@ -210,6 +219,7 @@ const useRestaurant = () => {
     }
   })
 
+  
   return { Add_Adresses, getAllUsers, fetchRestaurant, fetchAllRestaurant, addItem, updateUserStatus, deleteRestaurant, updateItem, deleteItem, approveORrejectRestaurant, getPendingRejectedItems }
 };
 

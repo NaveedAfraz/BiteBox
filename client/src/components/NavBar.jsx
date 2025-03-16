@@ -1,4 +1,4 @@
-import React, { useActionState, useState } from "react";
+import React, { useActionState, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaSearch, FaShoppingCart, FaUser } from "react-icons/fa";
 import { Input } from "./ui/input";
@@ -7,13 +7,17 @@ import { useAuth, UserButton } from "@clerk/clerk-react";
 
 function NavBar() {
   const [showSearch, setShowSearch] = useState(false);
-  const [data, submitAction, isPending] = useActionState();
+ 
   const navigate = useNavigate();
   const { userId } = useAuth();
+  useEffect(() => {
+    console.log("rendering...");
+
+  }, [])
   return (
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-5 py-4 bg-white shadow-md ">
-        <div onClick={()=> navigate("/")} className="text-3xl font-bold text-red-500 cursor-pointer">
+        <div onClick={() => navigate("/")} className="text-3xl font-bold text-red-500 cursor-pointer">
           BiteBox
         </div>
         <div className="hidden md:flex space-x-8">
