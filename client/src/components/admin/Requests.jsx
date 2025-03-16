@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,10 +8,18 @@ import { useSelector } from 'react-redux';
 import useRestaurant from '@/hooks/Restaurant/useRestaurant';
 
 function Requests() {
-  const { fetchAllRestaurant, approveORrejectRestaurant } = useRestaurant()
+  const { fetchAllRestaurant, approveORrejectRestaurant, getPendingRejectedItems } = useRestaurant()
+  console.log(approveORrejectRestaurant);
+
+  console.log(getPendingRejectedItems);
+  const { data, refetch, isFetched
+  } = getPendingRejectedItems
+  const Items = data?.Items || []
+  console.log(Items);
+
   const { userInfo } = useSelector((state) => state.auth);
   const { data: AllRestaurant } = fetchAllRestaurant()
-  console.log(AllRestaurant);
+  // console.log(AllRestaurant);
   const filteredRestaurent = AllRestaurant?.data.filter(restaurant => restaurant.Status == "pending")
   console.log(filteredRestaurent);
   const { menuItems, restaurantDetails } = useSelector(state => state.restaurant);
@@ -60,26 +68,34 @@ function Requests() {
   //   }
   // ];
 
-  const handleApproveItem = (id) => {
+  const handleApproveItem = async (id) => {
     console.log(`Approved item ${id}`);
 
     let formData = new FormData();
-    formData.append("status", "approved");
+    formData.append("status", "appro ved");
     formData.append("itemId", id);
     formData.append("title", "item")
     console.log(formData.get("status"), formData.get("itemId"));
-    approveORrejectRestaurant.mutate(formData);
+
+    await approveORrejectRestaurant.mutateAsync(formData);
+    refetch();
   };
 
-  const handleRejectItem = (id) => {
+  const handleRejectItem = async (id) => {
     console.log(`Rejected item ${id}`);
     let formData = new FormData();
     formData.append("status", "rejected");
     formData.append("itemId", id);
     formData.append("title", "item")
-    approveORrejectRestaurant.mutate(formData);
+    await approveORrejectRestaurant.mutateAsync(formData);
+    // approveORrejectRestaurant.reset()
+    refetch();
   };
+  // useEffect(() => {
+  //   console.log("running");
 
+  //   approveORrejectRestaurant.isSuccess == true && refetch();
+  // }, [Items, isFetched])
   const handleApproveShop = (id) => {
     console.log(`Approved shop ${id}`);
     let formData = new FormData();
@@ -88,7 +104,6 @@ function Requests() {
     formData.append("title", "restaurant")
     console.log(formData.get("status"), formData.get("restaurantId"));
     approveORrejectRestaurant.mutate(formData);
-
   };
 
   const handleRejectShop = (id) => {
@@ -110,7 +125,7 @@ function Requests() {
           <TabsTrigger value="items" className="flex items-center gap-2">
             <Pizza className="h-4 w-4" />
             Items Approval
-            <Badge variant="secondary" className="ml-2">{pendingItems.length}</Badge>
+            <Badge variant="secondary" className="ml-2">{Items.length}</Badge>
           </TabsTrigger>
           <TabsTrigger value="shops" className="flex items-center gap-2">
             <Store className="h-4 w-4" />
@@ -121,7 +136,7 @@ function Requests() {
 
         <TabsContent value="items" className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {pendingItems.map((item) => (
+            {Items && Items.map((item) => (
               <Card key={item.id} className="overflow-hidden">
                 <img
                   src={item.image}
@@ -143,7 +158,7 @@ function Requests() {
                   <Button
                     variant="destructive"
                     size="sm"
-                    onClick={() => handleRejectItem(item.id)}
+                    onClick={() => handleRejectItem(item.itemID)}
                     className="flex items-center gap-1"
                   >
                     <X className="h-4 w-4" /> Reject
@@ -151,7 +166,7 @@ function Requests() {
                   <Button
                     variant="default"
                     size="sm"
-                    onClick={() => handleApproveItem(item.id)}
+                    onClick={() => handleApproveItem(item.itemID)}
                     className="flex items-center gap-1"
                   >
                     <Check className="h-4 w-4" /> Approve
@@ -164,7 +179,7 @@ function Requests() {
 
         <TabsContent value="shops" className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {filteredRestaurent.length != 0 && filteredRestaurent.map((shop) => (
+            {filteredRestaurent && filteredRestaurent.length != 0 && filteredRestaurent.map((shop) => (
               <Card key={shop.id}>
                 <CardHeader className="flex flex-row items-center gap-4">
                   <img

@@ -73,6 +73,7 @@ function AdminHome() {
       });
     }
   }, [user])
+console.log(details);
 
   //console.log(restaurantData);
   const superAdminItems = [
@@ -99,7 +100,7 @@ function AdminHome() {
     {
       id: restaurantData?.restaurant?.restaurantID ? "Logout" : "Login",
       icon: restaurantData?.restaurant?.restaurantID ? <UserButton /> : <LogInIcon />,
-      label: restaurantData?.restaurant?.restaurantID ? details?.Name : "Login",
+      label: restaurantData?.restaurant?.restaurantID || userRole == "admin" ? details?.Name : "Login",
     },
   ];
   //console.log(activeTab);

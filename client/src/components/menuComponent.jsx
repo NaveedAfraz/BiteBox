@@ -89,7 +89,7 @@ const EditDialogContent = ({ menu, onSubmit, onClose, formAction, prevData }) =>
   )
 }
 
-function MenuComponent({ menu }) {
+function MenuComponent({ menu , refetch }) {
   const [open, setOpen] = useState(false);
   const { user, isLoaded, updateUserMetadata } = useUser();
   const admin = user?.unsafeMetadata?.role;
@@ -107,12 +107,13 @@ function MenuComponent({ menu }) {
     photoUrl: menu.photoUrl,
     time: menu.time,
   })
-  const handleDelete = (menu) => {
+  const handleDelete = async (menu) => {
     // e.stopPropagation();
     // alert("Delete");
     console.log(menu.itemID);
 
-    deleteItem.mutate({ itemID: menu.itemID });
+    await deleteItem.mutateAsync({ itemID: menu.itemID });
+    refetch();
   }
 
 

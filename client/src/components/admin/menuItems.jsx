@@ -8,11 +8,16 @@ import { useSelector } from 'react-redux';
 import useRestaurant from '@/hooks/Restaurant/useRestaurant';
 function MenuItems() {
   const { menuItems, restaurantDetails } = useSelector(state => state.restaurant);
-  // console.log(restaurantDetails);
-  const { fetchRestaurant, deleteRestaurant } = useRestaurant()
-  // console.log(menuItems);
+  const { fetchAllRestaurant, approveORrejectRestaurant, getPendingRejectedItems } = useRestaurant()
+  console.log(approveORrejectRestaurant);
 
-  // const { refetch } = fetchRestaurant()
+  console.log(getPendingRejectedItems);
+  const { data, refetch, isFetched
+  } = getPendingRejectedItems
+  console.log(data);
+
+  console.log(menuItems);
+
   const { addItem } = useRestaurant();
   const [imageUrl, setImageUrl] = React.useState(null);
   const [message, setMessage] = React.useState('');
@@ -46,6 +51,11 @@ function MenuItems() {
     }
   };
 
+  const [localMenuItems, setLocalMenuItems] = React.useState([]);
+
+  React.useEffect(() => {
+    setLocalMenuItems(menuItems);
+  }, [menuItems]);
   const handleSubmit = async (prevState, formData) => {
     try {
       const photoFile = formData.get('photo');
@@ -66,8 +76,13 @@ function MenuItems() {
         photoUrl: imageUrl,
         restaurantID: restaurantDetails.restaurantID,
       };
+      setLocalMenuItems(prev => [...prev, itemData]);
 
-      addItem.mutate(itemData)
+      await addItem.mutateAsync(itemData)
+      await refetch();
+      console.log(updatedmenuItems);
+
+
       // setTimeout(() => { refetch() }, 1000)
       return { message: "Item added successfully!", error: null };
 
@@ -77,6 +92,7 @@ function MenuItems() {
     }
   };
 
+
   const [state, formAction, isPending] = useActionState(handleSubmit, null);
 
   return (
@@ -85,8 +101,8 @@ function MenuItems() {
         <CardComponent title="AddItems" item="" formAction={formAction} />
       </div>
       <div className="flex flex-wrap gap-4 w-full ml-10 lg:ml-0">
-        {menuItems.length !== 0 ? menuItems.map((menu) => (
-          <MenuComponent key={menu.id} menu={menu} />
+        {localMenuItems.length !== 0 ? localMenuItems.map((menu) => (
+          <MenuComponent key={menu.id} menu={menu}  />
         )) : <p className="text-center text-lg w-full mt-2.5 text-gray-500">No Menu Items</p>}
       </div>
     </>

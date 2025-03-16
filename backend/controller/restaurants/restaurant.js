@@ -138,7 +138,7 @@ const approvalORreject = async (req, res) => {
       const query = "UPDATE Restaurant SET status = ? WHERE restaurantID = ?";
       [result] = await connection.execute(query, [status, restaurantID]);
     } else if (title === "item") {
-      const query = "UPDATE Item SET status = ? WHERE itemID = ?";
+      const query = "UPDATE items SET status = ? WHERE itemID = ?";
       [result] = await connection.execute(query, [status, itemID]);
     } else {
       return res.status(400).json({
@@ -656,6 +656,30 @@ const getReviews = async (req, res) => {
   }
 };
 
+const fetchPendingRejectedItems = async (req, res) => {
+  try {
+    const query =
+      "SELECT * FROM items WHERE status = 'Pending' OR status = 'rejected'";
+    const [rows] = await pool.execute(query);
+    console.log(rows, "rejected items");
+    
+    return res
+      .status(200)
+      .json({
+        success: true,
+        message: "rejected and pending items fetched",
+        Items: rows,
+      });
+  } catch (error) {
+    console.error("Error fetching pending restaurants:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while fetching pending restaurants",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   addrestaurant,
   fetchRestaurants,
@@ -673,4 +697,5 @@ module.exports = {
   getReviews,
   deleteReview,
   insertreviews,
+  fetchPendingRejectedItems,
 };

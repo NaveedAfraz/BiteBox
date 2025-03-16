@@ -60,6 +60,21 @@ const useRestaurant = () => {
     },
     enabled: !!userID
   })
+  
+  const getPendingRejectedItems = useQuery({
+    queryKey: ["items"],
+    queryFn: async () => {
+      try {
+        const response = await axios.get(`http://localhost:3006/api/restaurant/fetchPendingRejectedItems`, {
+          withCredentials: true,
+        });
+        console.log(response);
+        return response.data;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  })
 
   const fetchAllRestaurant = () => useQuery({
     queryKey: ["restaurant"],
@@ -68,7 +83,7 @@ const useRestaurant = () => {
         const response = await axios.get(`http://localhost:3006/api/restaurant/fetchAllRestaurants`, {
           withCredentials: true,
         });
-        console.log(response);
+        //console.log(response);
         // dispatch(setMenuItems(response.data.items))
         return response.data;
       } catch (error) {
@@ -81,7 +96,6 @@ const useRestaurant = () => {
     queryKey: ["allUsers"],
     queryFn: async () => {
       console.log(userID);
-
       try {
         const response = await axios.get(`http://localhost:3006/api/restaurant/fetchAllUsers/${userID}`, {
           withCredentials: true,
@@ -196,7 +210,7 @@ const useRestaurant = () => {
     }
   })
 
-  return { Add_Adresses, getAllUsers, fetchRestaurant, fetchAllRestaurant, addItem, updateUserStatus, deleteRestaurant, updateItem, deleteItem, approveORrejectRestaurant }
+  return { Add_Adresses, getAllUsers, fetchRestaurant, fetchAllRestaurant, addItem, updateUserStatus, deleteRestaurant, updateItem, deleteItem, approveORrejectRestaurant, getPendingRejectedItems }
 };
 
 export default useRestaurant;
