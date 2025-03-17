@@ -124,7 +124,7 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/menu" element={<Menu />} />
           <Route
-            path="/restaurant"
+            path="/restaurant?/:name"
             element={
               <ProtectedRoute>
                 <Restaurant />

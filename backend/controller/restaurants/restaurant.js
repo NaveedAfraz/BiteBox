@@ -334,59 +334,80 @@ const fetchTopByBrand = async function (req, res) {
 
 const sortingANDsearching = async (req, res) => {
   const { search, sort, order, foodType } = req.body;
-  console.log(search, sort, order, foodType);
+  console.log(sort, order, foodType);
 
-  if (!search && !sort && !order && !foodType) {
-    return res.status(400).json({ message: "At least one filter is required" });
-  }
   try {
     let query;
     let values = [];
+
+    // Building the base query
     if (foodType && !search) {
       query = `SELECT * FROM items WHERE foodType = ?`;
       values.push(foodType);
     } else if (search && !foodType) {
       query = `SELECT * FROM items WHERE Name LIKE ?`;
       values.push(`%${search}%`);
+    } else if (search && foodType) {
+      // Handle both search and foodType
+      query = `SELECT * FROM items WHERE Name LIKE ? AND foodType = ?`;
+      values.push(`%${search}%`, foodType);
     } else {
-      query = `SELECT * FROM items`
-       
-    } 
-    
-    switch (sort) { 
-      case "name":
-        query += " ORDER BY Name";
-        break;
-      case "sort": 
-        const orderBy = order === "desc" ? "DESC" : "ASC";
-        query += ` ORDER BY ${sort} ${orderBy}`;
-        break;
-      case "discountedPrice": 
-        query += " ORDER BY DiscountedPrice";
-        break;
-      default:
-        query += " ORDER BY Name";
-        break;
-    } 
-    console.log(query); 
+      query = `SELECT * FROM items`;
+    }
+
+    // Adding the ORDER BY clause
+    if (sort) {
+      switch (sort) {
+        case "name":
+          // Handle name sorting with the specified order
+          query += ` ORDER BY Name ${order === "desc" ? "DESC" : "ASC"}`;
+          break;
+        case "Amount":
+          // Handle price sorting with the specified order
+          query += ` ORDER BY Amount ${order === "desc" ? "DESC" : "ASC"}`;
+          break;
+        case "discountedPrice":
+          // Handle discounted price sorting with the specified order
+          query += ` ORDER BY DiscountedPrice ${
+            order === "desc" ? "DESC" : "ASC"
+          }`;
+          break;
+        default:
+          // Default sorting by Name ASC
+          query += ` ORDER BY Name ASC`;
+          break;
+      }
+    } else {
+      // Default sorting if no sort parameter is provided
+      query += ` ORDER BY Name ASC`;
+    }
+
+    console.log("Executing query:", query, "with values:", values);
 
     const [result] = await pool.execute(query, values);
-   console.log(result);
-    if (result.length === 0) {
-      return res.status(405).json({ message: "No items found" });
+    console.log(result);
+
+    if (!result || result.length === 0) {
+      return res.status(404).json({
+        message: "No items found",
+        success: false,
+      });
     }
 
     res.json({
       message: "Items fetched successfully",
-      data: result[0],
+      data: result,
       success: true,
     });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Server error" });
+    console.error("Error in sortingANDsearching:", error);
+    return res.status(500).json({
+      message: "Server error",
+      error: error.message,
+      success: false,
+    });
   }
 };
-
 const fetchAllRestaurantsRandItems = async (req, res) => {
   try {
     // First, fetch all restaurants

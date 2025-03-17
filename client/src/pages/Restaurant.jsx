@@ -17,8 +17,9 @@ import { Button } from "@/components/ui/button";
 import SpecialCard from "@/components/SpecialCard";
 import { filterButtons, specialOffers } from "@/config/details";
 import { Menu } from "lucide-react";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import ItemCard from "@/components/ItemCard";
+import useFilteredItems from "@/hooks/Restaurant/useSort";
 
 function Restaurant() {
   const restaurant = {
@@ -36,6 +37,25 @@ function Restaurant() {
     { id: 3, name: "Salad", price: 20 },
     { id: 4, name: "Soda", price: 10 },
   ];
+
+  const {
+    search,
+    sort,
+    order,
+    foodType,
+    handleFilter,
+    data: filteredItems,
+    isLoading,
+    isError,
+    error,
+  } = useFilteredItems();
+  console.log(filteredItems);
+
+  const [searchParams] = useSearchParams();
+  const restaurantName = searchParams.get("name");
+  console.log(restaurantName);
+  
+
   return (
     <div className="min-h-screen flex flex-col">
       <main className="pt-24 flex-grow">

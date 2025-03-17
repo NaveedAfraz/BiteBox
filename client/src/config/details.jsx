@@ -8,8 +8,9 @@ import {
   Search,
   Star,
   SortDesc,
+  
 } from "lucide-react";
-import { FaSortAmountUp, FaSortNumericDownAlt, FaSortNumericUpAlt } from "react-icons/fa";
+import { FaSortNumericDownAlt, FaSortNumericUpAlt, } from "react-icons/fa";
 
 
 export const categories = [
@@ -320,49 +321,44 @@ export const contactDetails = [
   },
 ];
 
+
+import { TbClearAll, TbSortAZ, TbSortZA } from "react-icons/tb";
+
+
 export const filterButtons = [
   {
     id: 1,
     name: "A-Z",
-    icon: <SortAsc className="h-6 w-6 text-gray-500" />,
+    icon: <TbSortAZ className="h-6 w-6 text-gray-500" />,
     filterType: "sort",
-    value: "name-asc", // Sort by name in ascending order
+    value: "name",
+    order: "asc" // Sort by name in ascending order
   },
   {
     id: 2,
     name: "Z-A",
-    icon: <SortDesc className="h-6 w-6 text-gray-500" />,
+    icon: <TbSortZA className="h-6 w-6 text-gray-500" />,
     filterType: "sort",
-    value: "name-desc", // Sort by name in descending order
+    value: "name", // Sort by name in descending order
+    order: "desc"
   },
   {
     id: 3,
     name: "Price (High to Low)",
     icon: <FaSortNumericUpAlt className="h-6 w-6 text-gray-500" />,
     filterType: "sort",
-    value: "price-desc", // Sort by price in descending order
+    value: "Amount", // Sort by price in descending order
+    order: "desc"
   },
   {
     id: 4,
     name: "Price (Low to High)",
     icon: <FaSortNumericDownAlt className="h-6 w-6 text-gray-500" />,
     filterType: "sort",
-    value: "price-asc", // Sort by price in ascending order
+    value: "Amount", // Sort by price in ascending order
+    order: "asc"
   },
-  {
-    id: 5,
-    name: "Search",
-    icon: <Search className="h-6 w-6 text-gray-500" />,
-    filterType: "search",
-    value: "", // Search input value will be dynamic
-  },
-  {
-    id: 6,
-    name: "Best Sellers",
-    icon: <Star className="h-6 w-6 text-gray-500" />,
-    filterType: "foodType",
-    value: "best-sellers", // Filter by best sellers
-  },
+
   {
     id: 7,
     name: "Pure Veg",
@@ -377,4 +373,11 @@ export const filterButtons = [
     filterType: "foodType",
     value: "non-veg", // Filter by non-veg
   },
+  {
+    id: 9,
+    name: "Clear Filters",
+    icon: <TbClearAll className="h-6 w-6 text-gray-500" />,
+    filterType: "clear", // Clear all filters
+    value: null, // No specific value for clear filter
+  }
 ];
