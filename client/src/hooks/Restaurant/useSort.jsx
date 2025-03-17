@@ -23,6 +23,7 @@ function useFilteredItems() {
     queryKey: ["filteredItems", { search, sort, order, foodType }],
     queryFn: fetchFilteredItems,
     enabled: false,
+    retry: 2,
   });
 
   const refetch = () => {

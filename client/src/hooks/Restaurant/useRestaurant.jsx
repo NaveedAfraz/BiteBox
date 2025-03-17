@@ -235,6 +235,7 @@ const useRestaurant = () => {
         }
       },
       enabled: !!restaurantID,
+      retry: 2,
     });
   };
 

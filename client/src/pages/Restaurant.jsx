@@ -25,10 +25,11 @@ import useRestaurant from "@/hooks/Restaurant/useRestaurant";
 function Restaurant() {
 
   const menu = [
-    { id: 1, name: "Pizza", price: 100 },
-    { id: 2, name: "Burger", price: 50 },
-    { id: 3, name: "Salad", price: 20 },
-    { id: 4, name: "Soda", price: 10 },
+    { id: 1, name: "All" },
+    { id: 2, name: "Pizza", price: 100 },
+    { id: 3, name: "Burger", price: 50 },
+    { id: 4, name: "Salad", price: 20 },
+    { id: 5, name: "Drink", price: 10 },
   ];
 
   const {
@@ -39,35 +40,88 @@ function Restaurant() {
     handleFilter,
     data: filteredItems,
     isError,
+    isLoading: loading,
+    refetch
   } = useFilteredItems();
-
-
+  // console.log(filteredItems);
 
   const [searchParams] = useSearchParams();
   const restaurantID = searchParams.get("ID");
   const { fetchOneRestaurant } = useRestaurant();
 
   const { data: restaurant, isLoading, error } = fetchOneRestaurant(restaurantID);
-  const [items, setItems] = useState()
-  useEffect(() => {
-    if (restaurant && (filteredItems && filteredItems.length == 0)) {
 
+  console.log(restaurantID);
+
+  const [items, setItems] = useState()
+  const [Index, setIndex] = useState()
+  const [selectedFilter, setSelectedFilter] = useState(null);
+  useEffect(() => {
+    if (restaurant && (restaurant.items && restaurant.items.length == 0)) {
+      setItems(restaurant.items)
+    } else if (Index === undefined) {
+      //   console.log("runing");
+
+      setItems(restaurant?.items)
+    }
+    if (isError) {
+      setItems("")
+    }
+    if (!isError) {
+
+    }
+  }, [restaurant, restaurant?.items, Index, isError])
+
+  // if (loading) return <div>Loading</div>
+  // console.log(items);
+  // console.log(restaurant);
+  //console.log(isError);
+
+
+  const handlefilterBTN = function (item, index) {
+    // console.log(false);
+    // console.log(index);
+    setIndex(index)
+    // console.log(items);
+
+    //console.log(item);
+    if (restaurant.items && item.name != "All") {
+      const filteredItemsMenuBtn = restaurant.items.filter((Item) => Item.category === item.name
+      )
+
+      //  console.log(filteredItemsMenuBtn);
+      setItems(filteredItemsMenuBtn)
+      setSelectedFilter(item.name);
+    }
+    setSelectedFilter(item.name)
+    refetch()
+  }
+  //console.log(items);
+  // console.log(Index);
+
+  useEffect(() => {
+    if (selectedFilter) {
+      //   console.log(selectedFilter.name);
+      handlefilterBTN({ name: selectedFilter }, Index);
+    }
+    if (Index === 0) {
+      console.log("index is empty");
 
       setItems(restaurant.items)
-    } else {
-      console.log("runing");
-      console.log(filteredItems);
-
-      setItems(filteredItems?.data)
     }
-  }, [restaurant, filteredItems])
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
+  }, [selectedFilter, filteredItems, restaurant?.items]);
+  console.log(restaurant);
+   if (isLoading) return <div>loign....</div>;
+  const {
+    Name,
+    Cuisine,
+    OpeningHours,
+    ClosingHours,
+    PhoneNumber,
+    RestaurantImage
+  } = restaurant?.restaurant;
 
-  console.log(items);
-  // console.log(restaurant);
-
-
+  // if (error) return <div>Error: {error.message}</div>;
   return (
     <div className="min-h-screen flex flex-col">
       <main className="pt-24 flex-grow">
@@ -86,42 +140,47 @@ function Restaurant() {
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink href="/restaurants">
-                  {restaurant.name}
+                  {restaurant?.name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
         </div>
 
-        {/* Restaurant Details Card */}
         <section className="container mx-auto px-4">
-          <Card className="border border-gray-200 shadow-md rounded-lg p-4">
-            <CardHeader className="p-0 mb-2">
-              <CardTitle className="text-2xl font-bold text-gray-900">
-                {restaurant.name}
-              </CardTitle>
+          <Card className="max-w-3xl overflow-hidden">
+            <div className="relative w-full h-48 overflow-hidden">
+              <img
+                className="w-[80%] h-full object-cover"
+                src={RestaurantImage}
+                alt="Restaurant"
+              />
+              <div className="absolute top-0 right-0 w-[20%] h-full bg-gradient-to-l from-orange-500 to-transparent"></div>
+            </div>
+
+            <CardHeader className="pb-2">
+              <div className="flex justify-between items-start">
+                <CardTitle className="text-xl">{Name}</CardTitle>
+                <div className="flex items-center">
+                  <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">4.2</span>
+                  <span className="text-xs text-gray-500 ml-1">(320 ratings)</span>
+                </div>
+              </div>
+              <p className="text-sm text-gray-600">{Cuisine}</p>
             </CardHeader>
 
-            <CardContent className="p-0 space-y-2">
-              <div className="text-gray-700 text-sm flex items-center space-x-2">
-                <span className="text-green-600 font-semibold">
-                  {restaurant.rating}
-                </span>
-                <span>({restaurant.ratingCount} ratings)</span>
-                <span className="mx-1">•</span>
-                <span>₹{restaurant.priceForTwo} for two</span>
-              </div>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center text-gray-700">
+                  <span className="text-sm">₹500 for two</span>
+                  <span className="mx-2">•</span>
+                  <span className="text-sm">Outlet Location</span>
+                </div>
 
-              <div className="text-sm">
-                <span className="text-red-500 font-medium">
-                  {restaurant?.cuisines?.join(", ")}
-                </span>
-              </div>
-
-              <div className="text-sm flex items-center space-x-2">
-                <span>Outlet {restaurant.location}</span>
-                <span className="mx-1">•</span>
-                <span>{restaurant?.time}</span>
+                <div className="flex justify-between text-sm text-gray-600">
+                  <div>Hours: {OpeningHours} - {ClosingHours}</div>
+                  <div>Phone: {PhoneNumber}</div>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -137,12 +196,13 @@ function Restaurant() {
               Menu
             </h1>
             <div className="flex flex-row p-4 gap-4">
-              <div className="rounded-lg p-4 flex flex-col gap-2 w-[20%] shadow-md  md:w-[40%] lg:w-[40%]">
-                {menu.map((item) => (
+              <div className="rounded-lg p-4 flex flex-col gap-2 w-[0%] shadow-md  md:w-[40%] lg:w-[20%]">
+                {menu.map((item, index) => (
                   <Button
                     key={item.id}
                     variant="transparent"
-                    className="border-b-4 border-gray-200"
+                    className={`border-b-4 p-6 border-gray-200 ${index == Index ? "bg-red-500" : "solid"}`}
+                    onClick={() => handlefilterBTN(item, index)}
                   >
                     <h2 className="text-lg font-semibold mt-2">{item.name}</h2>
                   </Button>
@@ -170,10 +230,14 @@ function Restaurant() {
                     </Button>
                   ))}
                 </div>
-                <div className="w-full min-h-">
-                  {items && items.length > 0 && items.map((item) => (
-                    <ItemCard key={item.id} item={item} />
-                  ))}
+                <div className="w-full min-h-52 h-screen mt-8">
+                  {!loading && items && items.length > 0 ? items.map((item) => (
+                    <ItemCard key={item.id} item={item} loading={loading} />
+                  )) : (!isError && items?.length != 0 ? <div className="animate-spin mx-auto mt-15 rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500 mb-12"></div> : <div className="mt-10 text-center">
+                    <p className="mb-12 font-bold">Items Not Found</p>
+                  </div>)
+                  }
+                  {/* {items?.length === 0 && <div className=""> item not there of this cat</div>} */}
                 </div>
               </div>
             </div>
