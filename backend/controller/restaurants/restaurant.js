@@ -723,6 +723,26 @@ const fetchPendingRejectedItems = async (req, res) => {
   }
 };
 
+const fetchOneRestaurant = (req, res) => {
+  const restaurantID = req.params.restaurantID;
+  try {
+    const query = `SELECT * FROM Restaurant WHERE restaurantID = ?`;
+    const values = [restaurantID];
+   // const restaurantid = restaurantResult[0].restaurantID;
+    const itemsQuery = "SELECT * FROM items WHERE restaurantID = ?";
+
+    pool.execute(query, values).then(([rows]) => {
+      const items = pool.execute(itemsQuery, [restaurantID]).then(([items]) => {
+        return res.json({ restaurant: rows[0], items });
+      });
+    });
+  } catch (error) {
+    console.error("Error fetching restaurant:", error);
+    return res
+      .status(500)
+      .json({ message: "Server error while fetching restaurant" });
+  }
+};
 module.exports = {
   addrestaurant,
   fetchRestaurants,
@@ -741,4 +761,5 @@ module.exports = {
   deleteReview,
   insertreviews,
   fetchPendingRejectedItems,
+  fetchOneRestaurant,
 };

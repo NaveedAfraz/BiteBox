@@ -219,8 +219,26 @@ const useRestaurant = () => {
     }
   })
 
-  
-  return { Add_Adresses, getAllUsers, fetchRestaurant, fetchAllRestaurant, addItem, updateUserStatus, deleteRestaurant, updateItem, deleteItem, approveORrejectRestaurant, getPendingRejectedItems }
+  const fetchOneRestaurant = (restaurantID) => {
+    return useQuery({
+      queryKey: ["fetchOneRestaurant", restaurantID],
+      queryFn: async () => {
+        try {
+          const response = await axios.get(
+            `http://localhost:3006/api/restaurant/fetchOneRestaurant/${restaurantID}`,
+            { withCredentials: true }
+          );
+          return response.data;
+        } catch (error) {
+          console.log(error);
+          throw error;
+        }
+      },
+      enabled: !!restaurantID,
+    });
+  };
+
+  return { Add_Adresses, getAllUsers, fetchOneRestaurant, fetchAllRestaurant, addItem, updateUserStatus, deleteRestaurant, updateItem, deleteItem, approveORrejectRestaurant, getPendingRejectedItems }
 };
 
 export default useRestaurant;

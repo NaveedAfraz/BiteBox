@@ -20,17 +20,10 @@ import { Menu } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router";
 import ItemCard from "@/components/ItemCard";
 import useFilteredItems from "@/hooks/Restaurant/useSort";
-
+import { useEffect, useRef, useState } from "react";
+import useRestaurant from "@/hooks/Restaurant/useRestaurant";
 function Restaurant() {
-  const restaurant = {
-    name: "Home Plate by EatFit",
-    rating: 4.2,
-    ratingCount: 993,
-    priceForTwo: 250,
-    cuisines: ["North Indian", "Home Food"],
-    location: "Manikonda",
-    time: "50-55 mins",
-  };
+
   const menu = [
     { id: 1, name: "Pizza", price: 100 },
     { id: 2, name: "Burger", price: 50 },
@@ -45,16 +38,35 @@ function Restaurant() {
     foodType,
     handleFilter,
     data: filteredItems,
-    isLoading,
     isError,
-    error,
   } = useFilteredItems();
-  console.log(filteredItems);
+
+
 
   const [searchParams] = useSearchParams();
-  const restaurantName = searchParams.get("name");
-  console.log(restaurantName);
-  
+  const restaurantID = searchParams.get("ID");
+  const { fetchOneRestaurant } = useRestaurant();
+
+  const { data: restaurant, isLoading, error } = fetchOneRestaurant(restaurantID);
+  const [items, setItems] = useState()
+  useEffect(() => {
+    if (restaurant && (filteredItems && filteredItems.length == 0)) {
+
+
+      setItems(restaurant.items)
+    } else {
+      console.log("runing");
+      console.log(filteredItems);
+
+      setItems(filteredItems?.data)
+    }
+  }, [restaurant, filteredItems])
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
+  console.log(items);
+  // console.log(restaurant);
+
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -102,14 +114,14 @@ function Restaurant() {
 
               <div className="text-sm">
                 <span className="text-red-500 font-medium">
-                  {restaurant.cuisines.join(", ")}
+                  {restaurant?.cuisines?.join(", ")}
                 </span>
               </div>
 
               <div className="text-sm flex items-center space-x-2">
                 <span>Outlet {restaurant.location}</span>
                 <span className="mx-1">•</span>
-                <span>{restaurant.time}</span>
+                <span>{restaurant?.time}</span>
               </div>
             </CardContent>
           </Card>
@@ -140,15 +152,27 @@ function Restaurant() {
                 <h2 className="text-xl font-semibold mt-2 ml-3">Filter</h2>
                 <div className="flex flex-wrap items-center  w-full gap-3.5 p-2">
                   {filterButtons.map((button) => (
-                    <Button key={button.id} className="flex items-center gap-2">
-                      {button.icon}
-                      {button.name}
+                    <Button
+                      variant="primary"
+                      key={button.id}
+                      onClick={() =>
+                        handleFilter(button.filterType, button.value, button.order)
+                      }
+                      className={`flex items-center gap-2 ${(button.filterType === "foodType" && button.value === foodType) ||
+                        (button?.filterType === "sort" &&
+                          button?.value === sort &&
+                          button.order === order)
+                        ? "bg-green-900"
+                        : "default"
+                        }`}
+                    >
+                      {button.icon} {button.name}
                     </Button>
                   ))}
                 </div>
-                <div className="w-full">
-                  {menu.map((item) => (
-                    <ItemCard key={item.id} />
+                <div className="w-full min-h-">
+                  {items && items.length > 0 && items.map((item) => (
+                    <ItemCard key={item.id} item={item} />
                   ))}
                 </div>
               </div>

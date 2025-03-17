@@ -9,7 +9,6 @@ function useFilteredItems() {
   const [order, setOrder] = useState("asc");
   const [foodType, setFoodType] = useState("");
 
-
   const fetchFilteredItems = async () => {
     const response = await axios.post(
       "http://localhost:3006/api/restaurant/sort",
@@ -35,7 +34,7 @@ function useFilteredItems() {
       setFoodType("");
       setSearch("");
       setSort("name");  // Reset to default sort
-      setOrder("asc"); 
+      setOrder("asc");
       setTimeout(() => { query.refetch() }, [100])
       return;
     }
@@ -58,7 +57,7 @@ function useFilteredItems() {
   };
 
   useEffect(() => {
-    if (query.isFetching) return;  
+    if (query.isFetching) return;
     query.refetch();
   }, [search, sort, order, foodType]);
 

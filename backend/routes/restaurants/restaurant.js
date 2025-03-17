@@ -17,6 +17,7 @@ const {
   approvalORreject,
   fetchPendingRejectedItems,
   fetchAllRestaurantsRandItems,
+  fetchOneRestaurant,
 } = require("../../controller/restaurants/restaurant");
 const router = express.Router();
 
@@ -34,7 +35,7 @@ router.put("/updateItem/:itemID", updateItem);
 router.delete("/deleteItem/:itemID", deleteItem);
 router.put("/approveORreject", approvalORreject);
 router.get("/fetchPendingRejectedItems", fetchPendingRejectedItems);
- 
+router.get("/fetchOneRestaurant/:restaurantID", fetchOneRestaurant);
 
 router.delete("/reviews/:reviewID", deleteReview);
 router.get("/reviews/:restaurantID", getReviews);
