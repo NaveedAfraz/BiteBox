@@ -15,6 +15,7 @@ const addrestaurant = async (req, res) => {
       addressType,
       email,
       image,
+      country,
     } = req.body;
     console.log(image, "image");
 
@@ -70,13 +71,17 @@ const addrestaurant = async (req, res) => {
     ]);
     const restaurantID = result.insertId;
 
+    if (!country) {
+      country = "United States";
+    }
     const q2 =
-      "INSERT INTO Address (Street, City, PostalCode, AddressType, UserID) VALUES (?,?,?,?,?)";
+      "INSERT INTO Address (Street, City, PostalCode, AddressType,country, UserID) VALUES (?,?,?,?,?,?)";
     const [result2] = await connection.execute(q2, [
       street,
       city,
       postalCode,
       addressType,
+      country,
       userID,
     ]);
     console.log(result2);
@@ -244,6 +249,21 @@ const additem = async function (req, res) {
     } = req.body;
     console.log(name, price, quantity, category, description, photoUrl);
 
+    if (
+      !name ||
+      !price ||
+      !quantity ||
+      !category ||
+      !description ||
+      !photoUrl ||
+      !restaurantID
+    ) {
+      console.log(restaurantID,"restaurantID",name,price,quantity,category,description);
+
+      return res.status(400).json({
+        message: "All fields are required",
+      });
+    }
     // const q1 = "SELECT * FROM Restaurant WHERE Name = ?";
     // const [result1] = await pool.query(q1, [name]);
     // if (result1.length === 0) {
@@ -728,7 +748,7 @@ const fetchOneRestaurant = (req, res) => {
   try {
     const query = `SELECT * FROM Restaurant WHERE restaurantID = ?`;
     const values = [restaurantID];
-   // const restaurantid = restaurantResult[0].restaurantID;
+    // const restaurantid = restaurantResult[0].restaurantID;
     const itemsQuery = "SELECT * FROM items WHERE restaurantID = ?";
 
     pool.execute(query, values).then(([rows]) => {
