@@ -60,9 +60,12 @@ function Restaurant() {
     if (restaurant && (restaurant.items && restaurant.items.length == 0)) {
       setItems(restaurant.items)
     } else if (Index === undefined) {
-      //   console.log("runing");
+      console.log(filteredItems);
 
-      setItems(restaurant?.items)
+      const filtered = filteredItems?.data.filter((restaurant) => restaurant.restaurantID == restaurantID)
+      console.log(filtered);
+
+      setItems(filtered)
     }
     if (isError) {
       setItems("")
@@ -70,7 +73,7 @@ function Restaurant() {
     if (!isError) {
 
     }
-  }, [restaurant, restaurant?.items, Index, isError])
+  }, [restaurant, restaurant?.items, Index, isError, filteredItems])
 
   // if (loading) return <div>Loading</div>
   // console.log(items);
@@ -101,9 +104,11 @@ function Restaurant() {
 
   useEffect(() => {
     if (selectedFilter) {
-      //   console.log(selectedFilter.name);
+      console.log(selectedFilter.name);
       handlefilterBTN({ name: selectedFilter }, Index);
     }
+    //console.log("m");
+
     if (Index === 0) {
       console.log("index is empty");
 
@@ -111,7 +116,7 @@ function Restaurant() {
     }
   }, [selectedFilter, filteredItems, restaurant?.items]);
   console.log(restaurant);
-   if (isLoading) return <div>loign....</div>;
+  if (isLoading) return <div>loign....</div>;
   const {
     Name,
     Cuisine,

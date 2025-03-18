@@ -1,8 +1,11 @@
 import Address from "@/components/address";
 import Cart from "@/components/cart";
 import React, { useState } from "react";
+import { useSearchParams } from "react-router";
 
 function Checkout() {
+  const [searchParams] = useSearchParams()
+  const userid = searchParams.get('userid')
   const [selectedAddress, setSelectedAddress] = useState(false);
   return (
     <div className="relative min-h-screen mt-24">
@@ -19,11 +22,12 @@ function Checkout() {
       {/* White overlay */}
       <div className="absolute inset-0 bg-white/50 backdrop-blur-sm z-[-1]" />
 
-      {/* Content container */}
+
       <div className="flex md:flex-row flex-col mb-3.5 items-center md:items-stretch justify-center">
         <Address
           selectedAddress={selectedAddress}
           setSelectedAddress={setSelectedAddress}
+          userid={userid}
         />
         <Cart />
       </div>

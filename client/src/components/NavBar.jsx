@@ -4,12 +4,17 @@ import { FaSearch, FaShoppingCart, FaUser } from "react-icons/fa";
 import { Input } from "./ui/input";
 import { LogIn, Search } from "lucide-react";
 import { useAuth, UserButton } from "@clerk/clerk-react";
+import { useSelector } from "react-redux";
 
 function NavBar() {
   const [showSearch, setShowSearch] = useState(false);
- 
+
   const navigate = useNavigate();
   const { userId } = useAuth();
+  console.log(userId);
+  const { userInfo } = useSelector(state => state.auth)
+  console.log(userInfo, "....");
+
   useEffect(() => {
     console.log("rendering...");
 
@@ -53,7 +58,7 @@ function NavBar() {
             </button>
             <FaShoppingCart
               className="text-xl text-gray-700 hover:text-red-500 cursor-pointer transition-colors "
-              onClick={() => navigate("checkout")}
+              onClick={() => navigate(`/checkout?userid=${userInfo.userId}`)}
             />
           </div>
           {/* <FaUser className="text-xl text-gray-700 hover:text-red-500 cursor-pointer transition-colors" /> */}
@@ -64,7 +69,7 @@ function NavBar() {
                 <Link to="/login" className="font-bold text-lg">
                   Login
                 </Link>
-                <LogIn />{" "}
+                <LogIn />
               </div>
             </>
           )}

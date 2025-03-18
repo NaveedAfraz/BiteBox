@@ -23,6 +23,7 @@ function RoleSelectionModal({ isOpen, onRoleSelect, setIsModalOpen }) {
   const { user } = useUser();
   const [showInputs, setShowInputs] = useState(false);
   const [formData, setFormData] = useState({
+    country: "US",
     city: "",
     street: "",
     building: "",
@@ -30,12 +31,12 @@ function RoleSelectionModal({ isOpen, onRoleSelect, setIsModalOpen }) {
     additionalInfo: "",
     addressType: "",
   });
-  
+
   // Image state
   const [imageFile, setImageFile] = useState(null);
   const [imageUrl, setImageUrl] = useState("");
   const [uploadStatus, setUploadStatus] = useState("");
-  
+
   // Restaurant data state
   const [restaurantData, setRestaurantData] = useState({
     Name: "",
@@ -127,16 +128,16 @@ function RoleSelectionModal({ isOpen, onRoleSelect, setIsModalOpen }) {
     };
 
     console.log("Submitting with restaurant data:", finalRestaurantData);
-    
+
     Add_Adresses.mutate(
-      { 
-        formData: { 
-          ...formData, 
-          role: user.unsafeMetadata.role, 
-          email: user.primaryEmailAddress.emailAddress, 
+      {
+        formData: {
+          ...formData,
+          role: user.unsafeMetadata.role,
+          email: user.primaryEmailAddress.emailAddress,
           username: user.fullName ? user.fullName : user.lastName || user.primaryEmailAddress.emailAddress || user.firstName || "no name"
-        }, 
-        restaurantData: finalRestaurantData 
+        },
+        restaurantData: finalRestaurantData
       },
       {
         onSuccess: () => {
@@ -191,7 +192,7 @@ function RoleSelectionModal({ isOpen, onRoleSelect, setIsModalOpen }) {
         {showInputs && (
           <div className="max-w-md w-full mx-auto space-y-4 p-4 border rounded-lg shadow">
             <h1 className="font-bold text-lg">Restaurant Details</h1>
-            
+
             {/* Restaurant fields */}
             {Object.keys(restaurantData)
               .filter(field => field !== "ImageUrl") // Don't show ImageUrl field as an input
@@ -207,18 +208,18 @@ function RoleSelectionModal({ isOpen, onRoleSelect, setIsModalOpen }) {
                   />
                 </div>
               ))}
-            
+
             {/* Image upload */}
             <div className="mt-4">
               <label className="block text-sm font-medium mb-1">Restaurant Image</label>
-              <input 
-                type="file" 
+              <input
+                type="file"
                 accept="image/*"
                 onChange={handleImageChange}
                 className="w-full border p-2 rounded"
               />
               {imageFile && !imageUrl && (
-                <Button 
+                <Button
                   onClick={() => handleImageUpload(imageFile)}
                   className="mt-2"
                   variant="outline"
@@ -231,15 +232,15 @@ function RoleSelectionModal({ isOpen, onRoleSelect, setIsModalOpen }) {
               {imageUrl && (
                 <div className="mt-2">
                   <p className="text-sm text-green-600">Image uploaded successfully!</p>
-                  <img 
-                    src={imageUrl} 
-                    alt="Restaurant preview" 
-                    className="mt-2 max-h-40 rounded border" 
+                  <img
+                    src={imageUrl}
+                    alt="Restaurant preview"
+                    className="mt-2 max-h-40 rounded border"
                   />
                 </div>
               )}
             </div>
-            
+
             {/* Address section */}
             <div className="mt-6">
               <h1 className="font-bold text-lg mb-2">Address</h1>

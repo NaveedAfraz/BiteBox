@@ -28,10 +28,12 @@ const useRestaurant = () => {
           city: formData.city,
           postalCode: formData.postalCode,
           building: formData.building,
+          country: formData.country,
           additionalInfo: formData.additionalInfo,
           addressType: formData.addressType,
           email: formData.email,
           image: restaurantData.ImageUrl
+
         }, {
           withCredentials: true,
         });
@@ -239,7 +241,7 @@ const useRestaurant = () => {
     });
   };
 
-  return { Add_Adresses, getAllUsers, fetchOneRestaurant, fetchAllRestaurant, addItem, updateUserStatus, deleteRestaurant, updateItem, deleteItem, approveORrejectRestaurant, getPendingRejectedItems }
+  return { Add_Adresses, getAllUsers, fetchOneRestaurant, fetchAllRestaurant, addItem, updateUserStatus, deleteRestaurant, updateItem, deleteItem, approveORrejectRestaurant, getPendingRejectedItems ,fetchRestaurant}
 };
 
 export default useRestaurant;

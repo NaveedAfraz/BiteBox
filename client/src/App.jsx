@@ -13,13 +13,15 @@ import Login from "./pages/login";
 import Signup from "./pages/SignUP";
 import AdminLogin from "./pages/Admin/adminLogin";
 import AdminSignup from "./pages/Admin/AdminSignUP";
-import { useAuth, useUser } from "@clerk/clerk-react";
+import {  useUser } from "@clerk/clerk-react";
+
 import ProtectedRoute from "./helper/protectRoute";
 import AdminHome from "./pages/Admin/AdminHome";
 import Restaurant from "./pages/Restaurant";
 import VerifyEmail from "./pages/Admin/verifyEmail";
 import RoleSelectionModal from "./components/admin/RoleSelectionModal";
 import OAuthCallback from "./helper/googleRedirect";
+import useAuth from "./hooks/auth/useAuth";
 const Nav = () => {
   console.log("...");
   return (
@@ -37,13 +39,18 @@ const Nav = () => {
 function App() {
   // const { userId } = useAuth();
   const { user, isLoaded, updateUserMetadata } = useUser();
+  console.log(user);
+
   const [isModalOpen, setIsModalOpen] = useState(false)
   const navigate = useNavigate();
+  const { loginAuth, useLoggedIn, signupAuth } = useAuth();
+  const { data: loggedInData, refetch: refetchLoggedIn } = useLoggedIn(user?.primaryEmailAddress?.emailAddress);
 
   useEffect(() => {
+    console.log(loggedInData);
 
 
-  }, [])
+  }, [loggedInData])
   // useEffect(() => {
   //   const userRole = user?.unsafeMetadata?.role;
   //   // setRole(userRole);

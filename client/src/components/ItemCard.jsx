@@ -11,15 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "./ui/badge";
 import { DollarSignIcon } from "lucide-react";
 function ItemCard({ item, loading }) {
-  // const item = {
-  //   name: "Item 1",
-  //   description:
-  //     "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",
-  //   price: 100,
-  //   image:
-  //     "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-  // };
-  //  if (loading) return  <div className="animate-spin mx-auto mt-15 rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500 mb-12"></div>
   if (loading) return null;
   return (
     <div className="w-full mt-4">

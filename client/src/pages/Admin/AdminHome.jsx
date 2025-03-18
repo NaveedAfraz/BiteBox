@@ -28,7 +28,7 @@ function AdminHome() {
   const [userRole, setUserRole] = useState(user?.unsafeMetadata?.role);
   //console.log(userRole);
   const { userInfo } = useSelector((state) => state.auth);
-  //  console.log(userInfo);
+    console.log(userInfo);
 
   useEffect(() => {
     setUserRole(user?.unsafeMetadata?.role);
@@ -48,7 +48,7 @@ function AdminHome() {
   //console.log(userRole);
 
   const { data: restaurantData } = fetchRestaurant({ userID: userInfo?.userId });
-  // console.log(restaurantData);
+   console.log(restaurantData);
 
   const [close, setClose] = useState(true);
   useEffect(() => {

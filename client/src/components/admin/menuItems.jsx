@@ -8,6 +8,8 @@ import { useSelector } from 'react-redux';
 import useRestaurant from '@/hooks/Restaurant/useRestaurant';
 function MenuItems() {
   const { menuItems, restaurantDetails } = useSelector(state => state.restaurant);
+  console.log(restaurantDetails);
+
   const { fetchAllRestaurant, approveORrejectRestaurant, getPendingRejectedItems } = useRestaurant()
   console.log(approveORrejectRestaurant);
 
@@ -80,8 +82,6 @@ function MenuItems() {
 
       await addItem.mutateAsync(itemData)
       await refetch();
-      console.log(updatedmenuItems);
-
 
       // setTimeout(() => { refetch() }, 1000)
       return { message: "Item added successfully!", error: null };
@@ -102,7 +102,7 @@ function MenuItems() {
       </div>
       <div className="flex flex-wrap gap-4 w-full ml-10 lg:ml-0">
         {localMenuItems.length !== 0 ? localMenuItems.map((menu) => (
-          <MenuComponent key={menu.id} menu={menu}  />
+          <MenuComponent key={menu.id} menu={menu} />
         )) : <p className="text-center text-lg w-full mt-2.5 text-gray-500">No Menu Items</p>}
       </div>
     </>
