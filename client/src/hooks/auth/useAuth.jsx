@@ -55,7 +55,7 @@ const useAuth = () => {
           const response = await axios.get(`http://localhost:3006/api/auth/loggedIn/${email}`, {
             withCredentials: true
           });
-          console.log("Response from server:", response.data);
+         // console.log("Response from server:", response.data);
           dispatch(userDetails(response.data))
           return response.data;
         } catch (err) {

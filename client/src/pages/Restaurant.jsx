@@ -26,8 +26,8 @@ function Restaurant() {
 
   const menu = [
     { id: 1, name: "All" },
-    { id: 2, name: "Pizza", price: 100 },
-    { id: 3, name: "Burger", price: 50 },
+    { id: 2, name: "pizza", price: 100 },
+    { id: 3, name: "burger", price: 50 },
     { id: 4, name: "Salad", price: 20 },
     { id: 5, name: "Drink", price: 10 },
   ];
@@ -51,7 +51,7 @@ function Restaurant() {
 
   const { data: restaurant, isLoading, error } = fetchOneRestaurant(restaurantID);
 
-  console.log(restaurantID);
+//  console.log(restaurantID);
 
   const [items, setItems] = useState()
   const [Index, setIndex] = useState()
@@ -60,10 +60,10 @@ function Restaurant() {
     if (restaurant && (restaurant.items && restaurant.items.length == 0)) {
       setItems(restaurant.items)
     } else if (Index === undefined) {
-      console.log(filteredItems);
+     // console.log(filteredItems);
 
       const filtered = filteredItems?.data.filter((restaurant) => restaurant.restaurantID == restaurantID)
-      console.log(filtered);
+     // console.log(filtered);
 
       setItems(filtered)
     }
@@ -115,7 +115,7 @@ function Restaurant() {
       setItems(restaurant.items)
     }
   }, [selectedFilter, filteredItems, restaurant?.items]);
-  console.log(restaurant);
+  //console.log(restaurant);
   if (isLoading) return <div>loign....</div>;
   const {
     Name,

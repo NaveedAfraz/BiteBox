@@ -1,14 +1,17 @@
-import { useQuery, useMutation, useQueryClient } from 'react-query';
+
+import { useMutation, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
 const useCart = () => {
-  const queryClient = useQueryClient();
 
-  const useCartQuery = (userId) => {
+
+  const fetchCart = (userId) => {
+
     return useQuery({
       queryKey: ['cart', userId],
       queryFn: async () => {
-        const { data } = await axios.get(`/api/cart/${userId}`);
+        const { data } = await axios.get(`http://localhost:3006/api/cart/getCart/${userId}`);
+        console.log(userId);
         return data.data;
       },
       enabled: !!userId,
@@ -18,10 +21,13 @@ const useCart = () => {
   };
 
 
-  const useAddToCartMutation = () => {
+  const AddToCart = () => {
     return useMutation({
       mutationFn: async (cartItem) => {
-        const { data } = await axios.post('/api/cart/add', cartItem);
+        console.log(cartItem);
+        const data = await axios.post('http://localhost:3006/api/cart/addItem', cartItem);
+        console.log(data);
+
         return data;
       },
       onSettled: (_data, _error, variables) => {
@@ -31,10 +37,16 @@ const useCart = () => {
   };
 
 
-  const useReduceQuantityMutation = () => {
+  const ReduceQuantity = () => {
     return useMutation({
-      mutationFn: async (params) => {
-        const { data } = await axios.post('/api/cart/reduce', params);
+      mutationFn: async (args) => {
+        console.log(args);
+
+        const { data } = await axios.delete('http://localhost:3006/api/cart/deleteItem', {
+          data: args
+        });
+        console.log(data);
+
         return data;
       },
       onSettled: (_data, _error, variables) => {
@@ -44,9 +56,9 @@ const useCart = () => {
   };
 
   return {
-    useCartQuery,
-    useAddToCartMutation,
-    useReduceQuantityMutation,
+    fetchCart,
+    AddToCart,
+    ReduceQuantity,
   };
 };
 

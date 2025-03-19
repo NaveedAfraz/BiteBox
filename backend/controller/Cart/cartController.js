@@ -1,11 +1,13 @@
 const express = require("express");
 const pool = require("../../db");
+
 const addItem = async (req, res) => {
   try {
-    const { userId, restaurantId, itemId, title, amount, img, quantity } =
-      req.body;
+    const { userId, restaurantID, itemID, Name, Amount, img } = req.body;
+    let quantity = 1;
+    console.log(userId, restaurantID, itemID, Name, Amount, img, quantity);
 
-    if (!userId || !restaurantId || !itemId || !title || !amount || !quantity) {
+    if (!userId || !restaurantID || !itemID || !Name || !Amount || !quantity) {
       return res
         .status(400)
         .json({ success: false, message: "Missing required fields" });
@@ -18,8 +20,7 @@ const addItem = async (req, res) => {
     );
 
     if (existingCart.length === 0) {
-      // Create new cart
-      const [newCart] = await pool.excute(
+      const [newCart] = await pool.execute(
         "INSERT INTO Cart (userID) VALUES (?)",
         [userId]
       );
@@ -28,19 +29,52 @@ const addItem = async (req, res) => {
       cartId = existingCart[0].cartID;
     }
 
-    const [addedItem] = await pool.excute(
-      "INSERT INTO cart_items (cartID, restaurantID, itemID, title, amount, img, quantity) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      [cartId, restaurantId, itemId, title, amount, img || null, quantity]
+    const [existingItem] = await pool.execute(
+      "SELECT id, quantity FROM cartItems WHERE cartID = ? AND itemID = ?",
+      [cartId, itemID]
     );
-    if (addedItem.affectedrows > 0) {
-      return res.status(201).json({
-        success: true,
-        message: "Item added to cart successfully",
-        cartId,
-      });
+
+    if (existingItem.length > 0) {
+      const newQuantity = existingItem[0].quantity + quantity;
+
+      const [updatedItem] = await pool.execute(
+        "UPDATE cartItems SET quantity = ? WHERE id = ?",
+        [newQuantity, existingItem[0].id]
+      );
+
+      if (updatedItem.affectedRows > 0) {
+        return res.status(200).json({
+          success: true,
+          message: "Item quantity updated in cart",
+          cartId,
+          updated: true,
+          newQuantity,
+        });
+      }
+    } else {
+      const [addedItem] = await pool.execute(
+        "INSERT INTO cartItems (cartID, restaurantID, itemID, title, amount, img, quantity) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        [cartId, restaurantID, itemID, Name, Amount, img || null, quantity]
+      );
+
+      if (addedItem.affectedRows > 0) {
+        // const q =
+        //   "UPDATE items SET quantity = ? WHERE itemID = ? AND restaurantID = ?";
+        // const [updatedItem] = await pool.execute(q, [
+        //   Amount - quantity,
+        //   itemID,
+        //   restaurantID,
+        // ]);
+        return res.status(201).json({
+          success: true,
+          message: "Item added to cart successfully",
+          cartId,
+          updated: false,
+        });
+      }
     }
 
-    return res.status(400).json({
+    return res.status(403).json({
       success: false,
       message: "Failed to add item to cart",
     });
@@ -56,13 +90,14 @@ const addItem = async (req, res) => {
 
 const DeleteItem = async (req, res) => {
   try {
-    const { cartId, itemId, userId } = req.body;
+    const { cartId, itemID, userId } = req.body;
+    console.log(cartId, itemID, userId);
 
-    if (!cartId || !itemId || !userId) {
+    if (!cartId || !itemID || !userId) {
       return res.status(400).json({
         success: false,
         message:
-          "Missing required fields: cartId, itemId, and userId are required",
+          "Missing required fields: cartId, itemID, and userId are required",
       });
     }
 
@@ -79,8 +114,8 @@ const DeleteItem = async (req, res) => {
     }
 
     const [itemCheck] = await pool.execute(
-      "SELECT id, quantity FROM cart_items WHERE cartID = ? AND itemID = ?",
-      [cartId, itemId]
+      "SELECT id, quantity FROM cartItems WHERE cartID = ? AND itemID = ?",
+      [cartId, itemID]
     );
 
     if (itemCheck.length === 0) {
@@ -93,7 +128,7 @@ const DeleteItem = async (req, res) => {
     const currentQuantity = itemCheck[0].quantity;
 
     if (currentQuantity <= 1) {
-      await pool.execute("DELETE FROM cart_items WHERE id = ?", [
+      await pool.execute("DELETE FROM cartItems WHERE id = ?", [
         itemCheck[0].id,
       ]);
 
@@ -104,7 +139,7 @@ const DeleteItem = async (req, res) => {
       });
     } else {
       const newQuantity = currentQuantity - 1;
-      await pool.execute("UPDATE cart_items SET quantity = ? WHERE id = ?", [
+      await pool.execute("UPDATE cartItems SET quantity = ? WHERE id = ?", [
         newQuantity,
         itemCheck[0].id,
       ]);
@@ -128,6 +163,8 @@ const DeleteItem = async (req, res) => {
 const getCart = async (req, res) => {
   try {
     const { userId } = req.params;
+    console.log(userId, "ee");
+
     if (!userId) {
       return res.status(400).json({
         success: false,
@@ -150,7 +187,7 @@ const getCart = async (req, res) => {
     const cartId = cartResult[0].cartID;
 
     const [cartItems] = await pool.execute(
-      "SELECT id, cartID, restaurantID, itemID, title, amount, img, quantity FROM cartItems WHERE cartID = ?",
+      "SELECT * FROM cartItems WHERE cartID = ?",
       [cartId]
     );
 
@@ -159,7 +196,6 @@ const getCart = async (req, res) => {
       data: {
         cartId,
         userId,
-        totalItems,
         items: cartItems,
       },
     });

@@ -11,12 +11,12 @@ function NavBar() {
 
   const navigate = useNavigate();
   const { userId } = useAuth();
-  console.log(userId);
+ // console.log(userId);
   const { userInfo } = useSelector(state => state.auth)
-  console.log(userInfo, "....");
+ // console.log(userInfo, "....");
 
   useEffect(() => {
-    console.log("rendering...");
+  //  console.log("rendering...");
 
   }, [])
   return (

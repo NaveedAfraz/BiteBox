@@ -1,5 +1,6 @@
 import Address from "@/components/address";
 import Cart from "@/components/cart";
+import useCart from "@/hooks/Restaurant/useCart";
 import React, { useState } from "react";
 import { useSearchParams } from "react-router";
 
@@ -7,6 +8,17 @@ function Checkout() {
   const [searchParams] = useSearchParams()
   const userid = searchParams.get('userid')
   const [selectedAddress, setSelectedAddress] = useState(false);
+
+  const { fetchCart } = useCart()
+
+  const { data: cart, isLoading, error } = fetchCart(userid)
+
+
+
+
+
+
+
   return (
     <div className="relative min-h-screen mt-24">
       {/* Background image covers the full container */}

@@ -23,7 +23,7 @@ import RoleSelectionModal from "./components/admin/RoleSelectionModal";
 import OAuthCallback from "./helper/googleRedirect";
 import useAuth from "./hooks/auth/useAuth";
 const Nav = () => {
-  console.log("...");
+ // console.log("...");
   return (
     <>
       <div className="flex flex-col min-h-screen">
@@ -39,7 +39,7 @@ const Nav = () => {
 function App() {
   // const { userId } = useAuth();
   const { user, isLoaded, updateUserMetadata } = useUser();
-  console.log(user);
+ // console.log(user);
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const navigate = useNavigate();
@@ -47,9 +47,7 @@ function App() {
   const { data: loggedInData, refetch: refetchLoggedIn } = useLoggedIn(user?.primaryEmailAddress?.emailAddress);
 
   useEffect(() => {
-    console.log(loggedInData);
-
-
+    //console.log(loggedInData);
   }, [loggedInData])
   // useEffect(() => {
   //   const userRole = user?.unsafeMetadata?.role;
@@ -79,14 +77,14 @@ function App() {
           await user.update({
             unsafeMetadata: { role: selectedRole }
           });
-          console.log("Updated user role to:", selectedRole);
+       //   console.log("Updated user role to:", selectedRole);
           sessionStorage.removeItem('selectedRole');
         } catch (error) {
           console.error("Failed to update user role:", error);
         }
       }
       else if (isLoaded && user && (!user.unsafeMetadata || !user.unsafeMetadata.role)) {
-        console.log("role already");
+     //   console.log("role already");
         setIsModalOpen(true);
       }
     };
