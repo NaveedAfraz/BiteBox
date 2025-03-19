@@ -13,7 +13,7 @@ import Login from "./pages/login";
 import Signup from "./pages/SignUP";
 import AdminLogin from "./pages/Admin/adminLogin";
 import AdminSignup from "./pages/Admin/AdminSignUP";
-import {  useUser } from "@clerk/clerk-react";
+import { useUser } from "@clerk/clerk-react";
 
 import ProtectedRoute from "./helper/protectRoute";
 import AdminHome from "./pages/Admin/AdminHome";
@@ -22,8 +22,9 @@ import VerifyEmail from "./pages/Admin/verifyEmail";
 import RoleSelectionModal from "./components/admin/RoleSelectionModal";
 import OAuthCallback from "./helper/googleRedirect";
 import useAuth from "./hooks/auth/useAuth";
+import OrderConfirmation from "./components/OrderConfirmation";
 const Nav = () => {
- // console.log("...");
+  // console.log("...");
   return (
     <>
       <div className="flex flex-col min-h-screen">
@@ -39,7 +40,7 @@ const Nav = () => {
 function App() {
   // const { userId } = useAuth();
   const { user, isLoaded, updateUserMetadata } = useUser();
- // console.log(user);
+  // console.log(user);
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const navigate = useNavigate();
@@ -77,14 +78,14 @@ function App() {
           await user.update({
             unsafeMetadata: { role: selectedRole }
           });
-       //   console.log("Updated user role to:", selectedRole);
+          //   console.log("Updated user role to:", selectedRole);
           sessionStorage.removeItem('selectedRole');
         } catch (error) {
           console.error("Failed to update user role:", error);
         }
       }
       else if (isLoaded && user && (!user.unsafeMetadata || !user.unsafeMetadata.role)) {
-     //   console.log("role already");
+        //   console.log("role already");
         setIsModalOpen(true);
       }
     };
@@ -128,6 +129,8 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/menu" element={<Menu />} />
+          {/* <Route path="/checkout" element={<PaymentPage />} /> */}
+          <Route path="/order-confirmation" element={<OrderConfirmation />} />
           <Route
             path="/restaurant?/:name"
             element={

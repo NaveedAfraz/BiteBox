@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Card,
   CardHeader,
@@ -10,58 +10,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "./ui/badge";
 import { DollarSignIcon } from "lucide-react";
-import useCart from "@/hooks/Restaurant/useCart";
-import { useSearchParams } from "react-router";
-import { useSelector } from "react-redux";
+import useItemQuantity from "@/hooks/Restaurant/useItemQuantity"; // Update the path as needed
+
 function ItemCard({ item, loading }) {
   if (loading) return null;
-  console.log(item);
 
-  const { userInfo } = useSelector(state => state.auth)
   // const [searchparams] = useSearchParams() 
   // const userid = searchparams.get('ID')  
   // console.log(userInfo);
-  const { AddToCart, fetchCart, ReduceQuantity } = useCart()
-  const userId = userInfo?.userId
-  const { mutate } = AddToCart()
-  const reduceMutation = ReduceQuantity();
-  const { data: cartItems, refetch } = fetchCart(userId)
-  console.log(cartItems);
-
-  const [itemQuantity, setItemQuantity] = useState(0);
-
-  useEffect(() => {
-    if (cartItems?.items && cartItems.items.length > 0) {
-      const matchingItem = cartItems.items.find(i => i.itemID === item.itemID);
-      setItemQuantity(matchingItem ? matchingItem.quantity : 0);
-    } else {
-      setItemQuantity(0);
-    }
-    console.log(true);
-
-  }, [cartItems, item.itemID]);
-
-
-  const handleAdd = function (item) {
-    console.log(item);
-    if (item.quantity >= itemQuantity) {
-      mutate({ ...item, userId });
-    }else{
-      alert('You have insufficient quantity')
-    }
-    setTimeout(() => refetch(), 100);
-  }
-
-  const handleReduce = () => {
-    if (itemQuantity > 0 && cartItems?.cartId) {
-      reduceMutation.mutate({
-        userId,
-        cartId: cartItems.cartId,
-        itemID: item.itemID
-      });
-      setTimeout(() => refetch(), 100);
-    }
-  };
+  const { itemQuantity, handleAdd, handleReduce } = useItemQuantity(item);
 
   return (
     <div className="w-full mt-4">
@@ -83,11 +40,11 @@ function ItemCard({ item, loading }) {
           </CardContent>
         </CardHeader>
         <CardFooter>
-          <Button variant="outline" onClick={handleReduce}>-</Button>
+          <Button variant="outline" onClick={() => handleReduce()}>-</Button>
           <div className="flex flex-row gap-2 items-center">
             <Badge className="bg-black text-white px-3 py-2 mx-2">{itemQuantity || 0}</Badge>
           </div>
-          <Button variant="outline" onClick={() => handleAdd(item)}>+</Button>
+          <Button variant="outline" onClick={() => handleAdd()}>+</Button>
         </CardFooter>
       </Card>
     </div>

@@ -77,13 +77,13 @@ function Home() {
           </div>
         </div>
       </div>
-      <div>
+      {/* <div>
         <div className="px-5 py-16 bg-white">
           <div className="flex gap-8 overflow-x-auto pb-4 scrollbar-hide">
             <CardComponent categories={menuItems} title="Food Categories" />
           </div>
         </div>
-      </div>
+      </div> */}
       <div className="px-5 py-16 bg-white">
         <CardComponent categories={menuItems} title="Best Sellers" />
       </div>

@@ -36,7 +36,6 @@ const addItem = async (req, res) => {
 
     if (existingItem.length > 0) {
       const newQuantity = existingItem[0].quantity + quantity;
-
       const [updatedItem] = await pool.execute(
         "UPDATE cartItems SET quantity = ? WHERE id = ?",
         [newQuantity, existingItem[0].id]

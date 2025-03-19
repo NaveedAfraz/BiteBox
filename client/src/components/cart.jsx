@@ -1,118 +1,121 @@
-import React from "react";
+import useItemQuantity from "@/hooks/Restaurant/useItemQuantity";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
-function Cart({ cart, selectedAddress }) {
-  // Dummy cart data
-  console.log(cart?.items);
+function Cart({ cart, selectedAddress, refetch }) {
+  const { userInfo } = useSelector((state) => state.auth)
+  const { handleAdd, handleReduce, cartItems } = useItemQuantity();
+  // console.log(cartItems);
+  // console.log(userInfo);
+  console.log(cart);
 
-  // const cartItems = [
-  //   {
-  //     id: 1,
-  //     item: "Home Plate by EatFit",
-  //     location: "Manikonda",
-  //     items: [
-  //       {
-  //         id: 101,
-  //         name: "Chicken Nihari Paratha Thali (Chicken)",
-  //         price: 349,
-  //         quantity: 1,
-  //         isVeg: false,
-  //         customizable: true,
-  //       },
-  //       {
-  //         id: 102,
-  //         name: "Paneer Butter Masala",
-  //         price: 249,
-  //         quantity: 2,
-  //         isVeg: true,
-  //         customizable: true,
-  //       },
-  //     ],
-  //     image: "/api/placeholder/80/80",
-  //   },
-  //   {
-  //     id: 2,
-  //     item: "The Burger Joint",
-  //     location: "Hitech City",
-  //     items: [
-  //       {
-  //         id: 201,
-  //         name: "Classic Cheeseburger with Fries",
-  //         price: 299,
-  //         quantity: 1,
-  //         isVeg: false,
-  //         customizable: false,
-  //       },
-  //     ],
-  //     image:
-  //       "https://images.unsplash.com/photo-1559314809-0d155014e29e?ixlib=rb-4.0.3",
-  //   },
-  //   {
-  //     id: 3,
-  //     item: "The Burger Joint",
-  //     location: "Hitech City",
-  //     items: [
-  //       {
-  //         id: 301,
-  //         name: "Classic Cheeseburger with Fries",
-  //         price: 299,
-  //         quantity: 1,
-  //         isVeg: false,
-  //         customizable: false,
-  //       },
-  //     ],
-  //     image:
-  //       "https://images.unsplash.com/photo-1559314809-0d155014e29e?ixlib=rb-4.0.3",
-  //   },
-  // ];
+  useEffect(() => {
+    refetch()
+  }, [cartItems?.items])
 
-  // Calculate bill details
+  // const [searchparams] = useSearchParams() 
+  // const userid = searchparams.get('ID')  
+  // console.log(userInfo);
   const calculateSubtotal = () => {
     let total = 0;
-    console.log(cart?.items);
-    cart?.items.forEach((item) => {
-      total += item.amount * item.quantity;
-    });
+    if (cart?.items && cart.items.length > 0) {
+      cart.items.forEach((item) => {
+        total += item.amount * item.quantity;
+      });
+    }
     return total;
   };
 
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Sample order data: update with your actual order details
   const subtotal = calculateSubtotal();
+  console.log(subtotal);
+  console.log(selectedAddress);
+
   const deliveryFee = 73;
   const platformFee = 6;
   const taxAndCharges = Math.round(subtotal * 0.14);
+  const taxAmount = deliveryFee + platformFee + taxAndCharges;
   const totalAmount = subtotal + deliveryFee + platformFee + taxAndCharges;
+
+  const handleCheckout = async () => {
+    setIsProcessing(true);
+    setError(null);
+    const orderData = {
+      items: cart?.items?.map((item) => {
+        console.log(item.quantity);
+        return {
+          name: item.name || item.title,
+          itemID: item.itemID,
+          quantity: item.quantity,
+          price: item.price || item.amount,
+          currency: "USD"
+        };
+      })
+    };
+    //console.log(orderData);
+
+    try {
+      // Create a PayPal order on your backend
+      const response = await axios.post(
+        "http://localhost:3006/api/create-paypal-order",
+        { IDs: { userID: userInfo.userId, cartID: cart.cartId, restaurantID: cartItems.items[0].restaurantID, addressID: selectedAddress }, orderData: orderData.items, amount: subtotal, taxAmount: taxAmount },
+        { withCredentials: true }
+      );
+
+      console.log(response);
+      localStorage.setItem("orderID", response.data.dbOrderID);
+      localStorage.setItem("paypalOrderID", response.data.orderId);
+      localStorage.setItem("cartID", cart.cartId);
+      // The backend returns the orderId and approvalUrl
+      const { approvalUrl } = response.data;
+      if (approvalUrl) {
+        // Redirect the user to the PayPal approval page
+        window.location.href = approvalUrl;
+      } else {
+        throw new Error("No approval URL returned from PayPal");
+      }
+    } catch (err) {
+      console.error("Checkout error:", err);
+      setError(err.message || "Error creating PayPal order");
+      setIsProcessing(false);
+    }
+  };
+  console.log(cartItems.items.length);
 
   return (
     <div className="shadow-md rounded-b-2xl p-2 md:rounded-bl-none bg-white md:rounded-r-2xl w-full max-w-xl z-[3] ">
-      {/* Cart Header */}
+
       <div className="p-4 border-b">
         <h2 className="text-xl font-bold">Your Cart</h2>
       </div>
 
-      {/* Cart Items */}
+
       <div className="flex flex-col divide-y ">
         {cart?.items?.length > 0 && cart?.items?.map((item) => (
-          <div key={item.id} className="p-4">
-            {/* Restaurant Info */}
+          <div key={item.id || item.itemID} className="p-4">
+
             <div className="flex items-center mb-4">
               <img
                 src={item.img}
-                alt={item.item}
+                alt={item.title}
                 className="w-12 h-12 rounded-md mr-3"
               />
               <div>
-                <h3 className="font-bold text-lg">{item.title}</h3>
-                {/* <p className="text-gray-600 text-sm">{item.location}</p> */}
+                <h3 className="font-bold text-lg">{item.title || item.name}</h3>
               </div>
             </div>
 
             <div className="flex flex-col space-y-4 ml-2">
-
-              <div key={item.id} className="flex justify-between">
+              <div className="flex justify-between">
                 <div className="flex-1">
                   <div className="flex items-center">
-                    {item.foodtype ? (
+                    {item.foodType === "Veg" ? (
                       <span className="inline-block w-4 h-4 border border-green-600 mr-2">
-                        <span className="block w-2 h-2  bg-green-600 m-auto rounded-full"></span>
+                        <span className="block w-2 h-2 bg-green-600 m-auto rounded-full"></span>
                       </span>
                     ) : (
                       <span className="inline-block w-4 h-4 border border-red-600 mr-2">
@@ -124,13 +127,19 @@ function Cart({ cart, selectedAddress }) {
                 </div>
                 <div className="flex items-center space-x-3">
                   <div className="flex border rounded">
-                    <button className="px-2 py-1 text-lg cursor-pointer">
+                    <button
+                      className="px-2 py-1 text-lg cursor-pointer"
+                      onClick={() => handleReduce(item.itemID || item.id)}
+                    >
                       −
                     </button>
                     <span className="px-3 py-1 border-l border-r">
                       {item.quantity}
                     </span>
-                    <button className="px-2 py-1 text-lg text-green-600 cursor-pointer">
+                    <button
+                      className="px-2 py-1 text-lg text-green-600 cursor-pointer"
+                      onClick={() => handleAdd(item)}
+                    >
                       +
                     </button>
                   </div>
@@ -139,7 +148,6 @@ function Cart({ cart, selectedAddress }) {
                   </div>
                 </div>
               </div>
-
             </div>
           </div>
         ))}
@@ -206,7 +214,12 @@ function Cart({ cart, selectedAddress }) {
 
       {/* Payment Button */}
       <div className="p-4 border-t">
-        <button className={`w-full bg-red-500  text-white font-bold py-3 px-4 rounded-lg   ${!selectedAddress ? "opacity-50 cursor-not-allowed" : "opacity-100 cursor-pointer transition duration-200  hover:bg-red-600"}`} disabled={!selectedAddress} onClick={() => alert("hlo")}>
+        <button
+          className={`w-full bg-red-500 text-white font-bold py-3 px-4 rounded-lg ${!selectedAddress ? "opacity-50 cursor-not-allowed" : "opacity-100 cursor-pointer transition duration-200 hover:bg-red-600"
+            }`}
+          disabled={!selectedAddress}
+          onClick={handleCheckout}
+        >
           Proceed to Payment
         </button>
       </div>

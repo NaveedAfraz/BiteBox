@@ -246,19 +246,31 @@ const additem = async function (req, res) {
       description,
       photoUrl,
       restaurantID,
+      foodType,
+      discountedAmount,
     } = req.body;
-    console.log(name, price, quantity, category, description, photoUrl);
+    console.log(name, price, quantity, category, description, photoUrl,restaurantID, foodType,discountedAmount);
 
     if (
       !name ||
       !price ||
       !quantity ||
       !category ||
-      !description ||
+      !description || 
       !photoUrl ||
-      !restaurantID
+      !restaurantID ||
+      !foodType ||
+      !discountedAmount
     ) {
-      console.log(restaurantID,"restaurantID",name,price,quantity,category,description);
+      console.log(
+        restaurantID,
+        "restaurantID",
+        name,
+        price,
+        quantity,
+        category,
+        description
+      );
 
       return res.status(400).json({
         message: "All fields are required",
@@ -280,15 +292,17 @@ const additem = async function (req, res) {
     // let restaurantID = 31;
     let status = "pending";
     const q =
-      "INSERT INTO items (Name, Amount, quantity, category, `desc`, img,restaurantID,status) VALUES (?,?,?,?,?,?,?,?)";
+      "INSERT INTO items (Name, Amount, quantity, discountedAmount,category, `desc`, img,restaurantID,foodType,status) VALUES (?,?,?,?,?,?,?,?,?,?)";
     const params = [
       name,
       price,
       quantity,
+      discountedAmount,
       category,
       description,
       photoUrlUrl,
       restaurantID,
+      foodType,
       status,
     ];
     const result = await pool.query(q, params);

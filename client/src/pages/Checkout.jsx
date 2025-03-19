@@ -1,6 +1,7 @@
 import Address from "@/components/address";
 import Cart from "@/components/cart";
 import useCart from "@/hooks/Restaurant/useCart";
+import useItemQuantity from "@/hooks/Restaurant/useItemQuantity";
 import React, { useState } from "react";
 import { useSearchParams } from "react-router";
 
@@ -11,12 +12,18 @@ function Checkout() {
 
   const { fetchCart } = useCart()
 
-  const { data: cart, isLoading, error } = fetchCart(userid)
+  const { data: cart, isLoading, error, refetch } = fetchCart(userid)
   console.log(cart);
 
 
-
-
+  if (cart.items.length === 0) {
+    return (
+      <div className="flex flex-col h-screen items-center justify-center p-8 text-center">
+        <h2 className="text-2xl font-bold">Your cart is empty</h2>
+        <p>Add items to your cart to proceed to checkout.</p>
+      </div>
+    );
+  }
 
 
 
@@ -42,7 +49,7 @@ function Checkout() {
           setSelectedAddress={setSelectedAddress}
           userid={userid}
         />
-        <Cart cart={cart} selectedAddress={selectedAddress} />
+        <Cart cart={cart} selectedAddress={selectedAddress} refetch={refetch} />
       </div>
     </div>
   );

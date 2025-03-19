@@ -63,6 +63,12 @@ const Render = ({ item, title, formAction }) => {
               placeholder="Price"
               className="border p-2 rounded"
             />
+            <Input
+              type="number"
+              name="DiscountAmount"
+              placeholder="Discount Amount"
+              className="border p-2 rounded"
+            />
 
             <Input
               type="number"
@@ -87,13 +93,13 @@ const Render = ({ item, title, formAction }) => {
             </div>
             <div className="space-y-2">
               <label htmlFor="category">Item Type</label>
-              <Select name="foodtype" defaultValue="burger">
+              <Select name="foodType" defaultValue="burger">
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="drink">Veg</SelectItem>
-                  <SelectItem value="sides">non-veg</SelectItem>
+                  <SelectItem value="veg">Veg</SelectItem>
+                  <SelectItem value="non-veg">non-veg</SelectItem>
                 </SelectContent>
               </Select>
             </div>

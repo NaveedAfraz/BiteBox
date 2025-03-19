@@ -71,6 +71,7 @@ function MenuItems() {
       const itemData = {
         name: formData.get("name"),
         price: Number(formData.get("price")),
+        discountedAmount: formData.get("DiscountAmount"),
         quantity: Number(formData.get("quantity")),
         category: formData.get("category"),
         description: formData.get("description"),
