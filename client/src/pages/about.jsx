@@ -16,16 +16,17 @@ const About = () => {
   ];
   const Values = [
     {
-      name: "Customer Obsession",
-      description: "We start with the customer and work backwards.",
+      Name: "Customer Obsession",
+      desc: "We start with the customer and work backwards.",
+      image: "https://via.placeholder.com/150",
     },
     {
-      name: "Quality First",
-      description: "We ensure the quality of our food and service.",
+      Name: "Quality First",
+      desc: "We ensure the quality of our food and service.",
     },
     {
-      name: "Simplicity",
-      description: "We believe in making things simple and intuitive.",
+      Name: "Simplicity",
+      desc: "We believe in making things simple and intuitive.",
     },
   ];
   return (
@@ -128,7 +129,7 @@ const About = () => {
                   Alex leads our vision for a better food delivery experience.
                 </p>
               </div> */}
-            <CardComponent teamMembers={teamMembers} />
+            {/* <CardComponent teamMembers={teamMembers} /> */}
           </div>
         </section>
 

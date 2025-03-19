@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useNavigate } from "react-router";
 
 const CardComponent = ({ categories, title, teamMembers }) => {
   console.log(categories, title);
   const [array, setArray] = useState([]);
-  console.log(title);
+  //console.log(title);
+  console.log(teamMembers);
 
+  const navigate = useNavigate()
   useEffect(() => {
     if (teamMembers) {
       setArray(teamMembers);
@@ -13,19 +16,22 @@ const CardComponent = ({ categories, title, teamMembers }) => {
     } else if (title === "Food Categories") {
 
       const formattedCategories = categories.map((restaurant) => ({
-        Name: restaurant.Name,
-        img: restaurant.img, // Rename RestaurantImage to img
-        desc: restaurant.Cuisine, // Use Cuisine as description
+        Name: restaurant?.Name,
+        img: restaurant?.img, // Rename RestaurantImage to img
+        desc: restaurant?.Cuisine, // Use Cuisine as description
         // brand: restaurant.status, // Assign status to brand for UI compatibility
-        category: restaurant.category,
+        category: restaurant?.category,
+        restaurantID: restaurant?.restaurantID,
+
       }));
       setArray(formattedCategories);
     } else {
       setArray(categories);
     }
   }, [teamMembers, categories]);
-  console.log(array);
+  console.log(array.length);
   //
+
   return (
     <div
       className={`w-full ${teamMembers ? "flex items-center justify-center flex-col" : null
@@ -35,19 +41,24 @@ const CardComponent = ({ categories, title, teamMembers }) => {
         {title}
       </h2>
       <div className="px-5 py-8 bg-white scrollbar-hide">
-        <div className={`flex gap-16 overflow-x-auto pb-4 scrollbar-hide`}>
+        <div className={`flex gap-16  overflow-x-auto pb-4 scrollbar-hide`}>
           {array.map((category) => (
             <Card
               key={category.id}
-              className="min-w-[300px] border-0 shadow-lg hover:-translate-y-2 transition-transform cursor-pointer hover:!bg-transparent "
+              className="w-[300px] border-0  shadow-lg hover:-translate-y-2 transition-transform cursor-pointer hover:!bg-transparent "
             >
-              <CardContent className="p-2">
-                <button className="relative" onClick={() => alert("hello")}>
-                  <img
-                    src={category.img}
-                    alt={category.name}
-                    className="w-full h-[250px] rounded-lg  object-cover"
-                  />
+              <CardContent className="p-2 ">
+                <button className="" onClick={() => !teamMembers && navigate(`/restaurant?name=${category?.Name}&&ID=${category?.restaurantID}`)}>
+                  <div className="w-full">
+                    <img
+                      src={category.img}
+                      alt={category.Name}
+                      className="w-[100vw]  h-[250px] object-cover rounded-[50%]"
+                    />
+                  </div>
+
+
+                  {console.log(array.length)}
                   <CardHeader className="p-4 relative">
                     {title != undefined && !title.split(" ").includes("Food") && <CardTitle className="text-lg text-center">
                       {category.Name}
@@ -55,7 +66,7 @@ const CardComponent = ({ categories, title, teamMembers }) => {
                     <p className="text-sm text-gray-500 mt-1.5">
                       {category.desc}
                     </p>
-                    {title != undefined  && title.split(" ").includes("Food") && <p className="text-xl   font-bold absolute bottom-[-0px] right-[50%] translate-x-[50%]">
+                    {title != undefined && title.split(" ").includes("Food") && <p className="text-xl   font-bold absolute bottom-[-0px] right-[50%] translate-x-[50%]">
                       {category.category}
                     </p>
                     }

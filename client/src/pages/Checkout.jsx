@@ -12,6 +12,7 @@ function Checkout() {
   const { fetchCart } = useCart()
 
   const { data: cart, isLoading, error } = fetchCart(userid)
+  console.log(cart);
 
 
 
@@ -41,7 +42,7 @@ function Checkout() {
           setSelectedAddress={setSelectedAddress}
           userid={userid}
         />
-        <Cart />
+        <Cart cart={cart} selectedAddress={selectedAddress} />
       </div>
     </div>
   );

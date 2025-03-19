@@ -64,7 +64,7 @@ function Menu() {
         </div>
         <div className="container mx-auto px-4 mt-10">
           <h1 className="text-2xl font-bold ml-10">Our Top Brands </h1>
-          <div className="flex gap-8 overflow-x-auto scrollbar-hide">
+          <div className="flex gap-5 overflow-x-auto scrollbar-hide">
             {restaurantDetails.length > 0 &&
               restaurantDetails.map((restaurant) => (
                 <Card
@@ -73,11 +73,13 @@ function Menu() {
                   className="w-[300px] h-[400px] flex flex-col items-center justify-center border-0 shadow-lg rounded-lg"
                 >
                   <CardHeader>
-                    <img
-                      src={restaurant.RestaurantImage}
-                      alt={restaurant.Name}
-                      className="w-full h-[250px] object-cover rounded-[50%]"
-                    />
+                    <div className="w-full">
+                      <img
+                        src={restaurant.RestaurantImage}
+                        alt={restaurant.Name}
+                        className="w-[100vw] h-[250px] object-cover bg-amber-700  rounded-[50%]"
+                      />
+                    </div>
                     <CardTitle className="text-center mt-4">
                       {restaurant.Name}
                     </CardTitle>

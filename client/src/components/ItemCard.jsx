@@ -44,7 +44,11 @@ function ItemCard({ item, loading }) {
 
   const handleAdd = function (item) {
     console.log(item);
-    mutate({ ...item, userId });
+    if (item.quantity >= itemQuantity) {
+      mutate({ ...item, userId });
+    }else{
+      alert('You have insufficient quantity')
+    }
     setTimeout(() => refetch(), 100);
   }
 

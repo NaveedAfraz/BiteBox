@@ -51,7 +51,7 @@ function Restaurant() {
 
   const { data: restaurant, isLoading, error } = fetchOneRestaurant(restaurantID);
 
-//  console.log(restaurantID);
+  console.log(restaurant);
 
   const [items, setItems] = useState()
   const [Index, setIndex] = useState()

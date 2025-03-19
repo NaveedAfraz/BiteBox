@@ -1,75 +1,76 @@
 import React from "react";
 
-function Cart() {
+function Cart({ cart, selectedAddress }) {
   // Dummy cart data
-  const cartItems = [
-    {
-      id: 1,
-      restaurant: "Home Plate by EatFit",
-      location: "Manikonda",
-      items: [
-        {
-          id: 101,
-          name: "Chicken Nihari Paratha Thali (Chicken)",
-          price: 349,
-          quantity: 1,
-          isVeg: false,
-          customizable: true,
-        },
-        {
-          id: 102,
-          name: "Paneer Butter Masala",
-          price: 249,
-          quantity: 2,
-          isVeg: true,
-          customizable: true,
-        },
-      ],
-      image: "/api/placeholder/80/80",
-    },
-    {
-      id: 2,
-      restaurant: "The Burger Joint",
-      location: "Hitech City",
-      items: [
-        {
-          id: 201,
-          name: "Classic Cheeseburger with Fries",
-          price: 299,
-          quantity: 1,
-          isVeg: false,
-          customizable: false,
-        },
-      ],
-      image:
-        "https://images.unsplash.com/photo-1559314809-0d155014e29e?ixlib=rb-4.0.3",
-    },
-    {
-      id: 3,
-      restaurant: "The Burger Joint",
-      location: "Hitech City",
-      items: [
-        {
-          id: 301,
-          name: "Classic Cheeseburger with Fries",
-          price: 299,
-          quantity: 1,
-          isVeg: false,
-          customizable: false,
-        },
-      ],
-      image:
-        "https://images.unsplash.com/photo-1559314809-0d155014e29e?ixlib=rb-4.0.3",
-    },
-  ];
+  console.log(cart?.items);
+
+  // const cartItems = [
+  //   {
+  //     id: 1,
+  //     item: "Home Plate by EatFit",
+  //     location: "Manikonda",
+  //     items: [
+  //       {
+  //         id: 101,
+  //         name: "Chicken Nihari Paratha Thali (Chicken)",
+  //         price: 349,
+  //         quantity: 1,
+  //         isVeg: false,
+  //         customizable: true,
+  //       },
+  //       {
+  //         id: 102,
+  //         name: "Paneer Butter Masala",
+  //         price: 249,
+  //         quantity: 2,
+  //         isVeg: true,
+  //         customizable: true,
+  //       },
+  //     ],
+  //     image: "/api/placeholder/80/80",
+  //   },
+  //   {
+  //     id: 2,
+  //     item: "The Burger Joint",
+  //     location: "Hitech City",
+  //     items: [
+  //       {
+  //         id: 201,
+  //         name: "Classic Cheeseburger with Fries",
+  //         price: 299,
+  //         quantity: 1,
+  //         isVeg: false,
+  //         customizable: false,
+  //       },
+  //     ],
+  //     image:
+  //       "https://images.unsplash.com/photo-1559314809-0d155014e29e?ixlib=rb-4.0.3",
+  //   },
+  //   {
+  //     id: 3,
+  //     item: "The Burger Joint",
+  //     location: "Hitech City",
+  //     items: [
+  //       {
+  //         id: 301,
+  //         name: "Classic Cheeseburger with Fries",
+  //         price: 299,
+  //         quantity: 1,
+  //         isVeg: false,
+  //         customizable: false,
+  //       },
+  //     ],
+  //     image:
+  //       "https://images.unsplash.com/photo-1559314809-0d155014e29e?ixlib=rb-4.0.3",
+  //   },
+  // ];
 
   // Calculate bill details
   const calculateSubtotal = () => {
     let total = 0;
-    cartItems.forEach((restaurant) => {
-      restaurant.items.forEach((item) => {
-        total += item.price * item.quantity;
-      });
+    console.log(cart?.items);
+    cart?.items.forEach((item) => {
+      total += item.amount * item.quantity;
     });
     return total;
   };
@@ -89,56 +90,56 @@ function Cart() {
 
       {/* Cart Items */}
       <div className="flex flex-col divide-y ">
-        {cartItems.map((restaurant) => (
-          <div key={restaurant.id} className="p-4">
+        {cart?.items?.length > 0 && cart?.items?.map((item) => (
+          <div key={item.id} className="p-4">
             {/* Restaurant Info */}
             <div className="flex items-center mb-4">
               <img
-                src={restaurant.image}
-                alt={restaurant.restaurant}
+                src={item.img}
+                alt={item.item}
                 className="w-12 h-12 rounded-md mr-3"
               />
               <div>
-                <h3 className="font-bold text-lg">{restaurant.restaurant}</h3>
-                <p className="text-gray-600 text-sm">{restaurant.location}</p>
+                <h3 className="font-bold text-lg">{item.title}</h3>
+                {/* <p className="text-gray-600 text-sm">{item.location}</p> */}
               </div>
             </div>
 
             <div className="flex flex-col space-y-4 ml-2">
-              {restaurant.items.map((item) => (
-                <div key={item.id} className="flex justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center">
-                      {item.isVeg ? (
-                        <span className="inline-block w-4 h-4 border border-green-600 mr-2">
-                          <span className="block w-2 h-2  bg-green-600 m-auto rounded-full"></span>
-                        </span>
-                      ) : (
-                        <span className="inline-block w-4 h-4 border border-red-600 mr-2">
-                          <span className="block w-2 h-2 bg-red-600 m-auto rounded-full"></span>
-                        </span>
-                      )}
-                      <span className="font-medium">{item.name}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <div className="flex border rounded">
-                      <button className="px-2 py-1 text-lg cursor-pointer">
-                        −
-                      </button>
-                      <span className="px-3 py-1 border-l border-r">
-                        {item.quantity}
+
+              <div key={item.id} className="flex justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center">
+                    {item.foodtype ? (
+                      <span className="inline-block w-4 h-4 border border-green-600 mr-2">
+                        <span className="block w-2 h-2  bg-green-600 m-auto rounded-full"></span>
                       </span>
-                      <button className="px-2 py-1 text-lg text-green-600 cursor-pointer">
-                        +
-                      </button>
-                    </div>
-                    <div className="text-right min-w-16">
-                      <span>₹{item.price * item.quantity}</span>
-                    </div>
+                    ) : (
+                      <span className="inline-block w-4 h-4 border border-red-600 mr-2">
+                        <span className="block w-2 h-2 bg-red-600 m-auto rounded-full"></span>
+                      </span>
+                    )}
+                    <span className="font-medium">{item.foodType || "Non-Veg"}</span>
                   </div>
                 </div>
-              ))}
+                <div className="flex items-center space-x-3">
+                  <div className="flex border rounded">
+                    <button className="px-2 py-1 text-lg cursor-pointer">
+                      −
+                    </button>
+                    <span className="px-3 py-1 border-l border-r">
+                      {item.quantity}
+                    </span>
+                    <button className="px-2 py-1 text-lg text-green-600 cursor-pointer">
+                      +
+                    </button>
+                  </div>
+                  <div className="text-right min-w-16">
+                    <span>₹{item.amount * item.quantity}</span>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
         ))}
@@ -174,7 +175,7 @@ function Cart() {
               <span>Delivery Fee | 6.5 kms</span>
               <button className="ml-2 text-gray-500 rounded-full"></button>
             </div>
-            <span>₹{deliveryFee}</span>
+            <span>₹{deliveryFee || 49}</span>
           </div>
           <div className="flex justify-between">
             <span>Delivery Tip</span>
@@ -185,13 +186,13 @@ function Cart() {
               <span>Platform fee</span>
               <button className="ml-2 text-gray-500 rounded-full"></button>
             </div>
-            <span>₹{platformFee}</span>
+            <span>₹{platformFee || 4}</span>
           </div>
           <div className="flex justify-between items-center">
             <div className="flex items-center">
               <span>GST and Restaurant Charges</span>
             </div>
-            <span>₹{taxAndCharges}</span>
+            <span>₹{taxAndCharges || 68}</span>
           </div>
         </div>
 
@@ -205,7 +206,7 @@ function Cart() {
 
       {/* Payment Button */}
       <div className="p-4 border-t">
-        <button className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg transition duration-200 cursor-pointer">
+        <button className={`w-full bg-red-500  text-white font-bold py-3 px-4 rounded-lg   ${!selectedAddress ? "opacity-50 cursor-not-allowed" : "opacity-100 cursor-pointer transition duration-200  hover:bg-red-600"}`} disabled={!selectedAddress} onClick={() => alert("hlo")}>
           Proceed to Payment
         </button>
       </div>

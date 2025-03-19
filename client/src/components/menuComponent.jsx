@@ -21,10 +21,11 @@ import { useSelector } from "react-redux";
 import { useUser } from "@clerk/clerk-react";
 import useRestaurant from "@/hooks/Restaurant/useRestaurant";
 import { Label } from "./ui/label";
+import { useNavigate } from "react-router";
 
 const EditDialogContent = ({ menu, onSubmit, onClose, formAction, prevData }) => {
-  //console.log(formAction);
-  console.log(prevData);
+  ////console.log(formAction);
+  // console.log(prevData);
 
   return (
     <>
@@ -93,13 +94,13 @@ function MenuComponent({ menu, refetch }) {
   const [open, setOpen] = useState(false);
   const { user, isLoaded, updateUserMetadata } = useUser();
   const admin = user?.unsafeMetadata?.role;
-  // console.log(admin);
-  console.log(menu, "menu");
-
+  //// console.log(admin);
+  // console.log(menu, "menu");
+  const navigate = useNavigate();
   const { deleteItem, updateItem } = useRestaurant()
   const { restaurantDetails } = useSelector((state) => state.restaurant)
   // let admin = true;
-  // console.log(restaurantDetails);
+  //// console.log(restaurantDetails);
   const [prevData, setPrevData] = useState({
     brand: menu.brand,
     name: menu.Name,
@@ -112,23 +113,22 @@ function MenuComponent({ menu, refetch }) {
   const handleDelete = async (menu) => {
     // e.stopPropagation();
     // alert("Delete");
-    console.log(menu.itemID);
+    // console.log(menu.itemID);
 
     await deleteItem.mutateAsync({ itemID: menu.itemID });
     refetch();
   }
-  //console.log(menu);
+  ////console.log(menu);
 
 
-  const handleCardClick = () => {
-    if (open) {
-      alert("clicked");
-    }
-  }
+  // const handleCardClick = () => {
 
-  // console.log(menu.img);
+  //     alert("clicked");
+  // }
+
+  //// console.log(menu.img);
   const handleSubmit = (prevState, formData) => {
-    console.log(menu);
+    // console.log(menu);
 
     const updatedMenu = {
       id: menu.itemID,
@@ -140,7 +140,7 @@ function MenuComponent({ menu, refetch }) {
       brand: formData.get("brand"),
     }
     setPrevData(updatedMenu)
-    console.log(updatedMenu);
+    // console.log(updatedMenu);
     updateItem.mutate({ formdata: updatedMenu });
     setOpen(false)
     // setTimeout(() => refetch(), 1000)
@@ -150,28 +150,23 @@ function MenuComponent({ menu, refetch }) {
   let initialState = null
   const [state, formAction, isPending] = useActionState(handleSubmit, initialState);
 
+  // console.log(menu);
 
   return (
     <Card
-      onClick={handleCardClick}
-      className="relative w-full max-w-sm border-0 shadow-lg overflow-hidden rounded-lg cursor-pointer hover:scale-102 transition-all duration-300"
+      onClick={() => navigate(`/restaurant?name=${menu.Name}&&ID=${menu.restaurantID}`)}
+      className="relative w-full max-w-sm border-0 shadow-lg overflow-hidden rounded-lg cursor-pointer hover:scale-102 transition-all duration-300 mb-4"
     >
-      <div className="relative w-full h-40">
+      <div className="relative h-40 w-full overflow-hidden">
         <img
           src={menu.img}
           alt={menu.name}
           className="h-full w-full object-cover"
         />
-        {/* {menu. && (
-          <span className="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">
-            {menu.discount}
-          </span>
-        )}*/}
       </div>
 
       {/* Card Content */}
       <CardContent className="p-4">
-
         <CardTitle className="text-lg font-bold mb-1">
           <p className="text-sm text-gray-500">{menu.brand}</p>
           <p>{menu.Name}</p>
@@ -208,7 +203,7 @@ function MenuComponent({ menu, refetch }) {
           <p className="text-sm font-semibold text-gray-800">{menu.foodType}</p>
         )}
         {admin == "vendor" || admin == "admin" ? (
-          <div className="w-full relative bottom-[-20px] z-20 flex gap-2">
+          <div className="w-full relative bottom-[-20px] flex gap-2">
             <Button
               variant="destructive"
               onClick={() => handleDelete(menu)}
@@ -222,7 +217,6 @@ function MenuComponent({ menu, refetch }) {
                   variant="secondary"
                   onClick={(e) => {
                     e.stopPropagation()
-
                   }}
                 >
                   <Edit className="h-4 w-4" />
@@ -239,10 +233,10 @@ function MenuComponent({ menu, refetch }) {
             </Dialog>
           </div>
         ) : <div className="">
-          <Button
+          {/* <Button
             variant="default"
             onClick={(e) => { e.stopPropagation() }}
-          >Add</Button>
+          >Add</Button> */}
         </div>}
       </CardContent>
     </Card >
