@@ -15,6 +15,8 @@ function useFilteredItems() {
       { search, sort, order, foodType },
       { withCredentials: true }
     );
+    console.log(response);
+
     return response.data;
   };
 
@@ -30,6 +32,7 @@ function useFilteredItems() {
     query.refetch();
   };
   const handleFilter = (filterType, value, buttonOrder) => {
+    console.log(filterType, value, buttonOrder);
 
     if (filterType == "clear") {
       setFoodType("");

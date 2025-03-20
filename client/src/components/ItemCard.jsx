@@ -14,11 +14,15 @@ import useItemQuantity from "@/hooks/Restaurant/useItemQuantity"; // Update the 
 
 function ItemCard({ item, loading, Error }) {
   if (loading) return null;
+  console.log(item);
 
   // const [searchparams] = useSearchParams() 
   // const userid = searchparams.get('ID')  
   // console.log(userInfo);
   const { itemQuantity, handleAdd, handleReduce } = useItemQuantity(item);
+  console.log(itemQuantity);
+  if(itemQuantity.quantity <= 0) return alert("No items available");
+
   if (item.status === "pending") return <div className="text-center font-bold mt-20">No Items Found</div>;
   return (
     <div className="w-full mt-4">
@@ -29,6 +33,7 @@ function ItemCard({ item, loading, Error }) {
             <div className="flex flex-row gap-2 items-center py-3">
               <img src={item?.img} alt={item?.name} className="h-50 w-50" />
             </div>
+            {itemQuantity < 0 && <badge> Out of Stock</badge>}
           </CardTitle>
 
           <CardDescription>{item?.desc}</CardDescription>
@@ -42,12 +47,12 @@ function ItemCard({ item, loading, Error }) {
         <CardFooter>
           <Button variant="outline" onClick={() => handleReduce()}>-</Button>
           <div className="flex flex-row gap-2 items-center">
-            <Badge className="bg-black text-white px-3 py-2 mx-2">{itemQuantity || 0}</Badge>
+            <Badge className="bg-black text-white px-3 py-2 mx-2">{itemQuantity || +0}</Badge>
           </div>
           <Button variant="outline" onClick={() => handleAdd()}>+</Button>
         </CardFooter>
       </Card>
-    </div>
+    </div >
   );
 }
 

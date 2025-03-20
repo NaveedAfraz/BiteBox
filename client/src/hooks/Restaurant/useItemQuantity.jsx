@@ -26,7 +26,7 @@ function useItemQuantity(item = null) {
   const handleAdd = (itemToAdd) => {
     // Use either the passed item or the item from the hook initialization
     const targetItem = itemToAdd || item;
-
+   // if (itemQuantity <= 0) return alert("No suffient item quantity to add");
     if (targetItem) {
       console.log(targetItem);
       let item;

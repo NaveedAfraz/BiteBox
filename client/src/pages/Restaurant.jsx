@@ -176,11 +176,11 @@ function Restaurant() {
           <Card className="max-w-3xl overflow-hidden">
             <div className="relative w-full h-48 overflow-hidden">
               <img
-                className="w-[80%] h-full object-cover"
+                className="w-[100%] h-full object-cover"
                 src={RestaurantImage}
                 alt="Restaurant"
               />
-              <div className="absolute top-0 right-0 w-[20%] h-full bg-gradient-to-l from-orange-500 to-transparent"></div>
+              <div className="absolute top-0 right-0 w-[20%] h-full"></div>
             </div>
 
             <CardHeader className="pb-2">

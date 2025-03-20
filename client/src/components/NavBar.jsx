@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaSearch, FaShoppingCart } from "react-icons/fa";
 import { Input } from "./ui/input";
@@ -7,15 +7,16 @@ import { useAuth, UserButton } from "@clerk/clerk-react";
 import { useSelector } from "react-redux";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Button } from "./ui/button";
+import useFilteredItems from "@/hooks/Restaurant/useSort"; 
+import CardComponent from "./CardComponent";
 
 function NavBar() {
   const [showSearch, setShowSearch] = useState(false);
-  
+  const [showResults, setShowResults] = useState(false);
   const navigate = useNavigate();
-  const { userId } = useAuth();
-  const { userInfo } = useSelector(state => state.auth);
+  const { userInfo } = useSelector((state) => state.auth);
   const id = userInfo?.userId;
-  
+
   const NavLinks = () => (
     <>
       <Link to="/" className="block py-2 text-gray-700 hover:text-red-500 transition-colors">Home</Link>
@@ -26,6 +27,45 @@ function NavBar() {
     </>
   );
 
+
+  const [search, setSearch] = useState("");
+
+
+  const {
+    handleFilter,
+    data: filteredItems,
+  } = useFilteredItems();
+
+
+  const handleSearch = () => {
+
+    handleFilter("search", search);
+    setShowResults(true);
+  };
+
+  const resetSearch = () => {
+    setSearch("");
+    handleFilter("search", "");
+    setShowResults(false);
+    setShowSearch(false);
+  };
+
+  const handleItemClick = (item) => {
+    resetSearch();
+   // alert(true)
+   
+    //navigate(`/restaurant?name=${item?.Name}&&ID=${item?.restaurantID}`);
+  };
+  useEffect(() => {
+    if (showSearch) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [showSearch]);
   return (
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 md:px-5 py-4 bg-white shadow-md">
@@ -45,39 +85,36 @@ function NavBar() {
               </SheetContent>
             </Sheet>
           </div>
-          
+
           {/* Logo */}
           <div onClick={() => navigate("/")} className="text-2xl md:text-3xl font-bold text-red-500 cursor-pointer">
             BiteBox
           </div>
         </div>
-        
+
         {/* Desktop Navigation Links */}
         <div className="hidden md:flex space-x-8">
           <NavLinks />
         </div>
-        
+
         {/* Right Side Icons */}
         <div className="flex items-center gap-2 md:gap-4">
           <button onClick={() => setShowSearch(true)} className="p-1">
             <FaSearch className="text-lg md:text-xl text-gray-700 hover:text-red-500 cursor-pointer transition-colors" />
           </button>
-          
-          <button 
-            onClick={() => navigate(`/checkout?userid=${userInfo?.userId}`)} 
-            className="p-1"
-          >
+
+          <button onClick={() => navigate(`/checkout?userid=${userInfo?.userId}`)} className="p-1">
             <FaShoppingCart className="text-lg md:text-xl text-gray-700 hover:text-red-500 cursor-pointer transition-colors" />
           </button>
-          
-          {userId ? (
+
+          {userInfo ? (
             <div className="ml-1">
               <UserButton />
             </div>
           ) : (
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              variant="ghost"
+              size="sm"
               className="flex items-center gap-1 text-gray-700 hover:text-red-500"
               onClick={() => navigate("/login")}
             >
@@ -87,39 +124,49 @@ function NavBar() {
           )}
         </div>
       </nav>
-      
+
       {/* Search Overlay */}
       {showSearch && (
-        <div 
+        <div
           className="fixed inset-0 bg-black bg-opacity-50 z-[60] flex items-start justify-center pt-20"
-          onClick={() => setShowSearch(false)}
+          onClick={resetSearch}
         >
-          <div 
+          <div
             className="w-[90%] max-w-2xl bg-white p-4 rounded-lg shadow-lg"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="relative flex items-center">
-              <Input 
-                placeholder="Search..." 
-                name="search" 
-                autoFocus 
-                className="w-full pr-10" 
+              <Input
+                placeholder="Search..."
+                onChange={(e) => setSearch(e.target.value)}
+                value={search}
+                name="search"
+                autoFocus
+                className="w-full pr-10"
               />
               <div className="absolute right-3 flex">
-                <Search className="h-5 w-5 text-gray-500" />
+                <Search className="h-5 w-5 text-gray-500" onClick={handleSearch} />
               </div>
             </div>
             <div className="mt-2 flex justify-end">
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => setShowSearch(false)}
-              >
+              <Button variant="ghost" size="sm" onClick={resetSearch}>
                 <X className="h-4 w-4 mr-1" />
                 Close
               </Button>
             </div>
           </div>
+        </div>
+      )}
+
+
+      {showSearch && showResults && filteredItems && filteredItems.data && filteredItems.data.length > 0 && (
+        <div className="mt-56 container mx-auto px-4 h-screen z-199">
+
+          <CardComponent
+            categories={filteredItems.data}
+            title="Search Results"
+            onItemClick={handleItemClick}
+          />
         </div>
       )}
     </>

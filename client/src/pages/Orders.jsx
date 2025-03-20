@@ -1,35 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
-import { Card } from '@/components/ui/card';
-import { Loader2 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter
-} from '@/components/ui/dialog';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/components/ui/table';
+import { OrderDetailsDialog } from "@/components/orderDialog";
+import { ReviewDialog } from "@/components/reviewDialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import axios from "axios";
+import { Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
+  const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
   const { userInfo } = useSelector((state) => state.auth);
   const location = useLocation();
   const path = location.pathname.split('/');
@@ -82,7 +69,24 @@ const Orders = () => {
 
   const handleViewDetails = (order) => {
     setSelectedOrder(order);
-    setDialogOpen(true);
+    setDetailsDialogOpen(true);
+  };
+
+  const handleReviewOrder = (order) => {
+    setSelectedOrder(order);
+    setReviewDialogOpen(true);
+  };
+
+  const handleSubmitReview = async (reviewData) => {
+    try {
+      // Implement the API call to submit the review
+      await axios.post('http://localhost:3006/api/reviews/submit', reviewData);
+      // You might want to show a success message or update the UI
+      console.log('Review submitted successfully');
+    } catch (error) {
+      console.error('Error submitting review:', error);
+      // Handle the error (show error message, etc.)
+    }
   };
 
   const formatDate = (dateString) => {
@@ -101,14 +105,6 @@ const Orders = () => {
       style: 'currency',
       currency: 'USD'
     }).format(amount || 0);
-  };
-
-  // Calculate order total from details array
-  const calculateOrderTotal = (details) => {
-    if (!details || !details.length) return 0;
-    return details.reduce((total, item) => {
-      return total + (item.price * item.quantity);
-    }, 0);
   };
 
   return (
@@ -179,6 +175,18 @@ const Orders = () => {
                       >
                         View Details
                       </Button>
+
+                      {/* Review button only for delivered orders */}
+                      {order.status.toLowerCase() === 'delivered' && (
+                        <Button
+                          onClick={() => handleReviewOrder(order)}
+                          variant="outline"
+                          size="sm"
+                          className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                        >
+                          Add Review
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -188,97 +196,20 @@ const Orders = () => {
         </ScrollArea>
       )}
 
-      {/* Order Details Dialog */}
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-lg">
-          {selectedOrder && (
-            <>
-              <DialogHeader>
-                <DialogTitle>Order #{selectedOrder.orderID}</DialogTitle>
-                <DialogDescription>
-                  Placed on {formatDate(selectedOrder.orderDate)}
-                </DialogDescription>
-              </DialogHeader>
+      {/* Order Details Dialog - Using the separate component */}
+      <OrderDetailsDialog
+        order={selectedOrder} 
+        open={detailsDialogOpen}
+        onClose={() => setDetailsDialogOpen(false)}
+      />
 
-              <div className="space-y-4">
-                {/* Order Status Information */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-500">Status</h4>
-                    <Badge className={`mt-1 ${getStatusColor(selectedOrder.status)} border`}>
-                      {selectedOrder.status}
-                    </Badge>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-500">Payment</h4>
-                    <p className={`text-sm font-medium ${selectedOrder.paymentStatus === "paid" ? "text-green-600" : "text-yellow-600"}`}>
-                      {selectedOrder.paymentStatus}
-                    </p>
-                  </div>
-                  {selectedOrder.restaurantID && (
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-500">Restaurant</h4>
-                      <p className="text-sm">ID: {selectedOrder.restaurantID}</p>
-                    </div>
-                  )}
-                  {selectedOrder.deliveryAddressID && (
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-500">Delivery Address</h4>
-                      <p className="text-sm">ID: {selectedOrder.deliveryAddressID}</p>
-                    </div>
-                  )}
-                </div>
-
-                {/* Divider */}
-                <div className="border-t border-gray-200 my-4"></div>
-
-                {/* Order Items */}
-                <div>
-                  <h4 className="font-medium mb-2">Order Items</h4>
-                  {!selectedOrder.details || selectedOrder.details.length === 0 ? (
-                    <p className="text-sm text-gray-500">No item details available</p>
-                  ) : (
-                    <div className="border rounded-md">
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>Item ID</TableHead>
-                            <TableHead className="text-right">Qty</TableHead>
-                            <TableHead className="text-right">Price</TableHead>
-                            <TableHead className="text-right">Subtotal</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {selectedOrder.details.map((item, index) => (
-                            <TableRow key={index}>
-                              <TableCell>{item.itemID || item.id}</TableCell>
-                              <TableCell className="text-right">{item.quantity}</TableCell>
-                              <TableCell className="text-right">{formatPrice(item.price || 0)}</TableCell>
-                              <TableCell className="text-right">{formatPrice((item.price || 0) * item.quantity)}</TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  )}
-                </div>
-
-                {/* Order Total */}
-                <div className="flex justify-between items-center pt-2 border-t">
-                  <span className="font-medium">Total</span>
-                  <span className="font-bold text-lg">
-                    {formatPrice(selectedOrder.totalAmount || calculateOrderTotal(selectedOrder.details) || 0)}
-                  </span>
-                </div>
-              </div>
-
-              <DialogFooter>
-                <Button onClick={() => setDialogOpen(false)}>Close</Button>
-              </DialogFooter>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
+      {/* Review Dialog - Using the separate component */}
+      <ReviewDialog
+        order={selectedOrder}
+        open={reviewDialogOpen}
+        onClose={() => setReviewDialogOpen(false)}
+        onSubmit={handleSubmitReview}
+      />
     </div>
   );
 };

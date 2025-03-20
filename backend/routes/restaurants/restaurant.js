@@ -35,8 +35,7 @@ router.put("/updateItem/:itemID", updateItem);
 router.delete("/deleteItem/:itemID", deleteItem);
 router.put("/approveORreject", approvalORreject);
 router.get("/fetchPendingRejectedItems", fetchPendingRejectedItems);
-router.get("/fetchOneRestaurant/:restaurantID", fetchOneRestaurant);
-
+router.get("/fetchOneRestaurant/:restaurantID", fetchOneRestaurant)
 router.delete("/reviews/:reviewID", deleteReview);
 router.get("/reviews/:restaurantID", getReviews);
 router.post("/reviews/:restaurantID", insertreviews);

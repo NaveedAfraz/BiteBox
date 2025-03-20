@@ -162,30 +162,55 @@ app.get("/api/capture-paypal-order", async (req, res) => {
     const paypalClient = getPayPalClient();
     const capture = await paypalClient.execute(request);
 
-    // Process the captured payment (update database, etc.)
-    // ...
-    //const orderID = /* retrieve your internal orderID from session or DB logic */;
-    // const orderID = localStorage.getItem("orderID");
-    await pool.execute(
-      `UPDATE orders
-       SET paymentStatus = ?, status = ?
-       WHERE orderID = ?`,
-      ["paid", "preparing", orderId]
-    );
+    const connection = await pool.getConnection();
 
-    await pool.execute(`DELETE FROM cartItems WHERE cartID = ?`, [cartID]);
+    try {
+      await connection.beginTransaction();
 
-    res.json({
-      success: true,
-      captureId: capture.result.id,
-      orderDetails: capture.result,
-    });
+      await connection.execute(
+        `UPDATE orders
+         SET paymentStatus = ?, status = ?
+         WHERE orderID = ?`,
+        ["paid", "preparing", orderId]
+      );
+
+      const [cartItems] = await connection.execute(
+        `SELECT itemID, quantity FROM cartItems WHERE cartID = ?`,
+        [cartID]
+      );
+
+      for (const item of cartItems) {
+        await connection.execute(
+          `UPDATE items 
+           SET quantity = quantity - ? 
+           WHERE itemID = ?`,
+          [item.quantity, item.itemID]
+        );
+      }
+
+      await connection.execute(`DELETE FROM cartItems WHERE cartID = ?`, [
+        cartID,
+      ]);
+
+      await connection.commit();
+
+      res.json({
+        success: true,
+        captureId: capture.result.id,
+        orderDetails: capture.result,
+      });
+    } catch (error) {
+      await connection.rollback();
+      console.error("Database transaction error:", error);
+      res.status(500).json({ error: "Failed to process order" });
+    } finally {
+      connection.release();
+    }
   } catch (error) {
     console.error("PayPal capture error:", error);
     res.status(500).json({ error: "Failed to capture payment" });
   }
 });
-
 // Handle successful payment
 app.get("/payment-success", (req, res) => {
   // Redirect to your frontend success page

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router";
 
-const CardComponent = ({ categories, title, teamMembers, Items }) => {
+const CardComponent = ({ categories, title, teamMembers, Items, onItemClick }) => {
   const [array, setArray] = useState([]);
   const navigate = useNavigate();
   console.log(categories, title, teamMembers, Items);
@@ -19,7 +19,7 @@ const CardComponent = ({ categories, title, teamMembers, Items }) => {
         restaurantID: restaurant?.restaurantID,
       }));
       setArray(formattedCategories);
-    } else if (title === "Best Sellers") {
+    } else if (title === "Best Sellers" || title === "Search Results") {
       setArray(categories);
     } else {
       setArray(Items);
@@ -37,7 +37,6 @@ const CardComponent = ({ categories, title, teamMembers, Items }) => {
         </h2>
       )}
 
-      {/* Scrollable Container */}
       <div className={`px-5 py-8 w-full z-2 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 ${title.startsWith("The") ? "flex justify-center items-center" : null}`}>
         <div className="flex gap-4 pb-4 mx-auto" style={{
           minWidth: `${array?.length * 320}px`,
@@ -55,8 +54,9 @@ const CardComponent = ({ categories, title, teamMembers, Items }) => {
               <CardContent className="p-2">
                 <button
                   onClick={() =>
-                    !teamMembers &&
-                    navigate(`/restaurant?name=${category?.Name}&&ID=${category?.restaurantID}`)
+                    !teamMembers && (
+                      onItemClick && onItemClick(),
+                      navigate(`/restaurant?name=${category?.Name}&&ID=${category?.restaurantID}`))
                   }
                 >
                   {/* Circle Image */}
@@ -64,7 +64,7 @@ const CardComponent = ({ categories, title, teamMembers, Items }) => {
                     <img
                       src={category.img}
                       alt={category.Name}
-                      className="w-full h-[280px] object-cover rounded-full"
+                      className="w-[280px] h-[280px] object-cover rounded-full"
                     />
                   </div>
 
