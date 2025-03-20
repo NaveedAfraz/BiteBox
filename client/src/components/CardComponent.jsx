@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router";
 
-const CardComponent = ({ categories, title, teamMembers }) => {
+const CardComponent = ({ categories, title, teamMembers, Items }) => {
   console.log(categories, title);
   const [array, setArray] = useState([]);
-  //console.log(title);
+  console.log(title);
   console.log(teamMembers);
 
   const navigate = useNavigate()
@@ -13,7 +13,7 @@ const CardComponent = ({ categories, title, teamMembers }) => {
     if (teamMembers) {
       setArray(teamMembers);
 
-    } else if (title === "Food Categories") {
+    } else if (title === "Food Categories" && title === "") {
 
       const formattedCategories = categories.map((restaurant) => ({
         Name: restaurant?.Name,
@@ -26,11 +26,15 @@ const CardComponent = ({ categories, title, teamMembers }) => {
       }));
       setArray(formattedCategories);
     } else {
-      setArray(categories);
+      console.log(",,");
+      
+      setArray(Items);
     }
-  }, [teamMembers, categories]);
-  console.log(array.length);
+  }, [teamMembers, categories, Items]);
+  console.log(array?.length);
   //
+  console.log(Items);
+
 
   return (
     <div
@@ -42,7 +46,7 @@ const CardComponent = ({ categories, title, teamMembers }) => {
       </h2>
       <div className="px-5 py-8 bg-white scrollbar-hide">
         <div className={`flex gap-16  overflow-x-auto pb-4 scrollbar-hide`}>
-          {array.map((category) => (
+          {array && array.map((category) => (
             <Card
               key={category.id}
               className="w-[300px] border-0  shadow-lg hover:-translate-y-2 transition-transform cursor-pointer hover:!bg-transparent "

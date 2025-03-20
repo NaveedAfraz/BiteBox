@@ -139,19 +139,19 @@ function Requests() {
             {Items && Items.map((item) => (
               <Card key={item.id} className="overflow-hidden">
                 <img
-                  src={item.image}
+                  src={item.img}
                   alt={item.name}
                   className="w-full h-48 object-cover"
                 />
                 <CardHeader>
-                  <CardTitle>{item.name}</CardTitle>
-                  <CardDescription>From: {item.shop}</CardDescription>
+                  <CardTitle>{item.Name}</CardTitle>
+                  {/* <CardDescription>From: {item.desc}</CardDescription> */}
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-gray-500 mb-2">{item.description}</p>
+                  <p className="text-sm text-gray-500 mb-2">{item.desc}</p>
                   <div className="flex justify-between items-center">
-                    <span className="font-semibold">{item.price}</span>
-                    <span className="text-xs text-gray-400">Submitted: {item.submittedDate}</span>
+                    <span className="font-semibold">${item.Amount}</span>
+                    <span className="text-xs text-gray-400">Submitted {item.submittedDate}</span>
                   </div>
                 </CardContent>
                 <CardFooter className="flex justify-between">

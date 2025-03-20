@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaSearch, FaShoppingCart, FaUser } from "react-icons/fa";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -27,7 +27,19 @@ function Home() {
   const { menuItems, restaurantDetails } = useSelector((state) => state.restaurant)
   console.log(menuItems, restaurantDetails, "menuItems");
   const { data: AllRestaurant, isLoading } = fetchAllRestaurant()
-
+  const [Error, setError] = useState(null)
+  useEffect(() => {
+    const checkStatus = () => {
+      const result = menuItems.every((item) => item.status == "pending")
+      if (result) {
+        setError("No Items Found")
+      } else {
+        setError(null)
+      }
+      return result;
+    }
+    console.log(checkStatus(), "..");
+  }, [menuItems])
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -85,8 +97,7 @@ function Home() {
         </div>
       </div> */}
       <div className="px-5 py-16 bg-white">
-        <CardComponent categories={menuItems} title="Best Sellers" />
-      </div>
+        {Error ? "" : <CardComponent categories={menuItems} title="Best Sellers" />}</div>
 
       <div className="flex flex-col gap-4 justify-center items-center p-10 mt-10 relative">
         <div

@@ -1,12 +1,13 @@
 import CardComponent from '@/components/admin/CardComponent';
 import { Chart } from '@/components/ui/charts';
+import { useAuth } from '@clerk/clerk-react';
 import { DollarSign, ShoppingCart, Users, BarChart3 } from 'lucide-react';
 import React, { useState } from 'react'
 
 function Dashboard() {
   const title = "dashboardCard"
   const [isSuperAdmin, setIsSuperAdmin] = useState(true);
-
+  // const { use} = useAuth()
   const dashboardCards = [
     {
       title: isSuperAdmin ? "Total Restaurants" : "Today's Orders",

@@ -16,7 +16,7 @@ function Checkout() {
   console.log(cart);
 
 
-  if (cart.items.length === 0) {
+  if (cart?.items?.length === 0) {
     return (
       <div className="flex flex-col h-screen items-center justify-center p-8 text-center">
         <h2 className="text-2xl font-bold">Your cart is empty</h2>

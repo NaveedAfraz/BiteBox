@@ -38,9 +38,10 @@ import useRestaurant from '@/hooks/Restaurant/useRestaurant';
 
 const UserList = () => {
   const { userInfo } = useSelector(state => state.auth);
+
   const { getAllUsers, updateUserStatus } = useRestaurant();
   const { data: AllUsers, refetch } = getAllUsers({ userID: userInfo?.userId });
-  //console.log(userInfo);
+  console.log(userInfo);
   console.log(AllUsers);
 
   // State for dialog

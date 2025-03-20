@@ -28,7 +28,7 @@ function AdminHome() {
   const [userRole, setUserRole] = useState(user?.unsafeMetadata?.role);
   //console.log(userRole);
   const { userInfo } = useSelector((state) => state.auth);
-    console.log(userInfo);
+  console.log(userInfo);
 
   useEffect(() => {
     setUserRole(user?.unsafeMetadata?.role);
@@ -37,7 +37,7 @@ function AdminHome() {
 
   const { loginAuth, useLoggedIn } = useAuth();
   const { data: loggedInData } = useLoggedIn(user?.primaryEmailAddress?.emailAddress);
-  // console.log(loggedInData);
+   console.log(loggedInData);//
   const dispatch = useDispatch()
 
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -48,7 +48,7 @@ function AdminHome() {
   //console.log(userRole);
 
   const { data: restaurantData } = fetchRestaurant({ userID: userInfo?.userId });
-   console.log(restaurantData);
+  console.log(restaurantData);
 
   const [close, setClose] = useState(true);
   useEffect(() => {
@@ -73,7 +73,9 @@ function AdminHome() {
       });
     }
   }, [user])
-console.log(details);
+
+
+  console.log(user);
 
   //console.log(restaurantData);
   const superAdminItems = [

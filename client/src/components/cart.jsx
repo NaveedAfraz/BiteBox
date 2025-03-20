@@ -84,7 +84,7 @@ function Cart({ cart, selectedAddress, refetch }) {
       setIsProcessing(false);
     }
   };
-  console.log(cartItems.items.length);
+ 
 
   return (
     <div className="shadow-md rounded-b-2xl p-2 md:rounded-bl-none bg-white md:rounded-r-2xl w-full max-w-xl z-[3] ">

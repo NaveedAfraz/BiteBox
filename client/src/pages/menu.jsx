@@ -18,7 +18,7 @@ function Menu() {
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-
+  const [items, setItem] = React.useState(null);
   const {
     search,
     sort,
@@ -36,6 +36,21 @@ function Menu() {
     setSearchParams(params);
   }, [search, sort, order, foodType, setSearchParams]);
 
+
+  useEffect(() => {
+    const checkStatus = () => {
+      const result = filteredItems?.data.filter((item) => item.status !== "pending")
+      console.log(result);
+
+      if (result) {
+        setItem(result)
+      } else {
+        setItem(null)
+      }
+      return result;
+    }
+    console.log(checkStatus(), "..");
+  }, [filteredItems?.data])
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-grow pt-24">
@@ -55,11 +70,11 @@ function Menu() {
         </div>
 
         <div className="container mx-auto px-4 relative">
-          <h1 className="text-2xl font-bold absolute top-10 left-10">
+          {<h1 className="text-2xl font-bold absolute top-10 left-10">
             What's cooking for you today?
-          </h1>
+          </h1>}
           <div className="flex gap-8 overflow-x-auto scrollbar-hide">
-            <CardComponent categories={menuItems} title=" " />
+            <CardComponent categories={menuItems} title=" " Items={items} />
           </div>
         </div>
         <div className="container mx-auto px-4 mt-10">
@@ -131,6 +146,7 @@ function Menu() {
               ))
             )}
           </div>
+          {/* <p className="font-bold text-lg text-center my-5.5"> {Error} </p> */}
         </div>
       </main>
     </div>

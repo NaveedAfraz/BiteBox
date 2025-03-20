@@ -12,14 +12,14 @@ import { Badge } from "./ui/badge";
 import { DollarSignIcon } from "lucide-react";
 import useItemQuantity from "@/hooks/Restaurant/useItemQuantity"; // Update the path as needed
 
-function ItemCard({ item, loading }) {
+function ItemCard({ item, loading, Error }) {
   if (loading) return null;
 
   // const [searchparams] = useSearchParams() 
   // const userid = searchparams.get('ID')  
   // console.log(userInfo);
   const { itemQuantity, handleAdd, handleReduce } = useItemQuantity(item);
-
+  if (item.status === "pending") return <div className="text-center font-bold mt-20">No Items Found</div>;
   return (
     <div className="w-full mt-4">
       <Card>

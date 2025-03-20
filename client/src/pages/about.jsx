@@ -129,7 +129,7 @@ const About = () => {
                   Alex leads our vision for a better food delivery experience.
                 </p>
               </div> */}
-            {/* <CardComponent teamMembers={teamMembers} /> */}
+            <CardComponent teamMembers={teamMembers} />
           </div>
         </section>
 

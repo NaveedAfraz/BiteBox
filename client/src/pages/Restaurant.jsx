@@ -31,6 +31,7 @@ function Restaurant() {
     { id: 4, name: "Salad", price: 20 },
     { id: 5, name: "Drink", price: 10 },
   ];
+  const [Error, setError] = useState()
 
   const {
     search,
@@ -60,10 +61,10 @@ function Restaurant() {
     if (restaurant && (restaurant.items && restaurant.items.length == 0)) {
       setItems(restaurant.items)
     } else if (Index === undefined) {
-     // console.log(filteredItems);
+      // console.log(filteredItems);
 
       const filtered = filteredItems?.data.filter((restaurant) => restaurant.restaurantID == restaurantID)
-     // console.log(filtered);
+      // console.log(filtered);
 
       setItems(filtered)
     }
@@ -80,6 +81,7 @@ function Restaurant() {
   // console.log(restaurant);
   //console.log(isError);
 
+  console.log(items);
 
   const handlefilterBTN = function (item, index) {
     // console.log(false);
@@ -116,7 +118,21 @@ function Restaurant() {
     }
   }, [selectedFilter, filteredItems, restaurant?.items]);
   //console.log(restaurant);
-  if (isLoading) return <div>loign....</div>;
+  // if (isLoading) return <div>loign....</div>;
+  useEffect(() => {
+    const checkStatus = () => {
+      const result = filteredItems?.data.every((item) => item.status == "pending")
+      if (result) {
+        setError("No Items Found")
+      } else {
+        setError(null)
+      }
+      return result;
+    }
+    console.log(checkStatus(), "..");
+  }, [filteredItems?.data])
+
+  if (loading) return <div>Loading...</div>;
   const {
     Name,
     Cuisine,
@@ -124,8 +140,12 @@ function Restaurant() {
     ClosingHours,
     PhoneNumber,
     RestaurantImage
-  } = restaurant?.restaurant;
+  } = restaurant?.restaurant || {};
 
+
+  //  if (Error) {
+  //    return <div>Error: {Error}</div>;
+  //  }
   // if (error) return <div>Error: {error.message}</div>;
   return (
     <div className="min-h-screen flex flex-col">
@@ -237,9 +257,9 @@ function Restaurant() {
                 </div>
                 <div className="w-full min-h-52 h-screen mt-8">
                   {!loading && items && items.length > 0 ? items.map((item) => (
-                    <ItemCard key={item.id} item={item} loading={loading} />
+                    <ItemCard key={item.id} item={item} loading={loading} Error={Error} />
                   )) : (!isError && items?.length != 0 ? <div className="animate-spin mx-auto mt-15 rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500 mb-12"></div> : <div className="mt-10 text-center">
-                    <p className="mb-12 font-bold">Items Not Found</p>
+                    <p className="mt-20 font-bold">No Items Found</p>
                   </div>)
                   }
                   {/* {items?.length === 0 && <div className=""> item not there of this cat</div>} */}

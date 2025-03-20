@@ -95,7 +95,7 @@ function MenuComponent({ menu, refetch }) {
   const { user, isLoaded, updateUserMetadata } = useUser();
   const admin = user?.unsafeMetadata?.role;
   //// console.log(admin);
-  // console.log(menu, "menu");
+  console.log(menu, "menu");
   const navigate = useNavigate();
   const { deleteItem, updateItem } = useRestaurant()
   const { restaurantDetails } = useSelector((state) => state.restaurant)
@@ -151,7 +151,10 @@ function MenuComponent({ menu, refetch }) {
   const [state, formAction, isPending] = useActionState(handleSubmit, initialState);
 
   // console.log(menu);
-
+  if (menu.status === "pending") {
+    
+    return null
+  }
   return (
     <Card
       onClick={() => navigate(`/restaurant?name=${menu.Name}&&ID=${menu.restaurantID}`)}
