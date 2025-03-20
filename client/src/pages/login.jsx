@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { LogIn, Mail } from "lucide-react";
 import CustomLoginForm from "../helper/customForm"; // Make sure this file exists
+import { UserButton, useUser } from "@clerk/clerk-react";
 
 function Login() {
   const welcomeText = "Welcome Back To BiteBox!";
   const [step, setStep] = useState(0);
   const [isResetting, setIsResetting] = useState(false);
   const navigate = useNavigate();
-
+  const { user } = useUser()
   useEffect(() => {
     const interval = setInterval(() => {
       setStep((prev) => {
@@ -46,12 +47,13 @@ function Login() {
           >
             Admin
           </Link> */}
-          <Link
+          {!user && <Link
             to="/sign-up"
             className="text-black hover:text-orange-300 transition-colors flex items-center gap-2 font-medium"
           >
             Sign Up <Mail className="h-5 w-5" />
-          </Link>
+          </Link>}
+          <UserButton />
         </div>
       </nav>
 

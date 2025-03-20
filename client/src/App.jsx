@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
-import { Routes, Route, Outlet, useNavigate } from "react-router";
+import { Routes, Route, Outlet, useNavigate, useLocation } from "react-router";
 import Home from "./pages/home";
 import NavBar from "./components/NavBar";
 import Footer from "./components/footer";
@@ -23,6 +23,8 @@ import RoleSelectionModal from "./components/admin/RoleSelectionModal";
 import OAuthCallback from "./helper/googleRedirect";
 import useAuth from "./hooks/auth/useAuth";
 import OrderConfirmation from "./components/OrderConfirmation";
+import UserStatus from "./helper/userStatus";
+import Orders from "./pages/Orders";
 const Nav = () => {
   // console.log("...");
   return (
@@ -37,6 +39,7 @@ const Nav = () => {
     </>
   );
 };
+
 function App() {
   // const { userId } = useAuth();
   const { user, isLoaded, updateUserMetadata } = useUser();
@@ -49,23 +52,29 @@ function App() {
 
   useEffect(() => {
     //console.log(loggedInData);
+    // if (loggedInData) { 
+
+    // }
   }, [loggedInData])
-  // useEffect(() => {
-  //   const userRole = user?.unsafeMetadata?.role;
-  //   // setRole(userRole);
-  //   console.log(userRole);
-  //   // dispatch(userRole)
-  //   if (userRole === "admin") {
-  //     sessionStorage.removeItem('selectedRole');
-  //     navigate("/admin/dashboard");
-  //   } else if (userRole === "customer") {
-  //     sessionStorage.removeItem('selectedRole');
-  //     navigate("/");
-  //   } else if (userRole === "vendor") {
-  //     sessionStorage.removeItem('selectedRole');
-  //     navigate("/admin/dashboard");
-  //   }
-  // }, [user])
+  console.log(user);
+
+  const location = useLocation();
+  useEffect(() => {
+    const userRole = user?.unsafeMetadata?.role;
+    // setRole(userRole);
+    console.log(userRole);
+    // dispatch(userRole)
+    if (userRole === "admin") {
+      sessionStorage.removeItem('selectedRole');
+      navigate("/admin/dashboard");
+    } else if (userRole === "customer" && location.pathname === "/") {
+      sessionStorage.removeItem('selectedRole');
+      navigate("/");
+    } else if (userRole === "vendor") {
+      sessionStorage.removeItem('selectedRole');
+      navigate("/admin/dashboard");
+    }
+  }, [user?.unsafeMetadata])
 
 
   useEffect(() => {
@@ -113,10 +122,11 @@ function App() {
         <Route path="/sso-callback" element={<OAuthCallback />} />
         <Route
           path="/admin/dashboard"
-          element={
-            <AdminHome />
-          }
-        ></Route>
+          element={<UserStatus loggedInData={loggedInData}>
+
+          </UserStatus>}>
+          <Route path="/admin/dashboard" element={<AdminHome />}> </Route>
+        </Route >
 
         <Route path="/login" element={<Login />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
@@ -125,30 +135,33 @@ function App() {
 
 
         <Route element={<Nav />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
+          <Route path="/" element={<UserStatus loggedInData={loggedInData} />} >
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/orders/:id" element={<Orders />} />
+            <Route path="/menu" element={<Menu />} />
+            {/* <Route path="/checkout" element={<PaymentPage />} /> */}
+            <Route path="/order-confirmation" element={<OrderConfirmation />} />
+            <Route
+              path="/restaurant?/:name"
+              element={
+                <ProtectedRoute>
+                  <Restaurant />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/checkout"
+              element={
+                <ProtectedRoute>
+                  <Checkout />
+                </ProtectedRoute>
+              }
+            />
+          </Route>
           <Route path="/contact" element={<Contact />} />
-          <Route path="/menu" element={<Menu />} />
-          {/* <Route path="/checkout" element={<PaymentPage />} /> */}
-          <Route path="/order-confirmation" element={<OrderConfirmation />} />
-          <Route
-            path="/restaurant?/:name"
-            element={
-              <ProtectedRoute>
-                <Restaurant />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/checkout"
-            element={
-              <ProtectedRoute>
-                <Checkout />
-              </ProtectedRoute>
-            }
-          />
         </Route>
-      </Routes>
+      </Routes >
     </>
   );
 }

@@ -22,7 +22,7 @@ function CustomSignUpForm() {
   const { toggleAuth } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const { user } = useUser()
-  console.log(user, "ua");
+  // console.log(user, "ua");
   useEffect(() => {
     if (location.pathname === "/login") {
       dispatch(toggleAuthState("Login"));
@@ -30,6 +30,7 @@ function CustomSignUpForm() {
       dispatch(toggleAuthState("Sign Up"));
     }
   }, [location.pathname]);
+  console.log(loggedInData);
 
   const checkUserAuthentication = async (email) => {
     try {
@@ -89,7 +90,7 @@ function CustomSignUpForm() {
         }
       } else {
         // Handle Login
-        if (!loggedInData && !loggedInData?.email) {
+        if (!loggedInData && !loggedInData?.email && !user) {
           alert("Please sign up")
           // await signOut({ redirectUrl: '/login' });
           // loginAuth.mutate({ formData });
@@ -106,7 +107,7 @@ function CustomSignUpForm() {
             role,
             username,
           }
-          console.log(role);
+        //  console.log(role);
 
           if (result.status === "complete") {
             sessionStorage.setItem('selectedRole', role);
@@ -143,10 +144,7 @@ function CustomSignUpForm() {
   if (!isSignUpLoaded || !isSignInLoaded) {
     return <div>Loading authentication system...</div>;
   }
-
-  // if (isLoading) return <div>Loading...</div>;
-  // if (isError) return <div>Error: {loggedInError.message}</div>;
-
+ 
   return (
     <>
       <form

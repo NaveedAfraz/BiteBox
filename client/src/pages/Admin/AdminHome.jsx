@@ -20,7 +20,6 @@ import {
 import { useUser } from "@clerk/clerk-react";
 import { useDispatch, useSelector } from "react-redux";
 import useAuth from "@/hooks/auth/useAuth";
-import { userDetails } from "@/store/auth";
 import useRestaurant from "@/hooks/Restaurant/useRestaurant";
 function AdminHome() {
   const { isLoaded, isSignedIn, user } = useUser();
@@ -38,7 +37,7 @@ function AdminHome() {
   const { loginAuth, useLoggedIn } = useAuth();
   const { data: loggedInData } = useLoggedIn(user?.primaryEmailAddress?.emailAddress);
    console.log(loggedInData);//
-  const dispatch = useDispatch()
+  //const dispatch = useDispatch()
 
   const [activeTab, setActiveTab] = useState("dashboard");
   //alert(activeTab);

@@ -21,21 +21,25 @@ import {
 } from "@/components/ui/carousel";
 import { useSelector } from "react-redux";
 import useRestaurant from "@/hooks/Restaurant/useRestaurant";
+
+
 function Home() {
   //console.log(specialOffers);
   const { fetchAllRestaurant, deleteRestaurant } = useRestaurant()
   const { menuItems, restaurantDetails } = useSelector((state) => state.restaurant)
   console.log(menuItems, restaurantDetails, "menuItems");
   const { data: AllRestaurant, isLoading } = fetchAllRestaurant()
-  const [Error, setError] = useState(null)
+  const [filterItems, setFilterItems] = useState(null)
   useEffect(() => {
     const checkStatus = () => {
-      const result = menuItems.every((item) => item.status == "pending")
+      const result = menuItems.filter((item) => item.status == "approved")
       if (result) {
-        setError("No Items Found")
+        setFilterItems(result)
+
       } else {
-        setError(null)
+        setFilterItems([])
       }
+      console.log(result);
       return result;
     }
     console.log(checkStatus(), "..");
@@ -97,7 +101,7 @@ function Home() {
         </div>
       </div> */}
       <div className="px-5 py-16 bg-white">
-        {Error ? "" : <CardComponent categories={menuItems} title="Best Sellers" />}</div>
+        <CardComponent categories={filterItems} title="Best Sellers" /></div>
 
       <div className="flex flex-col gap-4 justify-center items-center p-10 mt-10 relative">
         <div

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { LogIn } from "lucide-react";
 import CustomSignUpForm from "../helper/customForm"; // adjust the path as needed
+import { UserButton, useUser } from "@clerk/clerk-react";
 
 function Signup() {
   const welcomeText = "Welcome Back To BiteBox!";
@@ -9,6 +10,7 @@ function Signup() {
   const [isResetting, setIsResetting] = useState(false);
   const navigate = useNavigate();
 
+  const { user } = useUser()
   useEffect(() => {
     const interval = setInterval(() => {
       setStep((prev) => {
@@ -41,14 +43,15 @@ function Signup() {
           >
             BiteBox
           </h1>
-          <span className="flex gap-5">
+          {!user && <span className="flex gap-5">
             <Link
               to="/login"
               className="text-black hover:text-orange-300 transition-colors duration-300 flex items-center gap-2 font-medium"
             >
               Sign In <LogIn className="h-5 w-5" />
             </Link>
-          </span>
+          </span>}
+          {user && <UserButton />}
         </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 h-[calc(100vh-4rem)]">

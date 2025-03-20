@@ -105,6 +105,7 @@ const getUserDetails = async (req, res) => {
       userId: rows[0].userID,
       email: rows[0].email,
       role: rows[0].role,
+      status: rows[0].status,
     };
 
     return res.status(200).json(userDetails);
@@ -113,5 +114,7 @@ const getUserDetails = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
+
+const checkUserStatus = function (req, res) {};
 
 module.exports = { loginIn, signUp, getUserDetails };

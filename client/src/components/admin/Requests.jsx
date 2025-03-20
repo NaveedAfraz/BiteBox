@@ -19,11 +19,13 @@ function Requests() {
 
   const { userInfo } = useSelector((state) => state.auth);
   const { data: AllRestaurant } = fetchAllRestaurant()
-  // console.log(AllRestaurant);
+  console.log(AllRestaurant);
   const filteredRestaurent = AllRestaurant?.data.filter(restaurant => restaurant.Status == "pending")
   console.log(filteredRestaurent);
   const { menuItems, restaurantDetails } = useSelector(state => state.restaurant);
   console.log(menuItems);
+  const filteredItems = menuItems.filter(item => item.status == "pending")
+  console.log(filteredItems);
 
   const pendingItems = [
     {
@@ -115,7 +117,7 @@ function Requests() {
     console.log(formData.get("status"), formData.append("restaurantId", id));
     approveORrejectRestaurant.mutate(formData);
   };
-
+ 
   return (
     <div className="container mx-auto py-8">
       <h1 className="text-3xl font-bold mb-6">Pending Requests</h1>
@@ -125,7 +127,7 @@ function Requests() {
           <TabsTrigger value="items" className="flex items-center gap-2">
             <Pizza className="h-4 w-4" />
             Items Approval
-            <Badge variant="secondary" className="ml-2">{Items.length}</Badge>
+            <Badge variant="secondary" className="ml-2">{filteredItems.length}</Badge>
           </TabsTrigger>
           <TabsTrigger value="shops" className="flex items-center gap-2">
             <Store className="h-4 w-4" />
@@ -136,7 +138,7 @@ function Requests() {
 
         <TabsContent value="items" className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {Items && Items.map((item) => (
+            {Items && filteredItems.map((item) => (
               <Card key={item.id} className="overflow-hidden">
                 <img
                   src={item.img}

@@ -94,7 +94,9 @@ function MenuComponent({ menu, refetch }) {
   const [open, setOpen] = useState(false);
   const { user, isLoaded, updateUserMetadata } = useUser();
   const admin = user?.unsafeMetadata?.role;
-  //// console.log(admin);
+  console.log(admin);
+  console.log(menu);
+
   console.log(menu, "menu");
   const navigate = useNavigate();
   const { deleteItem, updateItem } = useRestaurant()
@@ -152,7 +154,7 @@ function MenuComponent({ menu, refetch }) {
 
   // console.log(menu);
   if (menu.status === "pending") {
-    
+
     return null
   }
   return (

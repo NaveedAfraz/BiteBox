@@ -39,7 +39,7 @@ function Menu() {
 
   useEffect(() => {
     const checkStatus = () => {
-      const result = filteredItems?.data.filter((item) => item.status !== "pending")
+      const result = filteredItems?.data.filter((item) => item.status == "approved")
       console.log(result);
 
       if (result) {
@@ -51,6 +51,8 @@ function Menu() {
     }
     console.log(checkStatus(), "..");
   }, [filteredItems?.data])
+  console.log(filteredItems);
+
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-grow pt-24">
@@ -92,7 +94,7 @@ function Menu() {
                       <img
                         src={restaurant.RestaurantImage}
                         alt={restaurant.Name}
-                        className="w-[100vw] h-[250px] object-cover bg-amber-700  rounded-[50%]"
+                        className="w-[100vw] h-[250px] object-cover    rounded-[50%]"
                       />
                     </div>
                     <CardTitle className="text-center mt-4">
@@ -139,10 +141,10 @@ function Menu() {
             ) : isError ? (
               <p className="mb-12 font-bold">Items Not Found</p>
             ) : (
-              filteredItems &&
-              filteredItems.data &&
-              filteredItems.data.map((menu) => (
-                <MenuComponent key={menu.id || menu._id} menu={menu} />
+              items &&
+              items.length > 0 &&
+              items.map((item) => (
+                <MenuComponent key={item.id || item._id} menu={item} />
               ))
             )}
           </div>
