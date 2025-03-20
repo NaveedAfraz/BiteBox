@@ -15,18 +15,20 @@ const approveOrRejectOrder = async (req, res) => {
       "UPDATE orders SET status = ? WHERE orderID = ? AND paymentStatus != 'unpaid'";
     const values = [status, orderId];
 
-    // Use await with pool.query
-    const [results] = await db.query(query, values);
-
-    if (results.affectedRows === 0) {
-      return res.status(404).json({ message: "Order not found." });
-    }
-
-    return res
-      .status(200)
-      .json({ message: "Order status updated successfully." });
+    db.query(query, values, (error, results) => {
+      if (error) {
+        return res
+          .status(500)
+          .json({ message: "Error updating order status.", error });
+      }
+      if (results.affectedRows === 0) {
+        return res.status(404).json({ message: "Order not found." });
+      }
+      return res
+        .status(200)
+        .json({ message: "Order status updated successfully." });
+    });
   } catch (error) {
-    console.error("Error updating order status:", error);
     return res
       .status(500)
       .json({ message: "Error updating order status.", error });
@@ -42,15 +44,39 @@ const fetchUserOrders = async (req, res) => {
   }
 
   try {
-    const query = "SELECT * FROM orders WHERE userID = ?";
+    // First query to get all orders for the user
+    const ordersQuery = "SELECT * FROM orders WHERE userID = ?";
+    const [orders] = await db.query(ordersQuery, [userId]);
 
-    // Use await with pool.query
-    const [results] = await db.query(query, [userId]);
+    // If no orders are found, return empty array
+    if (!orders.length) {
+      return res.status(200).json([]);
+    }
 
-    return res.status(200).json(results);
+    // For each order, fetch its details
+    const ordersWithDetails = await Promise.all(
+      orders.map(async (order) => {
+        // Query to get order details for this specific order
+        const detailsQuery = "SELECT * FROM orderDetails WHERE orderID = ?";
+        const [details] = await db.query(detailsQuery, [order.orderID]);
+
+        // Return the order with its details
+        return {
+          ...order,
+          details: details,
+        };
+      })
+    );
+
+    return res.status(200).json(ordersWithDetails);
   } catch (error) {
-    console.error("Error fetching orders:", error);
-    return res.status(500).json({ message: "Error fetching orders.", error });
+    console.error("Error fetching orders with details:", error);
+    return res
+      .status(500)
+      .json({
+        message: "Error fetching orders with details.",
+        error: error.message,
+      });
   }
 };
 
