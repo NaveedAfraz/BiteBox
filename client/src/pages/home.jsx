@@ -157,7 +157,7 @@ function Home() {
                         🍽️ {testimonial.foodItem}
                       </p>
                       <p className="text-sm text-gray-700">
-                        ⭐ {testimonial.rating} / 5.0 
+                        ⭐ {testimonial.rating} / 5.0  
                       </p>
                     </CardContent>
                   </Card>
