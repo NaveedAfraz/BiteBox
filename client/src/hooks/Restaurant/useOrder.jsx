@@ -16,8 +16,8 @@ const useOrders = (restaurantId) => {
         console.log("rrrrrr");
         throw new Error('Status must be either "approved" or "rejected"');
       }
-  
-      
+
+
       const response = await axios.put(
         `${BASE_URL}/api/orders/${orderId}/status/${status}`,
         { status }
@@ -46,9 +46,9 @@ const useOrders = (restaurantId) => {
     return updateOrderStatus(orderId, status);
   };
 
-  const rejectOrder = ({orderId, status}) => {
+  const rejectOrder = ({ orderId, status }) => {
     console.log(orderId, status);
-    
+
     return updateOrderStatus(orderId, status);
   };
 

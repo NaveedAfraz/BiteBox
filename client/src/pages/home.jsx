@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/carousel";
 import { useSelector } from "react-redux";
 import useRestaurant from "@/hooks/Restaurant/useRestaurant";
+import useReviews from "@/hooks/Restaurant/useReview";
 
 
 function Home() {
@@ -30,6 +31,12 @@ function Home() {
   console.log(menuItems, restaurantDetails, "menuItems");
   const { data: AllRestaurant, isLoading } = fetchAllRestaurant()
   const [filterItems, setFilterItems] = useState(null)
+
+  const { userInfo } = useSelector((state) => state.auth);
+  const { fetchReviews } = useReviews();
+  const { data: reviewsData, refetch } = fetchReviews({ restaurantId: null, userID: null, orderID: null });
+  console.log(reviewsData);
+
   useEffect(() => {
     const checkStatus = () => {
       const result = menuItems.filter((item) => item.status == "approved")
@@ -132,7 +139,7 @@ function Home() {
           className="w-[95%] max-w-2xl lg:max-w-4xl xl:max-w-7xl"
         >
           <CarouselContent className="-ml-2 md:-ml-1">
-            {testimonials.map((testimonial) => (
+            {reviewsData.data.map((testimonial) => (
               <CarouselItem
                 key={testimonial.id}
                 className="pl-1 md:basis-1/2 lg:basis-1/3"
@@ -141,16 +148,16 @@ function Home() {
                   <Card className="w-64 h-64 xl:w-90 xl:h-90 shadow-lg rounded-lg">
                     <CardContent className="flex items-center justify-center p-5 h-full flex-col">
                       <span className="text-xl font-bold text-gray-800 mb-2">
-                        {testimonial.name}
+                        {testimonial.title}
                       </span>
                       <p className="text-sm italic text-gray-700 text-center mb-2">
-                        "{testimonial.quote}"
+                        "{testimonial.context}"
                       </p>
                       <p className="text-sm font-medium text-gray-800 mb-1">
                         🍽️ {testimonial.foodItem}
                       </p>
                       <p className="text-sm text-gray-700">
-                        ⭐ {testimonial.rating} / 5
+                        ⭐ {testimonial.rating} / 5.0
                       </p>
                     </CardContent>
                   </Card>

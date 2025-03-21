@@ -7,7 +7,7 @@ import { useAuth, UserButton } from "@clerk/clerk-react";
 import { useSelector } from "react-redux";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Button } from "./ui/button";
-import useFilteredItems from "@/hooks/Restaurant/useSort"; 
+import useFilteredItems from "@/hooks/Restaurant/useSort";
 import CardComponent from "./CardComponent";
 
 function NavBar() {
@@ -16,14 +16,14 @@ function NavBar() {
   const navigate = useNavigate();
   const { userInfo } = useSelector((state) => state.auth);
   const id = userInfo?.userId;
-
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const NavLinks = () => (
     <>
-      <Link to="/" className="block py-2 text-gray-700 hover:text-red-500 transition-colors">Home</Link>
-      <Link to="/menu" className="block py-2 text-gray-700 hover:text-red-500 transition-colors">Menu</Link>
-      <Link to="/about" className="block py-2 text-gray-700 hover:text-red-500 transition-colors">About</Link>
-      <Link to="/contact" className="block py-2 text-gray-700 hover:text-red-500 transition-colors">Contact</Link>
-      {id && <Link to={`/orders/${id}`} className="block py-2 text-gray-700 hover:text-red-500 transition-colors">Orders</Link>}
+      <Link to="/" className="block py-2 text-gray-700  hover:text-red-500 transition-colors cursor-pointer ">Home</Link>
+      <Link to="/menu" className="block py-2 text-gray-700 hover:text-red-500 transition-colors cursor-pointer">Menu</Link>
+      <Link to="/about" className="block py-2 text-gray-700 hover:text-red-500 transition-colors cursor-pointer">About</Link>
+      <Link to="/contact" className="block py-2 text-gray-700 hover:text-red-500 transition-colors cursor-pointer">Contact</Link>
+      {id && <Link to={`/orders/${id}`} className="block py-2 text-gray-700 hover:text-red-500 transition-colors cursor-pointer">Orders</Link>}
     </>
   );
 
@@ -52,8 +52,8 @@ function NavBar() {
 
   const handleItemClick = (item) => {
     resetSearch();
-   // alert(true)
-   
+    // alert(true)
+
     //navigate(`/restaurant?name=${item?.Name}&&ID=${item?.restaurantID}`);
   };
   useEffect(() => {
@@ -71,15 +71,15 @@ function NavBar() {
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 md:px-5 py-4 bg-white shadow-md">
         <div className="flex items-center">
           {/* Mobile Menu (only visible on small screens) */}
-          <div className="block md:hidden mr-2">
-            <Sheet>
+          <div className="block md:hidden mr-2 ">
+            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="text-gray-700">
-                  <Menu className="h-6 w-6" />
+                  <Menu className="h-6 w-6 " onClick={() => setIsSheetOpen(true)} />
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="w-64 p-8">
-                <div className="py-4 flex flex-col space-y-4">
+                <div className="py-4 flex flex-col cursor-pointer space-y-4">
                   <NavLinks />
                 </div>
               </SheetContent>
@@ -93,7 +93,7 @@ function NavBar() {
         </div>
 
         {/* Desktop Navigation Links */}
-        <div className="hidden md:flex space-x-8">
+        <div className="hidden cursor-pointer md:flex space-x-8">
           <NavLinks />
         </div>
 
@@ -161,7 +161,6 @@ function NavBar() {
 
       {showSearch && showResults && filteredItems && filteredItems.data && filteredItems.data.length > 0 && (
         <div className="mt-56 container mx-auto px-4 h-screen z-199">
-
           <CardComponent
             categories={filteredItems.data}
             title="Search Results"

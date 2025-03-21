@@ -20,6 +20,7 @@ const restaurantRoute = require("./routes/restaurants/restaurant");
 const cartRoute = require("./routes/Cart/cartRoute");
 const addressRoute = require("./routes/Address/addressRoute");
 const orderRoute = require("./routes/Order/orderRoute");
+const reviews = require("./routes/reviews/reviews");
 const pool = require("./db");
 
 function getPayPalClient() {
@@ -230,6 +231,7 @@ app.use("/api/restaurant", restaurantRoute);
 app.use("/api/address", addressRoute);
 app.use("/api/cart", cartRoute);
 app.use("/api/orders", orderRoute);
+app.use("/api/reviews", reviews);
 const port = 3006;
 app.listen(port, () => {
   console.log(`Server is running on port http://localhost:${port}`);

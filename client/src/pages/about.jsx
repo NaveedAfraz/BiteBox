@@ -113,7 +113,7 @@ const About = () => {
           />
 
           <div className="absolute inset-0 bg-white/50 backdrop-blur-sm z-[-1]"></div>
-          <div className="mx-auto">
+          <div className="mx-auto w-[80%]">
             <CardComponent teamMembers={Values} title="Our Values" />
           </div>
         </section>

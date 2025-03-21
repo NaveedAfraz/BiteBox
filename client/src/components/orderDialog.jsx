@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Loader2, Star } from 'lucide-react';
@@ -9,6 +9,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
+import { orderReviewItem } from "@/store/restaurant";
 import {
   Dialog,
   DialogContent,
@@ -25,9 +26,10 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table';
+import useReviews from '@/hooks/Restaurant/useReview';
 
 // Order Details Dialog Component
-export const OrderDetailsDialog = ({ order, open, onClose }) => {
+export const OrderDetailsDialog = ({ order, open, onClose, reviewOpen }) => {
   const formatDate = (dateString) => {
     const options = {
       year: 'numeric',
@@ -62,6 +64,8 @@ export const OrderDetailsDialog = ({ order, open, onClose }) => {
         return "bg-gray-100 text-gray-800 border-gray-300";
     }
   };
+  const path = location.pathname.split('/');
+  const userId = path[2];
 
   // Calculate order total from details array
   const calculateOrderTotal = (details) => {
@@ -70,7 +74,28 @@ export const OrderDetailsDialog = ({ order, open, onClose }) => {
       return total + (item.price * item.quantity);
     }, 0);
   };
+  console.log(order);
+  const dispatch = useDispatch();
+  const { fetchReviews } = useReviews();
+  const { data: reviewsData, refetch } = fetchReviews({ restaurantId: order?.restaurantID, userID: Number(userId), orderID: order?.orderID });
+  useEffect(() => {
+    if (order?.orderID) {
+      refetch();
+    }
+  }, [order?.orderID, refetch]);
+  useEffect(() => {
+    if (order?.orderID) {
+      refetch();
+    }
+  }, [order?.orderID, refetch]);
+  console.log(reviewsData);
+  const ids = order?.details.map((item) => item.itemID || []);
+  console.log(ids);
+  console.log(reviewsData?.data.filter((review) => ids.includes(review.itemID)))
+  console.log(order?.details)
+  useEffect(() => {
 
+  }, [ids])
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-lg">
@@ -128,6 +153,7 @@ export const OrderDetailsDialog = ({ order, open, onClose }) => {
                           <TableHead>Item ID</TableHead>
                           <TableHead className="text-right">Qty</TableHead>
                           <TableHead className="text-right">Price</TableHead>
+                          {order.paymentStatus === "paid" && <TableHead className="text-right">Review</TableHead>}
                           <TableHead className="text-right">Subtotal</TableHead>
                         </TableRow>
                       </TableHeader>
@@ -137,6 +163,26 @@ export const OrderDetailsDialog = ({ order, open, onClose }) => {
                             <TableCell>{item.itemID || item.id}</TableCell>
                             <TableCell className="text-right">{item.quantity}</TableCell>
                             <TableCell className="text-right">{formatPrice(item.price || 0)}</TableCell>
+                            {order.paymentStatus === "paid" &&
+                              <TableCell className="text-right">
+                                {reviewsData?.data.some(review => review.itemID === (item.itemID)) ? (
+                                  <div className="flex items-center justify-end gap-1">
+                                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                                    <span>
+                                      {reviewsData.data.find(review => review.itemID === (item.itemID)).rating || "N/A"}
+                                    </span>
+                                  </div>
+                                ) : (
+                                  <Button
+                                    onClick={() => {
+                                      reviewOpen(true)
+                                      dispatch(orderReviewItem(item.itemID || item.id))
+                                    }}                                  >
+                                    Add Review
+                                  </Button>
+                                )}
+                              </TableCell>
+                            }
                             <TableCell className="text-right">{formatPrice((item.price || 0) * item.quantity)}</TableCell>
                           </TableRow>
                         ))}
@@ -161,6 +207,6 @@ export const OrderDetailsDialog = ({ order, open, onClose }) => {
           </>
         )}
       </DialogContent>
-    </Dialog>
+    </Dialog >
   );
 };

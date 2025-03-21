@@ -8,23 +8,39 @@ import {
 } from '@/components/ui/dialog';
 
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
 import { Star } from 'lucide-react';
+import { Input } from './ui/input';
+import useReviews from '@/hooks/Restaurant/useReview';
+import { useLocation } from 'react-router-dom';
 export const ReviewDialog = ({ order, open, onClose, onSubmit }) => {
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
+  const [title, setTitle] = useState('');
+  console.log(order);
 
   const handleSubmit = () => {
     onSubmit({
       orderID: order.orderID,
       restaurantID: order.restaurantID,
+      title,
       rating,
-      comment 
+      comment
     });
     onClose();
   };
+  const location = useLocation();
+  const path = location.pathname.split('/');
+  const userId = path[2];
+  //console.log(order, "order");
+
+
+  useEffect(() => {
+    // console.log(reviewsData);
+    
+  }, []);
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -57,6 +73,8 @@ export const ReviewDialog = ({ order, open, onClose, onSubmit }) => {
           </div>
 
           <div>
+            <label className="block text-sm font-medium mb-1">Title</label>
+            <Input placeholder="Title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
             <label htmlFor="comment" className="block text-sm font-medium mb-1">
               Your Review
             </label>

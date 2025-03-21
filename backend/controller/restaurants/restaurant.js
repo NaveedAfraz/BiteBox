@@ -249,14 +249,24 @@ const additem = async function (req, res) {
       foodType,
       discountedAmount,
     } = req.body;
-    console.log(name, price, quantity, category, description, photoUrl,restaurantID, foodType,discountedAmount);
+    console.log(
+      name,
+      price,
+      quantity,
+      category,
+      description,
+      photoUrl,
+      restaurantID,
+      foodType,
+      discountedAmount
+    );
 
     if (
       !name ||
       !price ||
       !quantity ||
       !category ||
-      !description || 
+      !description ||
       !photoUrl ||
       !restaurantID ||
       !foodType ||
@@ -618,123 +628,6 @@ const updateItem = async (req, res) => {
     });
   }
 };
-
-const insertreviews = async (req, res) => {
-  try {
-    const { restaurantID } = req.params;
-    const { rating, review } = req.body;
-    console.log(restaurantID, rating, review);
-    if (!restaurantID || !rating || !review) {
-      return res.status(400).json({
-        success: false,
-        message: "All fields are required",
-      });
-    }
-    const query =
-      "INSERT INTO reviews (userID,itemID,title,rating,review) VALUES (?,?,?,?,?)";
-
-    const [result] = await pool.execute(query, [
-      req.user.userID,
-      restaurantID,
-      "Sample Review",
-      rating,
-      review,
-    ]);
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: "Restaurant not found" });
-    }
-    return res.status(200).json({
-      success: true,
-      message: "Review added successfully",
-      data: result,
-    });
-  } catch (error) {
-    console.error("Error getting reviews:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Server error while getting reviews",
-      error: error.message,
-    });
-  }
-};
-
-const deleteReview = async (req, res) => {
-  try {
-    const { reviewID } = req.params;
-
-    if (!reviewID) {
-      return res.status(400).json({
-        success: false,
-        message: "Review ID is required",
-      });
-    }
-
-    const query = "DELETE FROM reviews WHERE reviewID = ?";
-    const [result] = await pool.execute(query, [reviewID]);
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: "Review not found" });
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: "Review deleted successfully",
-      data: result,
-    });
-  } catch (error) {
-    console.error("Error deleting review:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Server error while deleting review",
-      error: error.message,
-    });
-  }
-};
-const getReviews = async (req, res) => {
-  try {
-    const { restaurantID, itemID } = req.query; // Fetch from query params
-
-    if (!restaurantID && !itemID) {
-      return res.status(400).json({
-        success: false,
-        message: "Either restaurantID or itemID is required",
-      });
-    }
-
-    let query;
-    let values;
-
-    if (itemID) {
-      // Fetch reviews for a specific item
-      query = "SELECT * FROM reviews WHERE itemID = ?";
-      values = [itemID];
-    } else {
-      // Fetch all reviews for a restaurant's items
-      query = `
-        SELECT r.* FROM reviews r
-        JOIN menu_items m ON r.itemID = m.itemID
-        WHERE m.restaurantID = ?
-      `;
-      values = [restaurantID];
-    }
-
-    const [rows] = await pool.execute(query, values);
-
-    return res.status(200).json({
-      success: true,
-      message: "Reviews fetched successfully",
-      data: rows,
-    });
-  } catch (error) {
-    console.error("Error fetching reviews:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Server error while fetching reviews",
-      error: error.message,
-    });
-  }
-};
-
 const fetchPendingRejectedItems = async (req, res) => {
   try {
     const query =
@@ -791,9 +684,6 @@ module.exports = {
   deleteRestaurant,
   deleteItem,
   updateItem,
-  getReviews,
-  deleteReview,
-  insertreviews,
   fetchPendingRejectedItems,
   fetchOneRestaurant,
 };

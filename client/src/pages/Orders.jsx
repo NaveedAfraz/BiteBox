@@ -1,9 +1,11 @@
 import { OrderDetailsDialog } from "@/components/orderDialog";
 import { ReviewDialog } from "@/components/reviewDialog";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import useReviews from "@/hooks/Restaurant/useReview";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -38,7 +40,8 @@ const Orders = () => {
         return "bg-gray-100 text-gray-800 border-gray-300";
     }
   };
-
+  //console.log(userId);
+  const { addreview, deleteReview } = useReviews();
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -46,12 +49,10 @@ const Orders = () => {
         const response = await axios.get(
           `http://localhost:3006/api/orders/fetchUserOrders/${userId}`
         );
-
         // Sort orders by date (newest first)
         const sortedOrders = response.data.sort((a, b) =>
           new Date(b.orderDate) - new Date(a.orderDate)
         );
-        
         setOrders(sortedOrders);
         setError(null);
       } catch (error) {
@@ -67,6 +68,8 @@ const Orders = () => {
     }
   }, [userId]);
 
+
+
   const handleViewDetails = (order) => {
     setSelectedOrder(order);
     setDetailsDialogOpen(true);
@@ -77,18 +80,22 @@ const Orders = () => {
     setReviewDialogOpen(true);
   };
 
-  const handleSubmitReview = async (reviewData) => {
-    try {
-      // Implement the API call to submit the review
-      await axios.post('http://localhost:3006/api/reviews/submit', reviewData);
-      // You might want to show a success message or update the UI
-      console.log('Review submitted successfully');
-    } catch (error) {
-      console.error('Error submitting review:', error);
-      // Handle the error (show error message, etc.)
-    }
-  };
+  const { orderReviewItemID } = useSelector((state) => state.restaurant)
+  console.log(orderReviewItemID);
 
+  const handleSubmitReview = async (reviewData) => {
+    console.log(reviewData);
+    addreview.mutate({
+      restaurantId: reviewData.restaurantID,
+      orderReviewItemID: reviewData.orderID,
+      title: reviewData.title,
+      comment: reviewData.comment,
+      rating: reviewData.rating,
+      userID: userInfo.userId,
+      itemID: orderReviewItemID,
+      orderID: reviewData.orderID
+    })
+  }
   const formatDate = (dateString) => {
     const options = {
       year: 'numeric',
@@ -107,10 +114,12 @@ const Orders = () => {
     }).format(amount || 0);
   };
 
+
+  const { fetchReviews, invalidateReviews } = useReviews();
+
   return (
     <div className="container max-w-4xl mx-auto p-4 space-y-6 mt-20">
       <h1 className="text-3xl font-bold">Your Orders</h1>
-
       {loading ? (
         <div className="flex justify-center items-center h-40">
           <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
@@ -168,7 +177,10 @@ const Orders = () => {
 
                     <div className="flex justify-end gap-2">
                       <Button
-                        onClick={() => handleViewDetails(order)}
+                        onClick={() => {
+                          handleViewDetails(order)
+                          invalidateReviews();
+                        }}
                         variant="outline"
                         size="sm"
                         className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
@@ -194,23 +206,24 @@ const Orders = () => {
             ))}
           </div>
         </ScrollArea>
-      )}
+      )
+      }
 
       {/* Order Details Dialog - Using the separate component */}
       <OrderDetailsDialog
-        order={selectedOrder} 
+        order={selectedOrder}
         open={detailsDialogOpen}
         onClose={() => setDetailsDialogOpen(false)}
+        reviewOpen={setReviewDialogOpen}
       />
 
-      {/* Review Dialog - Using the separate component */}
       <ReviewDialog
         order={selectedOrder}
         open={reviewDialogOpen}
         onClose={() => setReviewDialogOpen(false)}
         onSubmit={handleSubmitReview}
       />
-    </div>
+    </div >
   );
 };
 

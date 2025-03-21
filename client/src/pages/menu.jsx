@@ -94,7 +94,7 @@ function Menu() {
                       <img
                         src={restaurant.RestaurantImage}
                         alt={restaurant.Name}
-                        className="w-[100vw] h-[250px] object-cover    rounded-[50%]"
+                        className="w-[100vw] h-[250px] object-cover rounded-[50%]"
                       />
                     </div>
                     <CardTitle className="text-center mt-4">
