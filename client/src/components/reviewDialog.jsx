@@ -21,7 +21,7 @@ export const ReviewDialog = ({ order, open, onClose, onSubmit }) => {
       orderID: order.orderID,
       restaurantID: order.restaurantID,
       rating,
-      comment
+      comment 
     });
     onClose();
   };
