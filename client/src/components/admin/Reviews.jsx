@@ -1,28 +1,25 @@
 import React from 'react'
 import CardComponent from './CardComponent'
+import useReviews from '@/hooks/Restaurant/useReview';
 
 
 function Reviews() {
-  const reviews = [
-    {
-      id: 1,
-      user: "Regular Customer",
-      comment: "This restaurant is fantastic!",
-      rating: 4.8,
-      date: "2024-03-15"
-    },
-    {
-      id: 2,
-      user: "Food Critic",
-      comment: "The ambiance is just perfect!",
-      rating: 4.5,
-      date: "2024-03-14"
+  const { fetchReviews } = useReviews();
+  const { data: reviewsData, refetch } = fetchReviews({ restaurantId: null, userID: null, orderID: null });
+  const [reviewsDataState, setreviewsData] = React.useState([]);
+  React.useEffect(() => {
+
+    // reviewsData.data.icon = null
+    if (reviewsData?.data) {
+      setreviewsData(reviewsData?.data);
     }
-  ];
+  }, [reviewsData?.data]);
+  console.log(reviewsDataState);
+
   return (
     <>
-
-      <CardComponent item={reviews} title="reviews" /></>
+      {reviewsDataState.length > 0 && <CardComponent item={reviewsDataState} title="reviews" />}
+    </>
   )
 }
 

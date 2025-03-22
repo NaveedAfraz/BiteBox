@@ -14,23 +14,21 @@ import Signup from "./pages/SignUP";
 import AdminLogin from "./pages/Admin/adminLogin";
 import AdminSignup from "./pages/Admin/AdminSignUP";
 import { useUser } from "@clerk/clerk-react";
-
 import ProtectedRoute from "./helper/protectRoute";
 import AdminHome from "./pages/Admin/AdminHome";
 import Restaurant from "./pages/Restaurant";
 import VerifyEmail from "./pages/Admin/verifyEmail";
 import RoleSelectionModal from "./components/admin/RoleSelectionModal";
 import OAuthCallback from "./helper/googleRedirect";
-import useAuth from "./hooks/auth/useAuth";
 import OrderConfirmation from "./components/OrderConfirmation";
-import UserStatus from "./helper/userStatus";
 import Orders from "./pages/Orders";
-const Nav = () => {
-  // console.log("...");
+const Nav = ({ showSearch, setShowSearch }) => {
+  // console.log("...");  
+
   return (
     <>
       <div className="flex flex-col min-h-screen">
-        <NavBar />
+        <NavBar showSearch={showSearch} setShowSearch={setShowSearch} />
         <div className="flex-grow ">
 
           <Outlet />
@@ -46,7 +44,7 @@ function App() {
   // const { userId } = useAuth();
   const { user, isLoaded, updateUserMetadata } = useUser();
   // // console.log(user);
-
+  const [showSearch, setShowSearch] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false)
   const navigate = useNavigate();
   //const { loginAuth, useLoggedIn, signupAuth } = useAuth();
@@ -137,9 +135,9 @@ function App() {
         <Route path="/sign-up" element={<Signup />}></Route>
 
 
-        <Route element={<Nav />}>
+        <Route element={<Nav showSearch={showSearch} setShowSearch={setShowSearch} />}>
           {/* <Route path="/" element={<UserStatus loggedInData={loggedInData} />} > */}
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home setShowSearch={setShowSearch} showSearch={showSearch} />} />
           <Route path="/about" element={<About />} />
           <Route path="/orders/:id" element={<Orders />} />
           <Route path="/menu" element={<Menu />} />
@@ -161,8 +159,9 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/contact" element={<Contact />} />
         </Route>
-        <Route path="/contact" element={<Contact />} />
+
         {/* </Route> */}
       </Routes >
     </>

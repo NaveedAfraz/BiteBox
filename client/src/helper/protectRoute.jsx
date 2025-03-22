@@ -6,17 +6,18 @@ import useAuth from "@/hooks/auth/useAuth";
 
 function ProtectedRoute({ children }) {
   // const { userId, isLoaded: authLoaded } = useAuth();
-  const { user, isLoaded: userLoaded } = useUser();
+  const { user, isLoaded: userLoaded, isSignedIn } = useUser();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isBanned, setIsBanned] = useState(false);
   const navigate = useNavigate();
   //  console.log(userId);
+  console.log(user);
 
   // Assuming these are custom hooks you've created
   const { loginAuth, useLoggedIn, signupAuth } = useAuth();
   const { data: loggedInData, refetch: refetchLoggedIn } =
     useLoggedIn(user?.primaryEmailAddress?.emailAddress);
-  console.log(loggedInData);
+  //console.log(loggedInData);
 
   // Check if the user is banned when loggedInData changes
   useEffect(() => {
@@ -29,10 +30,9 @@ function ProtectedRoute({ children }) {
       }
     }
   }, [loggedInData]);
+  // console.log(userLoaded);
 
-  // Loading state
   if (!userLoaded) {
-
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-600"></div>
@@ -40,15 +40,14 @@ function ProtectedRoute({ children }) {
     );
   }
 
-  // Not logged in state
-  if (!loggedInData?.userId && !userLoaded) {
+  if (userLoaded && !isSignedIn) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
         <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
           <div className="text-center">
-            <Lock className="mx-auto h-12 w-12 text-primary" />
+            <Lock className="mx-auto h-12 w-12 text-red-600" />
           </div>
-          <h2 className="text-2xl font-bold text-center text-gray-800">
+          <h2 className="text-2xl font-bold text-center text-red-500">
             Access Restricted 🔒
           </h2>
           <div className="bg-blue-50 p-4 rounded-md flex items-start space-x-3">
@@ -63,14 +62,14 @@ function ProtectedRoute({ children }) {
           </p>
           <div className="flex flex-col space-y-3 pt-2">
             <Link
-              to="/signin"
-              className="flex items-center justify-center space-x-2 w-full py-2 px-4 bg-primary text-white rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              to="/login"
+              className="flex items-center justify-center space-x-2 w-full py-2 px-4 bg-red-600 text-white rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
               <LogIn className="h-4 w-4" />
-              <span>Sign In</span>
+              <span className="font-bold">Sign In</span>
             </Link>
             <Link
-              to="/signup"
+              to="/sign-up"
               className="flex items-center justify-center space-x-2 w-full py-2 px-4 bg-white border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
               <ArrowRight className="h-4 w-4" />
@@ -122,7 +121,6 @@ function ProtectedRoute({ children }) {
       </div>
     );
   }
-
   return children;
 }
 

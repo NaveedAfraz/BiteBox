@@ -23,7 +23,7 @@ import { useSelector } from "react-redux";
 import useRestaurant from "@/hooks/Restaurant/useRestaurant";
 import useReviews from "@/hooks/Restaurant/useReview";
 
-function Home() {
+function Home({ showSearch, setShowSearch }) {
   //console.log(specialOffers);
   const { fetchAllRestaurant, deleteRestaurant } = useRestaurant()
   const { menuItems, restaurantDetails } = useSelector((state) => state.restaurant)
@@ -53,6 +53,8 @@ function Home() {
   if (isLoading) {
     return <div>Loading...</div>;
   }
+  console.log(showSearch);
+
   return (
     <>
       <div className="min-h-screen w-full flex flex-col justify-center items-center">
@@ -80,6 +82,7 @@ function Home() {
                   type="text"
                   placeholder="Search for food or restaurants..."
                   className="flex-1 px-4 py-3 p-7 border-2 border-gray-200 rounded-lg focus:border-red-500 outline-none transition-colors"
+                  onClick={() => setShowSearch(true)}
                 />
                 <button className="px-8 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
                   <FaSearch />
@@ -135,10 +138,10 @@ function Home() {
               delay: 2000,
             }),
           ]}
-          className="w-[95%] max-w-2xl lg:max-w-4xl xl:max-w-7xl"
+          className="w-[85%] max-w-2xl lg:max-w-4xl xl:max-w-7xl"
         >
           <CarouselContent className="-ml-2 md:-ml-1">
-            {reviewsData.data.map((testimonial) => (
+            {reviewsData?.data.map((testimonial) => (
               <CarouselItem
                 key={testimonial.id}
                 className="pl-1 md:basis-1/2 lg:basis-1/3"
@@ -156,7 +159,7 @@ function Home() {
                         🍽️ {testimonial.foodItem}
                       </p>
                       <p className="text-sm text-gray-700">
-                        ⭐ {testimonial.rating} / 5.0  
+                        ⭐ {testimonial.rating} / 5.0
                       </p>
                     </CardContent>
                   </Card>

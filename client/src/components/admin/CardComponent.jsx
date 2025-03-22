@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectLabel, SelectTrigger, SelectVa
 import { Label } from '@radix-ui/react-select';
 
 const Render = ({ item, title, formAction }) => {
-  //console.log(item);
+  console.log(item);
   const { icon: IconComponent, value, description, trend } = item;
 
   switch (title) {
@@ -27,20 +27,26 @@ const Render = ({ item, title, formAction }) => {
       );
     case "reviews":
       return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-2 gap-6">
           {item.map((review) => (
-            <Card key={review.id} className="">
+            <Card key={review.reviewID} className="">
               <CardContent className="p-6 text-black">
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <h3 className="text-lg font-semibold">{review.user}</h3>
-                    <p className="text-sm text-gray-400">{review.date}</p>
+                    <h3 className="text-lg font-semibold">User #{review.userID}</h3>
+                    <p className="text-sm text-gray-400">Order #{review.orderID}</p>
                   </div>
                   <div className="flex items-center bg-blue-600 px-3 py-1 rounded-full">
-                    <span className="text-sm">⭐ {review.rating}</span>
+                    <span className="text-sm text-white">⭐ {review.rating}</span>
                   </div>
                 </div>
-                <p className="text-gray-600">{review.comment}</p>
+                <div>
+                  <h4 className="font-medium mb-1">{review.title}</h4>
+                  <p className="text-gray-600">{review.context}</p>
+                </div>
+                <div className="mt-2 text-xs text-gray-400">
+                  Item #{review.itemID} • Restaurant #{review.restaurantID}
+                </div>
               </CardContent>
             </Card>
           ))}
@@ -134,7 +140,7 @@ const Render = ({ item, title, formAction }) => {
 };
 
 function CardComponent({ item, title, formAction }) {
-  // console.log(item);
+  console.log(item);
   // console.log(title);
 
   return (

@@ -10,13 +10,12 @@ import { Button } from "./ui/button";
 import useFilteredItems from "@/hooks/Restaurant/useSort";
 import CardComponent from "./CardComponent";
 
-function NavBar() {
-  const [showSearch, setShowSearch] = useState(false);
+function NavBar({ showSearch, setShowSearch }) {
   const [showResults, setShowResults] = useState(false);
   const navigate = useNavigate();
   const { userInfo } = useSelector((state) => state.auth);
   const id = userInfo?.userId;
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [isSheetOpen, setIsSheetOpen] = useState();
   const NavLinks = () => (
     <>
       <Link to="/" className="block py-2 text-gray-700  hover:text-red-500 transition-colors cursor-pointer ">Home</Link>

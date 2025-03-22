@@ -36,7 +36,7 @@ function AdminHome() {
 
   const { loginAuth, useLoggedIn } = useAuth();
   const { data: loggedInData } = useLoggedIn(user?.primaryEmailAddress?.emailAddress);
-   console.log(loggedInData);//
+  console.log(loggedInData);//
   //const dispatch = useDispatch()
 
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -109,6 +109,11 @@ function AdminHome() {
   // Choose sidebar items based on role
   let sidebarItems = userRole === "admin" ? superAdminItems : vendorItems;
   // const [searchParams] = useSearchParams();
+  console.log(isLoaded);
+
+  if (!isLoaded) return <div className="flex items-center justify-center min-h-screen">
+    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-600"></div>
+  </div>
   return (
     <div className="min-h-screen">
       <header className="shadow w-full">
