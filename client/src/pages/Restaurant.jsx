@@ -60,12 +60,11 @@ function Restaurant() {
   useEffect(() => {
     if (restaurant && (restaurant.items && restaurant.items.length == 0)) {
       setItems(restaurant.items)
-    } else if (Index === undefined) {
+    }
+     else if (Index === undefined) {
       // console.log(filteredItems);
-
       const filtered = filteredItems?.data.filter((restaurant) => restaurant.restaurantID == restaurantID)
-      // console.log(filtered);
-
+      console.log(filtered);
       setItems(filtered)
     }
     if (isError) {
@@ -93,8 +92,8 @@ function Restaurant() {
     if (restaurant.items && item.name != "All") {
       const filteredItemsMenuBtn = restaurant.items.filter((Item) => Item.category === item.name
       )
-
-      //  console.log(filteredItemsMenuBtn);
+      console.log(filteredItemsMenuBtn);
+      // alert("Filtered")
       setItems(filteredItemsMenuBtn)
       setSelectedFilter(item.name);
     }
@@ -149,7 +148,7 @@ function Restaurant() {
   // if (error) return <div>Error: {error.message}</div>;
   return (
     <div className="min-h-screen flex flex-col">
-      <main className="pt-24 flex-grow">
+      <main className="py-34 flex-grow">
         {/* Top Container with Title & Breadcrumb */}
         <div className="container mx-auto px-4 relative mb-8">
           <Breadcrumb>
@@ -220,7 +219,7 @@ function Restaurant() {
               <Menu className="mr-2" />
               Menu
             </h1>
-            <div className="flex flex-row p-4 gap-4">
+            <div className="flex flex-row p-4 gap-11 ">
               <div className="rounded-lg p-4 flex flex-col gap-2 w-[0%] shadow-md  md:w-[40%] lg:w-[20%]">
                 {menu.map((item, index) => (
                   <Button

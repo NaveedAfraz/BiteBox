@@ -1,67 +1,130 @@
-import React from "react";
-import { Link } from "react-router";
-import { Lock, AlertTriangle, ArrowRight } from "lucide-react";
-import { useAuth } from "@clerk/clerk-react";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Lock, UserX, AlertTriangle, ArrowRight, LogIn } from "lucide-react";
+import { useUser } from "@clerk/clerk-react";
+import useAuth from "@/hooks/auth/useAuth";
 
 function ProtectedRoute({ children }) {
-  const { isLoaded, userId } = useAuth();
+  // const { userId, isLoaded: authLoaded } = useAuth();
+  const { user, isLoaded: userLoaded } = useUser();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isBanned, setIsBanned] = useState(false);
+  const navigate = useNavigate();
+  //  console.log(userId);
 
-  if (!isLoaded) {
+  // Assuming these are custom hooks you've created
+  const { loginAuth, useLoggedIn, signupAuth } = useAuth();
+  const { data: loggedInData, refetch: refetchLoggedIn } =
+    useLoggedIn(user?.primaryEmailAddress?.emailAddress);
+  console.log(loggedInData);
+
+  // Check if the user is banned when loggedInData changes
+  useEffect(() => {
+    if (loggedInData) {
+      // Check if the user is banned
+      if (loggedInData.role !== 'admin' && loggedInData.status !== 'active') {
+        setIsBanned(true);
+      } else {
+        setIsBanned(false);
+      }
+    }
+
+  }, [loggedInData]);
+
+  // Loading state
+  if (!userLoaded) {
+
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-600"></div>
       </div>
     );
   }
 
-  if (userId) {
-    return children;
-  }
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full border border-indigo-100">
-        <div className="flex justify-center mb-6">
-          <div className="bg-red-100 p-4 rounded-full">
-            <Lock className="h-10 w-10 text-red-500" />
+  // Not logged in state
+  if (!loggedInData?.userId && !userLoaded) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
+        <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
+          <div className="text-center">
+            <Lock className="mx-auto h-12 w-12 text-primary" />
           </div>
-        </div>
-
-        <h1 className="text-2xl font-bold text-center text-gray-800 mb-2">
-          Access Restricted 🔒
-        </h1>
-
-        <div className="bg-amber-50 border-l-4 border-amber-400 p-4 mb-6">
-          <div className="flex">
-            <AlertTriangle className="h-5 w-5 text-amber-500 mr-2 flex-shrink-0" />
-            <p className="text-amber-700">Please log in to access this page</p>
+          <h2 className="text-2xl font-bold text-center text-gray-800">
+            Access Restricted 🔒
+          </h2>
+          <div className="bg-blue-50 p-4 rounded-md flex items-start space-x-3">
+            <AlertTriangle className="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-blue-700">
+              Please log in to access this page
+            </p>
           </div>
-        </div>
-
-        <p className="text-gray-600 text-center mb-6">
-          This content is protected. Sign in to your account to view this page
-          and unlock all features ✨
-        </p>
-
-        <div className="space-y-4">
-          <Link
-            to="/login"
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-md font-medium flex items-center justify-center transition-colors duration-300"
-          >
-            Sign In
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Link>
-
-          <Link
-            to="/sign-up"
-            className="w-full bg-white hover:bg-gray-50 text-indigo-600 border border-indigo-200 py-2 px-4 rounded-md font-medium flex items-center justify-center transition-colors duration-300"
-          >
-            Create Account 🚀
-          </Link>
+          <p className="text-center text-gray-600">
+            This content is protected. Sign in to your account to view this page
+            and unlock all features ✨
+          </p>
+          <div className="flex flex-col space-y-3 pt-2">
+            <Link
+              to="/signin"
+              className="flex items-center justify-center space-x-2 w-full py-2 px-4 bg-primary text-white rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            >
+              <LogIn className="h-4 w-4" />
+              <span>Sign In</span>
+            </Link>
+            <Link
+              to="/signup"
+              className="flex items-center justify-center space-x-2 w-full py-2 px-4 bg-white border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            >
+              <ArrowRight className="h-4 w-4" />
+              <span>Create Account 🚀</span>
+            </Link>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  // Banned user state
+  if (isBanned) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
+        <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
+          <div className="text-center">
+            <UserX className="mx-auto h-12 w-12 text-red-500" />
+          </div>
+          <h2 className="text-2xl font-bold text-center text-gray-800">
+            Account Suspended 🚫
+          </h2>
+          <div className="bg-red-50 p-4 rounded-md flex items-start space-x-3">
+            <AlertTriangle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-red-700">
+              Your account has been banned from the platform
+            </p>
+          </div>
+          <p className="text-center text-gray-600">
+            We've detected activity that violates our terms of service. If you believe this is a mistake, please contact our support team.
+          </p>
+          <div className="flex flex-col space-y-3 pt-2">
+            <Link
+              to="/support"
+              className="flex items-center justify-center space-x-2 w-full py-2 px-4 bg-primary text-white rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            >
+              <ArrowRight className="h-4 w-4" />
+              <span>Contact Support</span>
+            </Link>
+            <Link
+              to="/signin"
+              className="flex items-center justify-center space-x-2 w-full py-2 px-4 bg-white border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            >
+              <LogIn className="h-4 w-4" />
+              <span>Login Page</span>
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return children;
 }
 
 export default ProtectedRoute;

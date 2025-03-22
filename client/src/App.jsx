@@ -32,7 +32,9 @@ const Nav = () => {
       <div className="flex flex-col min-h-screen">
         <NavBar />
         <div className="flex-grow ">
-          <Outlet />
+        
+            <Outlet />
+       
         </div>
         <Footer />
       </div>
@@ -43,20 +45,20 @@ const Nav = () => {
 function App() {
   // const { userId } = useAuth();
   const { user, isLoaded, updateUserMetadata } = useUser();
-  // console.log(user);
+  // // console.log(user);
 
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const navigate = useNavigate();
-  const { loginAuth, useLoggedIn, signupAuth } = useAuth();
-  const { data: loggedInData, refetch: refetchLoggedIn } = useLoggedIn(user?.primaryEmailAddress?.emailAddress);
+   const navigate = useNavigate();
+  //const { loginAuth, useLoggedIn, signupAuth } = useAuth();
+  // const { data: loggedInData, refetch: refetchLoggedIn } = useLoggedIn(user?.primaryEmailAddress?.emailAddress);
 
-  useEffect(() => {
-    //console.log(loggedInData);
-    // if (loggedInData) { 
+  // useEffect(() => {
+  //   //console.log(loggedInData);
+  //   // if (loggedInData) { 
 
-    // }
-  }, [loggedInData])
-  console.log(user);
+  //   // }
+  // }, [loggedInData])
+  // console.log(user);
 
   const location = useLocation();
   useEffect(() => {
@@ -122,10 +124,11 @@ function App() {
         <Route path="/sso-callback" element={<OAuthCallback />} />
         <Route
           path="/admin/dashboard"
-          element={<UserStatus loggedInData={loggedInData}>
-
-          </UserStatus>}>
-          <Route path="/admin/dashboard" element={<AdminHome />}> </Route>
+          element={
+            <ProtectedRoute>
+              <AdminHome />
+            </ProtectedRoute>
+          }>
         </Route >
 
         <Route path="/login" element={<Login />} />
@@ -135,32 +138,32 @@ function App() {
 
 
         <Route element={<Nav />}>
-          <Route path="/" element={<UserStatus loggedInData={loggedInData} />} >
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/orders/:id" element={<Orders />} />
-            <Route path="/menu" element={<Menu />} />
-            {/* <Route path="/checkout" element={<PaymentPage />} /> */}
-            <Route path="/order-confirmation" element={<OrderConfirmation />} />
-            <Route
-              path="/restaurant?/:name"
-              element={
-                <ProtectedRoute>
-                  <Restaurant />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/checkout"
-              element={
-                <ProtectedRoute>
-                  <Checkout />
-                </ProtectedRoute>
-              }
-            />
-          </Route>
-          <Route path="/contact" element={<Contact />} />
+          {/* <Route path="/" element={<UserStatus loggedInData={loggedInData} />} > */}
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/orders/:id" element={<Orders />} />
+          <Route path="/menu" element={<Menu />} />
+          {/* <Route path="/checkout" element={<PaymentPage />} /> */}
+          <Route path="/order-confirmation" element={<OrderConfirmation />} />
+          <Route
+            path="/restaurant?/:name"
+            element={
+              <ProtectedRoute>
+                <Restaurant />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/checkout"
+            element={
+              <ProtectedRoute>
+                <Checkout />
+              </ProtectedRoute>
+            }
+          />
         </Route>
+        <Route path="/contact" element={<Contact />} />
+        {/* </Route> */}
       </Routes >
     </>
   );

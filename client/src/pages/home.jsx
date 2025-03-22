@@ -23,7 +23,6 @@ import { useSelector } from "react-redux";
 import useRestaurant from "@/hooks/Restaurant/useRestaurant";
 import useReviews from "@/hooks/Restaurant/useReview";
 
-
 function Home() {
   //console.log(specialOffers);
   const { fetchAllRestaurant, deleteRestaurant } = useRestaurant()

@@ -650,18 +650,51 @@ const fetchPendingRejectedItems = async (req, res) => {
   }
 };
 
-const fetchOneRestaurant = (req, res) => {
+const fetchOneRestaurant = async (req, res) => {
   const restaurantID = req.params.restaurantID;
   try {
     const query = `SELECT * FROM Restaurant WHERE restaurantID = ?`;
     const values = [restaurantID];
-    // const restaurantid = restaurantResult[0].restaurantID;
     const itemsQuery = "SELECT * FROM items WHERE restaurantID = ?";
+    const reviewsQuery = "SELECT * FROM reviews WHERE restaurantID = ?";
 
-    pool.execute(query, values).then(([rows]) => {
-      const items = pool.execute(itemsQuery, [restaurantID]).then(([items]) => {
-        return res.json({ restaurant: rows[0], items });
-      });
+    const [restaurantRows] = await pool.execute(query, values);
+    const [items] = await pool.execute(itemsQuery, [restaurantID]);
+    const [reviews] = await pool.execute(reviewsQuery, [restaurantID]);
+
+    // Group reviews by itemID
+    const reviewsByItemID = {};
+    reviews.forEach((review) => {
+      if (!reviewsByItemID[review.itemID]) {
+        reviewsByItemID[review.itemID] = [];
+      }
+      reviewsByItemID[review.itemID].push(review);
+    });
+
+    // Calculate average ratings for each item
+    items.forEach((item) => {
+      const itemReviews = reviewsByItemID[item.itemID] || [];
+
+      if (itemReviews.length > 0) {
+        const totalRating = itemReviews.reduce(
+          (sum, review) => sum + parseFloat(review.rating),
+          0
+        );
+        item.averageRating = (totalRating / itemReviews.length).toFixed(1);
+        item.reviewCount = itemReviews.length;
+      } else {
+        item.averageRating = null;
+        item.reviewCount = 0;
+      }
+    });
+
+    // Send the response after all processing is complete
+    return res.json({
+      message: "Restaurant fetched successfully",
+      restaurant: restaurantRows[0],
+      items: items,
+      reviews: reviews,
+      success: true,
     });
   } catch (error) {
     console.error("Error fetching restaurant:", error);
@@ -670,6 +703,7 @@ const fetchOneRestaurant = (req, res) => {
       .json({ message: "Server error while fetching restaurant" });
   }
 };
+
 module.exports = {
   addrestaurant,
   fetchRestaurants,
