@@ -28,7 +28,6 @@ function ProtectedRoute({ children }) {
         setIsBanned(false);
       }
     }
-
   }, [loggedInData]);
 
   // Loading state

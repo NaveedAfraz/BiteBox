@@ -53,15 +53,18 @@ function Restaurant() {
   const { data: restaurant, isLoading, error } = fetchOneRestaurant(restaurantID);
 
   console.log(restaurant);
+  console.log(filteredItems);
 
   const [items, setItems] = useState()
   const [Index, setIndex] = useState()
   const [selectedFilter, setSelectedFilter] = useState(null);
   useEffect(() => {
     if (restaurant && (restaurant.items && restaurant.items.length == 0)) {
+      console.log("runing");
+
       setItems(restaurant.items)
     }
-     else if (Index === undefined) {
+    else if (Index === undefined) {
       // console.log(filteredItems);
       const filtered = filteredItems?.data.filter((restaurant) => restaurant.restaurantID == restaurantID)
       console.log(filtered);
@@ -89,8 +92,8 @@ function Restaurant() {
     // console.log(items);
 
     //console.log(item);
-    if (restaurant.items && item.name != "All") {
-      const filteredItemsMenuBtn = restaurant.items.filter((Item) => Item.category === item.name
+    if (filteredItems && item.name != "All") {
+      const filteredItemsMenuBtn = filteredItems.data.filter((Item) => Item.category === item.name
       )
       console.log(filteredItemsMenuBtn);
       // alert("Filtered")
@@ -116,8 +119,7 @@ function Restaurant() {
       setItems(restaurant.items)
     }
   }, [selectedFilter, filteredItems, restaurant?.items]);
-  //console.log(restaurant);
-  // if (isLoading) return <div>loign....</div>;
+
   useEffect(() => {
     const checkStatus = () => {
       const result = filteredItems?.data.every((item) => item.status == "pending")
@@ -131,7 +133,7 @@ function Restaurant() {
     console.log(checkStatus(), "..");
   }, [filteredItems?.data])
 
-  if (loading) return <div>Loading...</div>;
+  //if (loading) return <div>Loading...</div>;
   const {
     Name,
     Cuisine,

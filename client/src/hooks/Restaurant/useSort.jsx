@@ -8,7 +8,10 @@ function useFilteredItems() {
   const [sort, setSort] = useState("name");
   const [order, setOrder] = useState("asc");
   const [foodType, setFoodType] = useState("");
-
+  useEffect(() => {
+     console.log("mounted to useFilteredItems");
+  }, [])
+ 
   const fetchFilteredItems = async () => {
     const response = await axios.post(
       "http://localhost:3006/api/restaurant/sort",
@@ -19,7 +22,6 @@ function useFilteredItems() {
 
     return response.data;
   };
-
 
   const query = useQuery({
     queryKey: ["filteredItems", { search, sort, order, foodType }],

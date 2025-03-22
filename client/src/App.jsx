@@ -32,9 +32,9 @@ const Nav = () => {
       <div className="flex flex-col min-h-screen">
         <NavBar />
         <div className="flex-grow ">
-        
-            <Outlet />
-       
+
+          <Outlet />
+
         </div>
         <Footer />
       </div>
@@ -48,7 +48,7 @@ function App() {
   // // console.log(user);
 
   const [isModalOpen, setIsModalOpen] = useState(false)
-   const navigate = useNavigate();
+  const navigate = useNavigate();
   //const { loginAuth, useLoggedIn, signupAuth } = useAuth();
   // const { data: loggedInData, refetch: refetchLoggedIn } = useLoggedIn(user?.primaryEmailAddress?.emailAddress);
 
