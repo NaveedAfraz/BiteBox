@@ -22,6 +22,8 @@ import RoleSelectionModal from "./components/admin/RoleSelectionModal";
 import OAuthCallback from "./helper/googleRedirect";
 import OrderConfirmation from "./components/OrderConfirmation";
 import Orders from "./pages/Orders";
+import MessageDashboard from "./pages/messagesDashboard";
+import MessagesDashboard from "./pages/messagesDashboard";
 const Nav = ({ showSearch, setShowSearch }) => {
   // console.log("...");  
 
@@ -143,6 +145,11 @@ function App() {
           <Route path="/menu" element={<Menu />} />
           {/* <Route path="/checkout" element={<PaymentPage />} /> */}
           <Route path="/order-confirmation" element={<OrderConfirmation />} />
+          <Route path="/messagesDashboard" element={
+            <ProtectedRoute>
+              <MessagesDashboard />
+            </ProtectedRoute>} />
+            
           <Route
             path="/restaurant?/:name"
             element={

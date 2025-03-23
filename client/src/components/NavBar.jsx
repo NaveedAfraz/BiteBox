@@ -22,6 +22,7 @@ function NavBar({ showSearch, setShowSearch }) {
       <Link to="/menu" className="block py-2 text-gray-700 hover:text-red-500 transition-colors cursor-pointer">Menu</Link>
       <Link to="/about" className="block py-2 text-gray-700 hover:text-red-500 transition-colors cursor-pointer">About</Link>
       <Link to="/contact" className="block py-2 text-gray-700 hover:text-red-500 transition-colors cursor-pointer">Contact</Link>
+      <Link to="/messagesDashboard" className=" block py-2 text-gray-700 hover:text-red-500 transition-colors cursor-pointer">Messages</Link>
       {id && <Link to={`/orders/${id}`} className="block py-2 text-gray-700 hover:text-red-500 transition-colors cursor-pointer">Orders</Link>}
     </>
   );

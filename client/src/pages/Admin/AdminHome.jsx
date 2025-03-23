@@ -5,7 +5,7 @@ import Requests from "../../components/admin/Requests";
 import UserList from "@/components/admin/userlist";
 import SpecialCard from "@/components/SpecialCard";
 import { specialOffers } from "@/config/details";
-import Messages from "@/components/admin/messages";
+import Messages from "@/components/messages";
 import OrderList from "@/components/admin/OrderList";
 import Reviews from "../../components/admin/Reviews";
 import ChartCircle from "@/components/admin/chart";
