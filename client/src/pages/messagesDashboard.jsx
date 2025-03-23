@@ -3,9 +3,9 @@ import React from 'react'
 
 function MessagesDashboard() {
   return (
-    <>
+    <div className='mt-25'>
       <Messages />
-    </>
+    </div>
   )
 }
 

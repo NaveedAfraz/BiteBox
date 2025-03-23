@@ -60,7 +60,7 @@ function Address({ setSelectedAddress, selectedAddress, userid }) {
     }
     addAddress.mutate({ addressData: formdata });
     setSelectedAddress(null);
-    setTimeout(() => refetch(), 1000)
+    //setTimeout(() => refetch(), 1000)
     setOpen(false);
   }
 
@@ -70,7 +70,7 @@ function Address({ setSelectedAddress, selectedAddress, userid }) {
     e.stopPropagation();
     console.log("Delete ", item);
     removeAddress.mutateAsync({ userID: item.userID, addressID: item.addressID });
-    setTimeout(() => refetch(), 1000)
+   // setTimeout(() => refetch(), 1000)
   }
   return (
     <div className="w-full max-w-xl z-10 p-2 rounded-t-2xl bg-white md:rounded-l-2xl md:rounded-t-none">

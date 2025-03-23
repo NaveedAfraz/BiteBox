@@ -1,9 +1,52 @@
-import React from "react";
+import React, { useActionState, useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { contactDetails } from "@/config/details";
+import useContact from "@/hooks/contact/useMessages";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useSelector } from "react-redux";
+import useOrders from "@/hooks/Restaurant/useOrder";
 
 const Contact = () => {
+  const [selectedOrderID, setSelectedOrderID] = useState();
+  const { sendMessage } = useContact()
+  const { mutate, isError, isSuccess } = sendMessage;
+  const { fetchOrders } = useOrders()
+  const { userInfo } = useSelector(state => state.auth);
+  const { refetch: refetchOrders } = fetchOrders(userInfo?.userId);
+  const { orderIDs } = useSelector(state => state.restaurant);
+ // console.log(orderIDs, "orderIDs");
+
+  const stringOrderIDs = orderIDs.map(String);
+
+  // let orderIDs = [1, 2, 3, 4, 5]
+  const handleSubmit = async (prevValue, formData) => {
+    const title = formData.get('title');
+    const message = formData.get('message');
+    console.log(title, message);
+
+    if (!title) {
+      toast("Please enter a title");
+      return;
+    }
+    if (!message) {
+      toast("Please enter a message");
+      return;
+    }
+
+    let formdata = {
+      title: title,
+      message: message,
+    }
+    mutate({ formdata });
+  }
+  const intialState = null;
+  const [state, formAction, isPending] = useActionState(handleSubmit, intialState)
+  console.log(selectedOrderID);
+
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-grow pt-24">
@@ -11,7 +54,7 @@ const Contact = () => {
         <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-100">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-5xl font-bold text-gray-900 mb-4">
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">
                 Get in Touch
               </h2>
               <p className="text-lg text-gray-600">
@@ -40,71 +83,66 @@ const Contact = () => {
               </div>
 
               {/* Right Column: Contact Form */}
-              <div>
-                <Card className="border-0 shadow-lg">
+              <div className="my-auto h-[100%]">
+                <Card className="border-0 shadow-lg h-full">
                   <CardContent className="p-8">
                     <h2 className="text-3xl font-bold text-gray-900 mb-6">
                       Send Us a Message
                     </h2>
-                    <form className="space-y-6">
+                    <form className="space-y-12" action={formAction} >
                       <div>
                         <label
-                          htmlFor="name"
+                          htmlFor="title"
                           className="block text-sm font-medium text-gray-700"
                         >
-                          Name
+                          Title
                         </label>
-                        <input
+                        <Input
                           type="text"
-                          id="name"
-                          placeholder="Your Name"
+                          name="title"
+                          placeholder="Title"
                           className="mt-1 block w-full border border-gray-300 rounded-md p-3 focus:border-blue-500 focus:ring-blue-500"
                         />
                       </div>
-                      <div>
-                        <label
-                          htmlFor="email"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          Email
-                        </label>
-                        <input
-                          type="email"
-                          id="email"
-                          placeholder="you@example.com"
-                          className="mt-1 block w-full border border-gray-300 rounded-md p-3 focus:border-blue-500 focus:ring-blue-500"
-                        />
+                      <div className="flex w-full justify-around">
+                        <Select>
+                          <SelectTrigger className="w-[130px]">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="superAdmin">Super Admin</SelectItem>
+                            <SelectItem value="Vendor">Vendor</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Select value={selectedOrderID} onValueChange={setSelectedOrderID}>
+                          <SelectTrigger className="w-[130px]">
+                            <SelectValue placeholder="OrderID" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {stringOrderIDs.map((orderID, index) => (
+                              <SelectItem key={index} value={orderID}>
+                                {orderID}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
+
                       <div>
-                        <label
-                          htmlFor="subject"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          Subject
-                        </label>
-                        <input
-                          type="text"
-                          id="subject"
-                          placeholder="Subject"
-                          className="mt-1 block w-full border border-gray-300 rounded-md p-3 focus:border-blue-500 focus:ring-blue-500"
-                        />
-                      </div>
-                      <div>
-                        <label
+                        <Label
                           htmlFor="message"
                           className="block text-sm font-medium text-gray-700"
                         >
                           Message
-                        </label>
+                        </Label>
                         <textarea
-                          id="message"
-                          rows="5"
+                          name="message"
+                          rows="8"
                           placeholder="Your Message"
                           className="mt-1 block w-full border border-gray-300 rounded-md p-3 focus:border-blue-500 focus:ring-blue-500"
                         ></textarea>
                       </div>
                       <Button
-                        type="submit"
                         className="w-full bg-blue-500 text-white rounded-md py-3 hover:bg-blue-600"
                       >
                         Submit

@@ -24,21 +24,21 @@ const Messages = () => {
     { id: 4, name: "Carlos Rodriguez", avatar: "/api/placeholder/40/40", lastMessage: "I'll be there in 10 minutes", unread: 1, lastActive: "20m ago" },
     { id: 5, name: "Emma Wilson", avatar: "/api/placeholder/40/40", lastMessage: "Can you add extra sauce?", unread: 0, lastActive: "3d ago" },
     {
-      id: 6,
+      id: 7,
       name: "John Doe",
       avatar: "/api/placeholder/40/40",
       lastMessage: "Hello, how are you?",
       unread: 0,
       lastActive: "4d ago"
     }, {
-      id: 6,
+      id: 8,
       name: "John Doe",
       avatar: "/api/placeholder/40/40",
       lastMessage: "Hello, how are you?",
       unread: 0,
       lastActive: "4d ago"
     }, {
-      id: 6,
+      id: 9,
       name: "John Doe",
       avatar: "/api/placeholder/40/40",
       lastMessage: "Hello, how are you?",
@@ -53,22 +53,22 @@ const Messages = () => {
     { id: 2, sender: "You", content: "Great! Can you call me when you're outside?", time: "10:26 AM", isSender: true },
     { id: 3, sender: "Carlos Rodriguez", content: "Sure thing! I'll be there in about 10 minutes.", time: "10:27 AM", isSender: false },
     { id: 4, sender: "You", content: "Perfect, thank you!", time: "10:28 AM", isSender: true },
-    { id: 1, sender: "Carlos Rodriguez", content: "I'm on my way with your order!", time: "10:24 AM", isSender: false },
-    { id: 2, sender: "You", content: "Great! Can you call me when you're outside?", time: "10:26 AM", isSender: true },
-    { id: 3, sender: "Carlos Rodriguez", content: "Sure thing! I'll be there in about 10 minutes.", time: "10:27 AM", isSender: false },
-    { id: 4, sender: "You", content: "Perfect, thank you!", time: "10:28 AM", isSender: true },
-    { id: 1, sender: "Carlos Rodriguez", content: "I'm on my way with your order!", time: "10:24 AM", isSender: false },
-    { id: 2, sender: "You", content: "Great! Can you call me when you're outside?", time: "10:26 AM", isSender: true },
-    { id: 3, sender: "Carlos Rodriguez", content: "Sure thing! I'll be there in about 10 minutes.", time: "10:27 AM", isSender: false },
-    { id: 4, sender: "You", content: "Perfect, thank you!", time: "10:28 AM", isSender: true },
-    { id: 1, sender: "Carlos Rodriguez", content: "I'm on my way with your order!", time: "10:24 AM", isSender: false },
-    { id: 2, sender: "You", content: "Great! Can you call me when you're outside?", time: "10:26 AM", isSender: true },
-    { id: 3, sender: "Carlos Rodriguez", content: "Sure thing! I'll be there in about 10 minutes.", time: "10:27 AM", isSender: false },
-    { id: 4, sender: "You", content: "Perfect, thank you!", time: "10:28 AM", isSender: true },
-    { id: 1, sender: "Carlos Rodriguez", content: "I'm on my way with your order!", time: "10:24 AM", isSender: false },
-    { id: 2, sender: "You", content: "Great! Can you call me when you're outside?", time: "10:26 AM", isSender: true },
-    { id: 3, sender: "Carlos Rodriguez", content: "Sure thing! I'll be there in about 10 minutes.", time: "10:27 AM", isSender: false },
-    { id: 4, sender: "You", content: "Perfect, thank you!", time: "10:28 AM", isSender: true },
+    { id: 5, sender: "Carlos Rodriguez", content: "I'm on my way with your order!", time: "10:24 AM", isSender: false },
+    { id: 6, sender: "You", content: "Great! Can you call me when you're outside?", time: "10:26 AM", isSender: true },
+    { id: 7, sender: "Carlos Rodriguez", content: "Sure thing! I'll be there in about 10 minutes.", time: "10:27 AM", isSender: false },
+    { id: 8, sender: "You", content: "Perfect, thank you!", time: "10:28 AM", isSender: true },
+    { id: 9, sender: "Carlos Rodriguez", content: "I'm on my way with your order!", time: "10:24 AM", isSender: false },
+    { id: 10, sender: "You", content: "Great! Can you call me when you're outside?", time: "10:26 AM", isSender: true },
+    { id: 11, sender: "Carlos Rodriguez", content: "Sure thing! I'll be there in about 10 minutes.", time: "10:27 AM", isSender: false },
+    { id: 12, sender: "You", content: "Perfect, thank you!", time: "10:28 AM", isSender: true },
+    { id: 13, sender: "Carlos Rodriguez", content: "I'm on my way with your order!", time: "10:24 AM", isSender: false },
+    { id: 14, sender: "You", content: "Great! Can you call me when you're outside?", time: "10:26 AM", isSender: true },
+    { id: 15, sender: "Carlos Rodriguez", content: "Sure thing! I'll be there in about 10 minutes.", time: "10:27 AM", isSender: false },
+    { id: 15, sender: "You", content: "Perfect, thank you!", time: "10:28 AM", isSender: true },
+    { id: 16, sender: "Carlos Rodriguez", content: "I'm on my way with your order!", time: "10:24 AM", isSender: false },
+    { id: 17, sender: "You", content: "Great! Can you call me when you're outside?", time: "10:26 AM", isSender: true },
+    { id: 18, sender: "Carlos Rodriguez", content: "Sure thing! I'll be there in about 10 minutes.", time: "10:27 AM", isSender: false },
+    { id: 19, sender: "You", content: "Perfect, thank you!", time: "10:28 AM", isSender: true },
   ];
 
   const toggleSidebar = () => {
@@ -104,7 +104,7 @@ const Messages = () => {
         {isSidebarOpen ? (
           <>
             <div className="p-3 border-b bg-white">
-              <h2 className="text-lg font-semibold mb-2">Messages</h2>
+              <h2 className="text-2xl font-semibold mb-5">Messages</h2>
               <div className="relative">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
                 <Input placeholder="Search..." className="pl-8 text-sm" />

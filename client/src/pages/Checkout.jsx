@@ -4,6 +4,7 @@ import useCart from "@/hooks/Restaurant/useCart";
 import useItemQuantity from "@/hooks/Restaurant/useItemQuantity";
 import React, { useState } from "react";
 import { useSearchParams } from "react-router";
+import Contact from "./contact";
 
 function Checkout() {
   const [searchParams] = useSearchParams()

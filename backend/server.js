@@ -22,7 +22,7 @@ const addressRoute = require("./routes/Address/addressRoute");
 const orderRoute = require("./routes/Order/orderRoute");
 const reviews = require("./routes/reviews/reviews");
 const pool = require("./db");
-
+const { server } = require("./socket");
 function getPayPalClient() {
   const clientId = process.env.PAYPAL_CLIENT_ID;
   const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
@@ -233,6 +233,6 @@ app.use("/api/cart", cartRoute);
 app.use("/api/orders", orderRoute);
 app.use("/api/reviews", reviews);
 const port = 3006;
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server is running on port http://localhost:${port}`);
 });

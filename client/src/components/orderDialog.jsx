@@ -90,9 +90,9 @@ export const OrderDetailsDialog = ({ order, open, onClose, reviewOpen }) => {
   }, [order?.orderID, refetch]);
   console.log(reviewsData);
   const ids = order?.details.map((item) => item.itemID || []);
-  console.log(ids);
-  console.log(reviewsData?.data.filter((review) => ids.includes(review.itemID)))
-  console.log(order?.details)
+  //console.log(ids);
+ // console.log(reviewsData?.data.filter((review) => ids.includes(review.itemID)))
+ // console.log(order?.details)
   useEffect(() => {
 
   }, [ids])

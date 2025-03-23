@@ -52,7 +52,7 @@ const About = () => {
             <span className="inline-block px-3 py-1 mb-8 text-xs font-medium uppercase tracking-wider text-blue-600 bg-blue-100 rounded-full">
               About Us
             </span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 mb-6">
               Redefining The Food Experience
             </h2>
             <p className="max-w-2xl mx-auto text-lg text-gray-600 mb-10">

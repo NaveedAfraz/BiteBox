@@ -1,21 +1,18 @@
 import { OrderDetailsDialog } from "@/components/orderDialog";
 import { ReviewDialog } from "@/components/reviewDialog";
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import useOrders from "@/hooks/Restaurant/useOrder";
 import useReviews from "@/hooks/Restaurant/useReview";
-import axios from "axios";
+
 import { Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
 
 const Orders = () => {
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
@@ -23,6 +20,10 @@ const Orders = () => {
   const location = useLocation();
   const path = location.pathname.split('/');
   const userId = path[2];
+
+  const { fetchOrders } = useOrders()
+  const { data: orders, isLoading, isError, refetch: refetchOrders } = fetchOrders(userId);
+  console.log(orders, "orders");
 
   const getStatusColor = (status) => {
     switch (status.toLowerCase()) {
@@ -40,35 +41,9 @@ const Orders = () => {
         return "bg-gray-100 text-gray-800 border-gray-300";
     }
   };
-  //console.log(userId);
-  const { addreview, deleteReview } = useReviews();
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(
-          `http://localhost:3006/api/orders/fetchUserOrders/${userId}`
-        );
-        // Sort orders by date (newest first)
-        const sortedOrders = response.data.sort((a, b) =>
-          new Date(b.orderDate) - new Date(a.orderDate)
-        );
-        setOrders(sortedOrders);
-        setError(null);
-      } catch (error) {
-        console.error('Error fetching orders:', error);
-        setError('Failed to load your orders. Please try again later.');
-      } finally {
-        setLoading(false);
-      }
-    };
 
-    if (userId) {
-      fetchOrders();
-    }
-  }, [userId]);
-
-
+  const { addreview, deleteReview, fetchReviews, invalidateReviews } = useReviews();
+  const { orderReviewItemID } = useSelector((state) => state.restaurant);
 
   const handleViewDetails = (order) => {
     setSelectedOrder(order);
@@ -80,11 +55,7 @@ const Orders = () => {
     setReviewDialogOpen(true);
   };
 
-  const { orderReviewItemID } = useSelector((state) => state.restaurant)
-  console.log(orderReviewItemID);
-
   const handleSubmitReview = async (reviewData) => {
-    console.log(reviewData);
     addreview.mutate({
       restaurantId: reviewData.restaurantID,
       orderReviewItemID: reviewData.orderID,
@@ -94,8 +65,14 @@ const Orders = () => {
       userID: userInfo.userId,
       itemID: orderReviewItemID,
       orderID: reviewData.orderID
-    })
-  }
+    }, {
+      onSuccess: () => {
+        // Optionally refetch orders to get updated review status
+        refetchOrders();
+      }
+    });
+  };
+
   const formatDate = (dateString) => {
     const options = {
       year: 'numeric',
@@ -114,28 +91,25 @@ const Orders = () => {
     }).format(amount || 0);
   };
 
-
-  const { fetchReviews, invalidateReviews } = useReviews();
-
   return (
     <div className="container max-w-4xl mx-auto p-4 space-y-6 mt-20">
       <h1 className="text-3xl font-bold">Your Orders</h1>
-      {loading ? (
+      {isLoading ? (
         <div className="flex justify-center items-center h-40">
           <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
         </div>
-      ) : error ? (
+      ) : isError ? (
         <Card className="p-4 bg-red-50 text-red-800 border border-red-200">
           {error}
         </Card>
-      ) : orders.length === 0 ? (
+      ) : orders?.length === 0 ? (
         <Card className="p-6 text-center">
           <p className="text-lg text-gray-600">You haven't placed any orders yet.</p>
         </Card>
       ) : (
         <ScrollArea className="h-[calc(100vh-180px)]">
           <div className="space-y-4 pr-4">
-            {orders.map((order) => (
+            {orders?.map((order) => (
               <Card
                 key={order.orderID}
                 className="p-4 hover:shadow-md transition-all duration-200"
@@ -178,7 +152,7 @@ const Orders = () => {
                     <div className="flex justify-end gap-2">
                       <Button
                         onClick={() => {
-                          handleViewDetails(order)
+                          handleViewDetails(order);
                           invalidateReviews();
                         }}
                         variant="outline"
@@ -206,8 +180,7 @@ const Orders = () => {
             ))}
           </div>
         </ScrollArea>
-      )
-      }
+      )}
 
       {/* Order Details Dialog - Using the separate component */}
       <OrderDetailsDialog
@@ -223,7 +196,7 @@ const Orders = () => {
         onClose={() => setReviewDialogOpen(false)}
         onSubmit={handleSubmitReview}
       />
-    </div >
+    </div>
   );
 };
 

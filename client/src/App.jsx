@@ -24,6 +24,7 @@ import OrderConfirmation from "./components/OrderConfirmation";
 import Orders from "./pages/Orders";
 import MessageDashboard from "./pages/messagesDashboard";
 import MessagesDashboard from "./pages/messagesDashboard";
+import useAuth from "./hooks/auth/useAuth";
 const Nav = ({ showSearch, setShowSearch }) => {
   // console.log("...");  
 
@@ -49,8 +50,8 @@ function App() {
   const [showSearch, setShowSearch] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false)
   const navigate = useNavigate();
-  //const { loginAuth, useLoggedIn, signupAuth } = useAuth();
-  // const { data: loggedInData, refetch: refetchLoggedIn } = useLoggedIn(user?.primaryEmailAddress?.emailAddress);
+  const { loginAuth, useLoggedIn, signupAuth } = useAuth();
+  const { data: loggedInData, refetch: refetchLoggedIn, isLoading } = useLoggedIn(user?.primaryEmailAddress?.emailAddress);
 
   // useEffect(() => {
   //   //console.log(loggedInData);
@@ -112,7 +113,7 @@ function App() {
       console.error("Error updating role:", error);
     }
   };
-  // if (!isLoaded && !user?.id) return <div>Loading user data...</div>;
+  // if (!isLoaded ) return <div>Loading user data...</div>;
 
   return (
     <>
@@ -149,7 +150,7 @@ function App() {
             <ProtectedRoute>
               <MessagesDashboard />
             </ProtectedRoute>} />
-            
+
           <Route
             path="/restaurant?/:name"
             element={

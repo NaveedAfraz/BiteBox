@@ -5,6 +5,7 @@ const initialState = {
   menuItems: [],
   review: [],
   orderReviewItemID: {},
+  orderIDs: [],
 };
 
 const restaurantSlice = createSlice({
@@ -23,9 +24,18 @@ const restaurantSlice = createSlice({
       console.log(action.payload, "orderReviewItem");
       state.orderReviewItemID = action.payload;
     },
+    setOrderIDs: (state, action) => {
+      console.log(action.payload, "setOrderIDs");
+      state.orderIDs = action.payload;
+    },
   },
 });
 
-export const { setRestaurantDetails, setMenuItems,orderReviewItem } = restaurantSlice.actions;
+export const {
+  setRestaurantDetails,
+  setMenuItems,
+  orderReviewItem,
+  setOrderIDs,
+} = restaurantSlice.actions;
 
 export default restaurantSlice.reducer;

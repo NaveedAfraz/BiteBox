@@ -15,6 +15,8 @@ function NavBar({ showSearch, setShowSearch }) {
   const navigate = useNavigate();
   const { userInfo } = useSelector((state) => state.auth);
   const id = userInfo?.userId;
+  console.log(userInfo);
+  
   const [isSheetOpen, setIsSheetOpen] = useState();
   const NavLinks = () => (
     <>

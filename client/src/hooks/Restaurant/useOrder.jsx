@@ -1,12 +1,13 @@
+import { setOrderIDs } from '@/store/restaurant';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
 
 // Base API URL
 const BASE_URL = 'http://localhost:3006';
 
 const useOrders = (restaurantId) => {
   const queryClient = useQueryClient();
-
   // Mutation for updating order status
   const updateOrderStatusMutation = useMutation({
     mutationFn: async ({ orderId, status }) => {
@@ -52,8 +53,30 @@ const useOrders = (restaurantId) => {
     return updateOrderStatus(orderId, status);
   };
 
-  return {
 
+  const dispatch = useDispatch();
+  const fetchOrders = (userId) => useQuery({
+    queryKey: ['userOrders', userId],
+    queryFn: async () => {
+      console.log(userId);
+      const response = await axios.get(`http://localhost:3006/api/orders/fetchUserOrders/${userId}`);
+      console.log(response);
+
+      const sortedOrders = response.data.sort(
+        (a, b) => new Date(b.orderDate) - new Date(a.orderDate)
+      );
+      // Get recent order IDs for the store
+      const recentOrderIds = sortedOrders.slice(0, 5).map((order) => order.orderID);
+      console.log(recentOrderIds);
+      dispatch(setOrderIDs(recentOrderIds));
+      return response.data;
+    },
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+
+  return {
+    fetchOrders,
     updateOrderStatus,
     approveOrder,
     rejectOrder
