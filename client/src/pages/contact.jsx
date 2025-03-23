@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useSelector } from "react-redux";
 import useOrders from "@/hooks/Restaurant/useOrder";
+import socket from "@/lib/socket";
 
 const Contact = () => {
   const [selectedOrderID, setSelectedOrderID] = useState();
@@ -18,7 +19,7 @@ const Contact = () => {
   const { userInfo } = useSelector(state => state.auth);
   const { refetch: refetchOrders } = fetchOrders(userInfo?.userId);
   const { orderIDs } = useSelector(state => state.restaurant);
- // console.log(orderIDs, "orderIDs");
+  // console.log(orderIDs, "orderIDs");
 
   const stringOrderIDs = orderIDs.map(String);
 
@@ -46,7 +47,11 @@ const Contact = () => {
   const intialState = null;
   const [state, formAction, isPending] = useActionState(handleSubmit, intialState)
   console.log(selectedOrderID);
-
+  useEffect(() => {
+    if (selectedOrderID) {
+      socket.emit('order-selected', selectedOrderID);
+    }
+  }, [selectedOrderID])
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-grow pt-24">
