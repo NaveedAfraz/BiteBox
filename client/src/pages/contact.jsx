@@ -48,8 +48,10 @@ const Contact = () => {
   const [state, formAction, isPending] = useActionState(handleSubmit, intialState)
   console.log(selectedOrderID);
   useEffect(() => {
+ socket.emit('order-selected', selectedOrderID);
     if (selectedOrderID) {
-      socket.emit('order-selected', selectedOrderID);
+    console.log(true);
+     
     }
   }, [selectedOrderID])
   return (

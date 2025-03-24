@@ -1,10 +1,11 @@
 const express = require("express");
-const app = express();
+// const app = express();
 const dotenv = require("dotenv");
 const path = require("path");
 const cors = require("cors");
 const cloudinary = require("./cloudinary");
 const paypal = require("@paypal/checkout-server-sdk");
+const { server ,app} = require("./socket");
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -22,7 +23,7 @@ const addressRoute = require("./routes/Address/addressRoute");
 const orderRoute = require("./routes/Order/orderRoute");
 const reviews = require("./routes/reviews/reviews");
 const pool = require("./db");
-const { server } = require("./socket");
+
 function getPayPalClient() {
   const clientId = process.env.PAYPAL_CLIENT_ID;
   const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
