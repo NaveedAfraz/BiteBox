@@ -13,8 +13,8 @@ import socket from "@/lib/socket";
 
 const Contact = () => {
   const [selectedOrderID, setSelectedOrderID] = useState();
-  const { sendMessage } = useContact()
-  const { mutate, isError, isSuccess } = sendMessage;
+  const { sendMessage, messages, isLoading } = useContact();
+
   const { fetchOrders } = useOrders()
   const { userInfo } = useSelector(state => state.auth);
   const { refetch: refetchOrders } = fetchOrders(userInfo?.userId);
@@ -42,18 +42,20 @@ const Contact = () => {
       title: title,
       message: message,
     }
-    mutate({ formdata });
+    sendMessage.mutate({ formdata });
   }
+
   const intialState = null;
   const [state, formAction, isPending] = useActionState(handleSubmit, intialState)
   console.log(selectedOrderID);
   useEffect(() => {
- socket.emit('order-selected', selectedOrderID);
+    socket.emit('order-selected', selectedOrderID);
     if (selectedOrderID) {
-    console.log(true);
-     
+      console.log(true);
+
     }
   }, [selectedOrderID])
+
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-grow pt-24">

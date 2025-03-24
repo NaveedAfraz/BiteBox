@@ -426,10 +426,10 @@ const sortingANDsearching = async (req, res) => {
       query += ` ORDER BY Name ASC`;
     }
 
-    console.log("Executing query:", query, "with values:", values);
+    // console.log("Executing query:", query, "with values:", values);
 
     const [result] = await pool.execute(query, values);
-    console.log(result);
+    //  console.log(result);
 
     if (!result || result.length === 0) {
       return res.status(404).json({
@@ -633,7 +633,7 @@ const fetchPendingRejectedItems = async (req, res) => {
     const query =
       "SELECT * FROM items WHERE status = 'Pending' OR status = 'rejected'";
     const [rows] = await pool.execute(query);
-    console.log(rows, "rejected items");
+    //console.log(rows, "rejected items");
 
     return res.status(200).json({
       success: true,

@@ -77,7 +77,6 @@ const Messages = () => {
 
   const handleSendMessage = () => {
     if (message.trim() !== '') {
-      // Here you would add the message to your state or send it to your backend
       console.log("Sending message:", message);
       setMessage('');
     }

@@ -5,7 +5,7 @@ const path = require("path");
 const cors = require("cors");
 const cloudinary = require("./cloudinary");
 const paypal = require("@paypal/checkout-server-sdk");
-const { server ,app} = require("./socket");
+const { server, app } = require("./socket/socket");
 app.use(
   cors({
     origin: "http://localhost:5173",
