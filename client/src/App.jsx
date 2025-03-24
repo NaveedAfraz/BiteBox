@@ -33,9 +33,7 @@ const Nav = ({ showSearch, setShowSearch }) => {
       <div className="flex flex-col min-h-screen">
         <NavBar showSearch={showSearch} setShowSearch={setShowSearch} />
         <div className="flex-grow ">
-
           <Outlet />
-
         </div>
         <Footer />
       </div>

@@ -1,22 +1,15 @@
 const pool = require("../../db");
-const saveMessages = async (data) => {
-  const {
-    title,
-    userId,
-    userType,
-    orderId,
-    senderId,
-    senderType,
-    content,
-    conversationID,
-  } = data;
+
+const saveMessages = async (formData) => {
+  console.log(formData, "dart");
+  const { content, conversationID, senderId, senderType } = formData;
   const connection = await pool.getConnection();
 
   try {
     await connection.beginTransaction();
 
-    // Check if conversation already exists
     if (conversationID) {
+      // Existing conversation logic remains the same
       const q = "SELECT * FROM conversations WHERE id = ?";
       const [rows] = await connection.execute(q, [conversationID]);
 
@@ -37,29 +30,70 @@ const saveMessages = async (data) => {
       ]);
 
       await connection.commit();
-
       return {
         success: true,
-        message: "Message added to conversation",
         conversationId: conversationID,
+        message: content,
+        senderId: senderId,
+        senderType: senderType,
+        createdAt: new Date(),
+        readStatus: 0,
       };
     } else {
+      let title = formData.title;
+      let content = formData.message;
+      let senderId = formData.senderId;
+      let senderType = formData.senderType;
+      let orderId = formData.orderId;
+      let userType = formData.senderType;
+
+      // First, fetch the restaurant ID associated with the order
+      const [orderDetails] = await connection.execute(
+        "SELECT restaurantID FROM orders WHERE orderID = ?",
+        [orderId]
+      );
+
+      if (orderDetails.length === 0) {
+        throw new Error("Order not found");
+      }
+
+      const restaurantId = orderDetails[0].restaurantID;
+
+      // Fetch restaurant details for the title
+      const [restaurantDetails] = await connection.execute(
+        "SELECT Name FROM Restaurant WHERE restaurantID = ?",
+        [restaurantId]
+      );
+
+      // Update title with restaurant name if available
+      title = title || `Conversation with ${restaurantDetails[0]?.Name || 'Restaurant'}`;
+
       const insertConversation =
-        "INSERT INTO conversations (title, created_at) VALUES (?,?)";
+        "INSERT INTO conversations (title, created_at, order_id) VALUES (?,?,?)";
       const [conversationResult] = await connection.execute(
         insertConversation,
-        [title, new Date()]
+        [title, new Date(), orderId]
       );
 
       const conversationId = conversationResult.insertId;
 
-      // Add participant
-      const insertParticipant =
+      // Add sender as participant
+      const insertSenderParticipant =
         "INSERT INTO participants (conversation_id, user_id, user_type, order_id) VALUES (?,?,?,?)";
-      await connection.execute(insertParticipant, [
+      await connection.execute(insertSenderParticipant, [
         conversationId,
-        userId,
+        senderId,
         userType,
+        orderId,
+      ]);
+
+      // Add restaurant as participant
+      const insertRestaurantParticipant =
+        "INSERT INTO participants (conversation_id, user_id, user_type, order_id) VALUES (?,?,?,?)";
+      await connection.execute(insertRestaurantParticipant, [
+        conversationId,
+        restaurantId,
+        'restaurant',
         orderId,
       ]);
 
@@ -80,7 +114,6 @@ const saveMessages = async (data) => {
       );
 
       await connection.commit();
-
       return {
         success: true,
         message: "New conversation created",

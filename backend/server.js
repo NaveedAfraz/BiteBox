@@ -22,6 +22,7 @@ const cartRoute = require("./routes/Cart/cartRoute");
 const addressRoute = require("./routes/Address/addressRoute");
 const orderRoute = require("./routes/Order/orderRoute");
 const reviews = require("./routes/reviews/reviews");
+const contactRoute = require("./routes/contact/contactRoute");
 const pool = require("./db");
 
 function getPayPalClient() {
@@ -226,13 +227,14 @@ app.get("/payment-canceled", (req, res) => {
   // Redirect to your frontend checkout page
   res.redirect(`${process.env.FRONTEND_URL}/checkout?status=canceled`);
 });
-
+ 
 app.use("/api/auth", authRoute);
 app.use("/api/restaurant", restaurantRoute);
 app.use("/api/address", addressRoute);
 app.use("/api/cart", cartRoute);
 app.use("/api/orders", orderRoute);
 app.use("/api/reviews", reviews);
+app.use("/api/contact", contactRoute);
 const port = 3006;
 server.listen(port, () => {
   console.log(`Server is running on port http://localhost:${port}`);

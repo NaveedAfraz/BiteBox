@@ -13,10 +13,12 @@ import socket from "@/lib/socket";
 
 const Contact = () => {
   const [selectedOrderID, setSelectedOrderID] = useState();
-  const { sendMessage, messages, isLoading } = useContact();
+  const { userInfo } = useSelector(state => state.auth);
+  const { sendMessage, messages, isLoading } = useContact(userInfo?.userId);
+  console.log(messages, "messages");
 
   const { fetchOrders } = useOrders()
-  const { userInfo } = useSelector(state => state.auth);
+
   const { refetch: refetchOrders } = fetchOrders(userInfo?.userId);
   const { orderIDs } = useSelector(state => state.restaurant);
   // console.log(orderIDs, "orderIDs");
@@ -41,8 +43,13 @@ const Contact = () => {
     let formdata = {
       title: title,
       message: message,
+      senderId: userInfo?.userId,
+      senderType: "customer",
+      orderId: selectedOrderID,
+      userType: "restaurant",
+      status: "active"
     }
-    sendMessage.mutate({ formdata });
+    sendMessage.mutate(formdata);
   }
 
   const intialState = null;

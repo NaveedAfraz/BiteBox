@@ -3,14 +3,17 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-const useContact = () => {
+const useContact = (userId) => {
   const [messages, setMessages] = useState([]);
+  console.log(userId);
 
   // Use socket to send messages
   const sendMessage = useMutation({
     mutationFn: async (formData) => {
+      console.log(formData);
+
       // Emit the message through socket.io
-      socket.emit("sendMessage", formData);
+      socket.emit("sendMessage", { formData });
 
       // Return the formData as optimistic update
       return formData;
@@ -30,8 +33,10 @@ const useContact = () => {
     queryFn: async () => {
       try {
         const res = await axios.get(
-          "http://localhost:3006/api/contact/fetchMessages"
+          `http://localhost:3006/api/contact/fetchMessages/${userId}`
         );
+        console.log(res);
+
         return res.data;
       } catch (error) {
         console.error(error);
@@ -43,27 +48,25 @@ const useContact = () => {
 
   // Socket event listeners
   useEffect(() => {
-    // Listen for new messages
+
     socket.on("newMessage", (newMessage) => {
       setMessages(prev => [...prev, newMessage]);
     });
 
-    // Listen for message sent confirmations
+
     socket.on("messageSent", (result) => {
       console.log("Message successfully sent:", result);
     });
 
-    // Listen for new conversations
+
     socket.on("newConversation", (conversation) => {
       console.log("New conversation started:", conversation);
     });
 
-    // Listen for errors
     socket.on("messageError", (error) => {
       console.error("Message error:", error);
     });
 
-    // Cleanup function to remove listeners
     return () => {
       socket.off("newMessage");
       socket.off("messageSent");

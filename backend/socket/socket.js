@@ -12,22 +12,17 @@ const io = require("socket.io")(server, {
     methods: ["GET", "POST"],
     credentials: true,
   },
+  transports: ["websocket", "polling"],
+  pingTimeout: 60000, 
 });
 
 io.on("connection", (socket) => {
   console.log("A user connected:", socket.id);
-
-  // // Listen for a message event from clients
-  // socket.on("message", (msg) => {
-  //   console.log("Received message:", msg);
-  //   // Optionally, broadcast the message to all connected clients
-  //   io.emit("message", msg);
-  // });
 
   messagesEvent(socket, io);
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
   });
 });
-
+ 
 module.exports = { io, server, app };

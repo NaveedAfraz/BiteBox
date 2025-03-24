@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import {
   Card,
@@ -10,74 +10,49 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChevronLeft, ChevronRight, Send } from "lucide-react";
+import socket from '@/lib/socket';
 
-const Messages = () => {
-  const [selectedContact, setSelectedContact] = useState(null);
+const Messages = ({ conversations }) => {
+  const [selectedConversation, setSelectedConversation] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [message, setMessage] = useState('');
+  const [currentMessages, setCurrentMessages] = useState([]);
+  const userId = 756;
+  console.log(conversations);
+  console.log(selectedConversation);
 
-  // Sample contacts data
-  const contacts = [
-    { id: 1, name: "Sarah Johnson", avatar: "/api/placeholder/40/40", lastMessage: "Your order is on the way!", unread: 2, lastActive: "5m ago" },
-    { id: 2, name: "BiteBOX Support", avatar: "/api/placeholder/40/40", lastMessage: "How can we help you today?", unread: 0, lastActive: "2h ago" },
-    { id: 3, name: "Aisha's Kitchen", avatar: "/api/placeholder/40/40", lastMessage: "Thank you for your order!", unread: 0, lastActive: "1d ago" },
-    { id: 4, name: "Carlos Rodriguez", avatar: "/api/placeholder/40/40", lastMessage: "I'll be there in 10 minutes", unread: 1, lastActive: "20m ago" },
-    { id: 5, name: "Emma Wilson", avatar: "/api/placeholder/40/40", lastMessage: "Can you add extra sauce?", unread: 0, lastActive: "3d ago" },
-    {
-      id: 7,
-      name: "John Doe",
-      avatar: "/api/placeholder/40/40",
-      lastMessage: "Hello, how are you?",
-      unread: 0,
-      lastActive: "4d ago"
-    }, {
-      id: 8,
-      name: "John Doe",
-      avatar: "/api/placeholder/40/40",
-      lastMessage: "Hello, how are you?",
-      unread: 0,
-      lastActive: "4d ago"
-    }, {
-      id: 9,
-      name: "John Doe",
-      avatar: "/api/placeholder/40/40",
-      lastMessage: "Hello, how are you?",
-      unread: 0,
-      lastActive: "4d ago"
+  useEffect(() => {
+    if (selectedConversation && selectedConversation.messages) {
+      setCurrentMessages(selectedConversation.messages.map(msg => ({
+        id: msg.id,
+        content: msg.content,
+        time: new Date(msg.created_at).toLocaleTimeString(),
+        isSender: msg.sender_id === userId,
+      })));
     }
-  ];
-
-  // Sample messages for the selected contact
-  const messages = [
-    { id: 1, sender: "Carlos Rodriguez", content: "I'm on my way with your order!", time: "10:24 AM", isSender: false },
-    { id: 2, sender: "You", content: "Great! Can you call me when you're outside?", time: "10:26 AM", isSender: true },
-    { id: 3, sender: "Carlos Rodriguez", content: "Sure thing! I'll be there in about 10 minutes.", time: "10:27 AM", isSender: false },
-    { id: 4, sender: "You", content: "Perfect, thank you!", time: "10:28 AM", isSender: true },
-    { id: 5, sender: "Carlos Rodriguez", content: "I'm on my way with your order!", time: "10:24 AM", isSender: false },
-    { id: 6, sender: "You", content: "Great! Can you call me when you're outside?", time: "10:26 AM", isSender: true },
-    { id: 7, sender: "Carlos Rodriguez", content: "Sure thing! I'll be there in about 10 minutes.", time: "10:27 AM", isSender: false },
-    { id: 8, sender: "You", content: "Perfect, thank you!", time: "10:28 AM", isSender: true },
-    { id: 9, sender: "Carlos Rodriguez", content: "I'm on my way with your order!", time: "10:24 AM", isSender: false },
-    { id: 10, sender: "You", content: "Great! Can you call me when you're outside?", time: "10:26 AM", isSender: true },
-    { id: 11, sender: "Carlos Rodriguez", content: "Sure thing! I'll be there in about 10 minutes.", time: "10:27 AM", isSender: false },
-    { id: 12, sender: "You", content: "Perfect, thank you!", time: "10:28 AM", isSender: true },
-    { id: 13, sender: "Carlos Rodriguez", content: "I'm on my way with your order!", time: "10:24 AM", isSender: false },
-    { id: 14, sender: "You", content: "Great! Can you call me when you're outside?", time: "10:26 AM", isSender: true },
-    { id: 15, sender: "Carlos Rodriguez", content: "Sure thing! I'll be there in about 10 minutes.", time: "10:27 AM", isSender: false },
-    { id: 15, sender: "You", content: "Perfect, thank you!", time: "10:28 AM", isSender: true },
-    { id: 16, sender: "Carlos Rodriguez", content: "I'm on my way with your order!", time: "10:24 AM", isSender: false },
-    { id: 17, sender: "You", content: "Great! Can you call me when you're outside?", time: "10:26 AM", isSender: true },
-    { id: 18, sender: "Carlos Rodriguez", content: "Sure thing! I'll be there in about 10 minutes.", time: "10:27 AM", isSender: false },
-    { id: 19, sender: "You", content: "Perfect, thank you!", time: "10:28 AM", isSender: true },
-  ];
+  }, [selectedConversation, userId]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+  socket.on('success', (data) => {
+    let newMessage = {
+     // id: data.id,
+      content: data.message,
+      time: new Date(data.createdAt).toLocaleTimeString(),
+      isSender: data.senderId === userId,
+    }
+    console.log(data);
+    setCurrentMessages([...currentMessages, newMessage]);
+  })
+  useEffect(() => {
+
+  }, [userId, socket, selectedConversation]);
 
   const handleSendMessage = () => {
     if (message.trim() !== '') {
-      console.log("Sending message:", message);
+      let formdata = { content: message, conversationID: selectedConversation.id, senderId: userId, senderType: "customer" }
+      socket.emit("SendMessage", formdata);
       setMessage('');
     }
   };
@@ -110,29 +85,33 @@ const Messages = () => {
               </div>
             </div>
             <ScrollArea className="flex-1 h-[calc(100vh-100%)]">
-              {contacts.map((contact) => (
+              {conversations?.map((conversation) => (
                 <div
-                  key={contact.id}
-                  className={`p-3 hover:bg-gray-100 cursor-pointer ${selectedContact?.id === contact.id ? 'bg-gray-100' : ''}`}
-                  onClick={() => setSelectedContact(contact)}
+                  key={conversation.id}
+                  className={`p-3 hover:bg-gray-100 cursor-pointer ${selectedConversation?.id === conversation.id ? 'bg-gray-100' : ''}`}
+                  onClick={() => setSelectedConversation(conversation)}
                 >
                   <div className="flex items-center gap-2">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={contact.avatar} />
-                      <AvatarFallback>{contact.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                      <AvatarFallback>{conversation.title.substring(0, 2).toUpperCase()}</AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-center">
-                        <p className="font-medium text-sm truncate">{contact.name}</p>
-                        <span className="text-xs text-gray-500">{contact.lastActive}</span>
+                        <p className="font-medium text-sm truncate">{conversation.title}
+                        </p>
+                        <span className="text-xs text-gray-500">
+                          {new Date(conversation.updated_at).toLocaleDateString()}
+                        </span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <p className="text-xs text-gray-500 truncate">{contact.lastMessage}</p>
-                        {contact.unread > 0 && (
-                          <span className="inline-flex items-center justify-center w-4 h-4 text-xs font-medium text-white bg-blue-600 rounded-full">
-                            {contact.unread}
-                          </span>
-                        )}
+                        <p className="text-xs text-gray-500 truncate">
+                          {conversation.messages && conversation.messages.length > 0
+                            ? conversation.messages[conversation.messages.length - 1].content
+                            : 'No messages yet'}
+                        </p>
+                        <span className="inline-flex items-center justify-center w-4 h-4 text-xs font-medium text-white bg-blue-600 rounded-full">
+                          {conversation.status === "new" ? "!" : ""}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -143,34 +122,29 @@ const Messages = () => {
           </>
         ) : (
           <div className="flex flex-col items-center py-3">
-            {contacts.map((contact) => (
+            {conversations.map((conversation) => (
               <Avatar
-                key={contact.id}
-                className={`h-8 w-8 mb-3 cursor-pointer ${selectedContact?.id === contact.id ? 'ring-2 ring-blue-500' : ''}`}
-                onClick={() => setSelectedContact(contact)}
+                key={conversation.id}
+                className={`h-8 w-8 mb-3 cursor-pointer ${selectedConversation?.id === conversation.id ? 'ring-2 ring-blue-500' : ''}`}
+                onClick={() => setSelectedConversation(conversation)}
               >
-                <AvatarImage src={contact.avatar} />
-                <AvatarFallback>{contact.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                <AvatarFallback>{conversation.title.substring(0, 2).toUpperCase()}</AvatarFallback>
               </Avatar>
             ))}
           </div>
         )}
-
-
       </div>
 
-      {/* Chat Area - part of the main card */}
       <div className="flex-1 flex flex-col">
         <div className="border-b p-2 flex items-center gap-2 bg-white">
-          {selectedContact ? (
+          {selectedConversation ? (
             <>
               <Avatar className="h-8 w-8">
-                <AvatarImage src={selectedContact.avatar} />
-                <AvatarFallback>{selectedContact.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                <AvatarFallback>{selectedConversation.title.substring(0, 2).toUpperCase()}</AvatarFallback>
               </Avatar>
               <div>
-                <h2 className="font-medium text-sm">{selectedContact.name}</h2>
-                <p className="text-xs text-gray-500">Active {selectedContact.lastActive}</p>
+                <h2 className="font-medium text-sm">{selectedConversation.title}</h2>
+                <p className="text-xs text-gray-500">Status: {selectedConversation.status}</p>
               </div>
             </>
           ) : (
@@ -178,12 +152,12 @@ const Messages = () => {
           )}
         </div>
 
-        {selectedContact ? (
+        {selectedConversation ? (
           <>
             {/* Messages */}
-            <ScrollArea className="flex-1 h-[calc(100vh-100%)]">
+            <ScrollArea className="flex-1 h-[calc(100vh-100%)] p-3">
               <div className="space-y-3 mr-3">
-                {messages.map((msg) => (
+                {currentMessages.map((msg) => (
                   <div key={msg.id} className={`flex ${msg.isSender ? 'justify-end' : 'justify-start'}`}>
                     <div className={`max-w-xs p-2 rounded-lg ${msg.isSender ? 'bg-blue-600 text-white' : 'bg-gray-100'}`}>
                       <p className="text-sm">{msg.content}</p>
