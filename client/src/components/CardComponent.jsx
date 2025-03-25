@@ -18,7 +18,7 @@ const CardComponent = ({ categories, title, teamMembers, Items, onItemClick }) =
         category: restaurant?.category,
         restaurantID: restaurant?.restaurantID,
       }));
-      setArray(formattedCategories);
+      setArray(formattedCategories); 
     } else if (title === "Best Sellers" || title === "Search Results") {
       setArray(categories);
     } else {
