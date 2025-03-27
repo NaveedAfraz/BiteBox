@@ -37,12 +37,12 @@ const Messages = ({ conversations }) => {
   };
   socket.on('success', (data) => {
     let newMessage = {
-     // id: data.id,
+      // id: data.id,
       content: data.message,
       time: new Date(data.createdAt).toLocaleTimeString(),
       isSender: data.senderId === userId,
     }
-    console.log(data);
+  // console.log(data);
     setCurrentMessages([...currentMessages, newMessage]);
   })
   useEffect(() => {
@@ -51,8 +51,10 @@ const Messages = ({ conversations }) => {
 
   const handleSendMessage = () => {
     if (message.trim() !== '') {
-      let formdata = { content: message, conversationID: selectedConversation.id, senderId: userId, senderType: "customer" }
-      socket.emit("SendMessage", formdata);
+      let formData = { content: message, conversationID: selectedConversation.id, senderId: userId, senderType: "customer" }
+      // console.log(formdata);
+
+      socket.emit("sendMessage", { formData });
       setMessage('');
     }
   };

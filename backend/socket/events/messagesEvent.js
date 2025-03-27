@@ -1,12 +1,14 @@
 const { saveMessages } = require("../handlers/messageSend");
 
 const messagesEvent = (socket, io) => {
-  socket.on("SendMessage", async (message) => {
-    alert(message, "msgs");
+  socket.on("sendMessage", async (message) => {
+   // console.log(message, "msgs");
 
     const messageStored = await saveMessages(message);
-    // console.log(messageStored);
-    if (messageStored.success) {
+     console.log(messageStored);
+    if (messageStored) {
+      //console.log(true, message);
+      
       socket.emit("success", messageStored);
       socket.to(`user_${messageStored.conversationId}`).emit("newMessage");
     } else {
@@ -14,5 +16,5 @@ const messagesEvent = (socket, io) => {
     }
   });
 };
-  
+
 module.exports = { messagesEvent };

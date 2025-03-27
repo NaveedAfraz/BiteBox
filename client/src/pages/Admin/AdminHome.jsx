@@ -21,6 +21,7 @@ import { useUser } from "@clerk/clerk-react";
 import { useDispatch, useSelector } from "react-redux";
 import useAuth from "@/hooks/auth/useAuth";
 import useRestaurant from "@/hooks/Restaurant/useRestaurant";
+import useContact from "@/hooks/contact/useMessages";
 function AdminHome() {
   const { isLoaded, isSignedIn, user } = useUser();
 
@@ -105,7 +106,8 @@ function AdminHome() {
     },
   ];
   //console.log(activeTab);
-
+  const { sendMessage, messages, isLoading } = useContact(userInfo?.userId);
+  console.log(messages);
   // Choose sidebar items based on role
   let sidebarItems = userRole === "admin" ? superAdminItems : vendorItems;
   // const [searchParams] = useSearchParams();
@@ -218,7 +220,7 @@ function AdminHome() {
             {activeTab === "vendorRequests" && <Requests />}
             {activeTab === "users" && <UserList />}
             {activeTab === "promotions" && <SpecialCard specialOffers={specialOffers} />}
-            {activeTab === "messages" && <Messages />}
+            {activeTab === "messages" && <Messages conversations={messages} />}
             {activeTab === "vendorOrders" && <OrderList />}
             {activeTab === "Reviews" && <Reviews />}
             {activeTab === "Revenue" && <ChartCircle />}

@@ -46,12 +46,13 @@ const useContact = (userId) => {
     refetchInterval: 60000, // Refetch every minute
   });
 
+  socket.on("newMessage", (newMessage) => {
+    console.log("Received new message:", newMessage);
+    setMessages(prev => [...prev, newMessage]);
+  });
+
   // Socket event listeners
   useEffect(() => {
-
-    socket.on("newMessage", (newMessage) => {
-      setMessages(prev => [...prev, newMessage]);
-    });
 
 
     socket.on("messageSent", (result) => {

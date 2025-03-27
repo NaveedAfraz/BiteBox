@@ -59,7 +59,6 @@ const Contact = () => {
     socket.emit('order-selected', selectedOrderID);
     if (selectedOrderID) {
       console.log(true);
-
     }
   }, [selectedOrderID])
 
