@@ -15,13 +15,22 @@ const io = require("socket.io")(server, {
   transports: ["websocket", "polling"],
   pingTimeout: 60000,
 });
-const onlineUsers = {};
+ 
 io.on("connection", (socket) => {
-  
-  const userId = socket.handshake.query.userId; // Get user ID from client
-  onlineUsers[userId] = socket.id; // Store user socket ID
+  // const userId = socket.handshake.query.userId; // Get user ID from client
+  // onlineUsers[userId] = socket.id; // Store user socket ID
 
-  console.log(`User ${userId} connected with socket ID ${socket.id}`);
+  socket.on("joinRoom", (room) => {
+    socket.join(room);
+    console.log(`Socket ${socket.id} joined room ${room}`);
+  });
+
+  socket.on("leaveRoom", (room) => {
+    socket.leave(room);
+    console.log(`Socket ${socket.id} left room ${room}`);
+  });
+  //console.log(`User ${userId} connected with socket ID ${socket.id}`);
+ // console.log(onlineUsers);
 
   messagesEvent(socket, io);
   socket.on("disconnect", () => {

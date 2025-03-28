@@ -1,4 +1,4 @@
- 
+
 import { initializeSocket } from "@/lib/socket";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -57,10 +57,9 @@ const useContact = (userId) => {
       console.error("Socket is undefined! Check your initialization.");
       return;
     }
-    socket.on("newMessage", (newMessage) => {
-      console.log("Received new message:", newMessage);
-      setMessages(prev => [...prev, newMessage]);
-    });
+    // socket.on("newMessage", (newMessage) => {
+    //   console.log("Received new message:", newMessage);
+    // });
 
     socket.on("success", (success) => {
       console.log("Message got successfully:", success);
@@ -86,12 +85,13 @@ const useContact = (userId) => {
       socket.off("messageError");
     };
   }, []);
+  console.log(messageHistory);
 
-  const allMessages = [...(messageHistory || []), ...messages];
+  console.log(messages);
 
   return {
     sendMessage,
-    messages: allMessages,
+    messages: messageHistory,
     isLoading,
     refetchMessages: refetch
   };

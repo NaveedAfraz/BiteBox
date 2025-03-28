@@ -11,8 +11,13 @@ import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChevronLeft, ChevronRight, Send } from "lucide-react";
 import { initializeSocket } from "../../src/lib/socket";
+import { useUser } from '@clerk/clerk-react';
+import { useSelector } from 'react-redux';
 
 const Messages = ({ conversations }) => {
+  const { userInfo } = useSelector(state => state.auth)
+  console.log(userInfo, "..");
+
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [message, setMessage] = useState('');
@@ -22,6 +27,10 @@ const Messages = ({ conversations }) => {
   console.log(selectedConversation);
 
   const socket = initializeSocket(userId);
+  const { isLoaded, isSignedIn, user } = useUser();
+
+  const [userRole, setUserRole] = useState(user?.unsafeMetadata?.role);
+
   useEffect(() => {
     if (selectedConversation && selectedConversation.messages) {
       setCurrentMessages(selectedConversation.messages.map(msg => ({
@@ -32,7 +41,7 @@ const Messages = ({ conversations }) => {
       })));
     }
   }, [selectedConversation, userId]);
-  console.log(socket);
+  // console.log(socket);
   if (!socket) {
 
     console.error("Socket is undefined! Check your initialization.");
@@ -41,14 +50,19 @@ const Messages = ({ conversations }) => {
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
-  socket.on('success', (data) => {
+  //  socket.on("newMessage", (newMessage) => {
+  //   console.log("Received new message:", newMessage);
+  // });
+  socket.on('newMessage', (data) => {
+    //  console.log(data);
+    console.log("Received new message:", data);
     let newMessage = {
       // id: data.id,
       content: data.message,
       time: new Date(data.createdAt).toLocaleTimeString(),
-      isSender: data.senderId === userId,
+      isSender: data.senderId === userId ? true : false,
     }
-    // console.log(data);
+    console.log(data);
     setCurrentMessages([...currentMessages, newMessage]);
   })
   useEffect(() => {
@@ -57,7 +71,9 @@ const Messages = ({ conversations }) => {
 
   const handleSendMessage = () => {
     if (message.trim() !== '') {
-      let formData = { content: message, conversationID: selectedConversation.id, senderId: userId, senderType: "customer" }
+      let formData = {
+        content: message, conversationID: selectedConversation.id, senderId: userInfo.userId, senderType: userInfo.role === "admin" ? "SuperAdmin" : "vendor"
+      }
       // console.log(formdata);
 
       socket.emit("sendMessage", { formData });
@@ -97,23 +113,26 @@ const Messages = ({ conversations }) => {
                 <div
                   key={conversation.id}
                   className={`p-3 hover:bg-gray-100 cursor-pointer ${selectedConversation?.id === conversation.id ? 'bg-gray-100' : ''}`}
-                  onClick={() => setSelectedConversation(conversation)}
+                  onClick={() => {
+                    setSelectedConversation(conversation)
+                    socket.emit("joinRoom", `conversation_${conversation.id}`);
+                  }}
                 >
                   <div className="flex items-center gap-2">
                     <Avatar className="h-8 w-8">
-                      <AvatarFallback>{conversation.title.substring(0, 2).toUpperCase()}</AvatarFallback>
+                      <AvatarFallback>{conversation?.title?.substring(0, 2).toUpperCase()}</AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-center">
-                        <p className="font-medium text-sm truncate">{conversation.title}
+                        <p className="font-medium text-sm truncate">{conversation?.title}
                         </p>
                         <span className="text-xs text-gray-500">
-                          {new Date(conversation.updated_at).toLocaleDateString()}
+                          {new Date(conversation?.updated_at).toLocaleDateString()}
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
                         <p className="text-xs text-gray-500 truncate">
-                          {conversation.messages && conversation.messages.length > 0
+                          {conversation?.messages && conversation?.messages.length > 0
                             ? conversation.messages[conversation.messages.length - 1].content
                             : 'No messages yet'}
                         </p>
@@ -136,7 +155,7 @@ const Messages = ({ conversations }) => {
                 className={`h-8 w-8 mb-3 cursor-pointer ${selectedConversation?.id === conversation.id ? 'ring-2 ring-blue-500' : ''}`}
                 onClick={() => setSelectedConversation(conversation)}
               >
-                <AvatarFallback>{conversation.title.substring(0, 2).toUpperCase()}</AvatarFallback>
+                <AvatarFallback>{conversation?.title?.substring(0, 2).toUpperCase()}</AvatarFallback>
               </Avatar>
             ))}
           </div>
@@ -148,11 +167,11 @@ const Messages = ({ conversations }) => {
           {selectedConversation ? (
             <>
               <Avatar className="h-8 w-8">
-                <AvatarFallback>{selectedConversation.title.substring(0, 2).toUpperCase()}</AvatarFallback>
+                <AvatarFallback>{selectedConversation?.title?.substring(0, 2).toUpperCase()}</AvatarFallback>
               </Avatar>
               <div>
-                <h2 className="font-medium text-sm">{selectedConversation.title}</h2>
-                <p className="text-xs text-gray-500">Status: {selectedConversation.status}</p>
+                <h2 className="font-medium text-sm">{selectedConversation?.title}</h2>
+                <p className="text-xs text-gray-500">Status: {selectedConversation?.status}</p>
               </div>
             </>
           ) : (
@@ -166,10 +185,10 @@ const Messages = ({ conversations }) => {
             <ScrollArea className="flex-1 h-[calc(100vh-100%)] p-3">
               <div className="space-y-3 mr-3">
                 {currentMessages.map((msg) => (
-                  <div key={msg.id} className={`flex ${msg.isSender ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-xs p-2 rounded-lg ${msg.isSender ? 'bg-blue-600 text-white' : 'bg-gray-100'}`}>
-                      <p className="text-sm">{msg.content}</p>
-                      <p className={`text-xs mt-1 ${msg.isSender ? 'text-blue-100' : 'text-gray-500'}`}>{msg.time}</p>
+                  <div key={msg.id} className={`flex ${msg?.isSender ? 'justify-end' : 'justify-start'}`}>
+                    <div className={`max-w-xs p-2 rounded-lg ${msg?.isSender ? 'bg-blue-600 text-white' : 'bg-gray-100'}`}>
+                      <p className="text-sm">{msg?.content}</p>
+                      <p className={`text-xs mt-1 ${msg?.isSender ? 'text-blue-100' : 'text-gray-500'}`}>{msg?.time}</p>
                     </div>
                   </div>
                 ))}
