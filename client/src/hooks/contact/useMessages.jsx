@@ -15,7 +15,7 @@ const useContact = (userId) => {
       console.log(formData);
 
       // Emit the message through socket.io
-      socket.emit("sendMessage", { formData });
+      //socket.emit("sendMessage", { formData });
 
       // Return the formData as optimistic update
       return formData;

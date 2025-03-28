@@ -4,6 +4,7 @@ const saveMessages = async ({ formData }) => {
   //console.log(formData, "dart");
   const { content, conversationID, senderId, senderType } = formData;
   const connection = await pool.getConnection();
+console.log(senderId, senderType);
 
   try {
     await connection.beginTransaction();

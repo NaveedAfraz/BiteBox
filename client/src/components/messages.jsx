@@ -22,25 +22,27 @@ const Messages = ({ conversations }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [message, setMessage] = useState('');
   const [currentMessages, setCurrentMessages] = useState([]);
-  const userId = 756;
+  const userId = userInfo?.userId;
   console.log(conversations);
   console.log(selectedConversation);
 
-  const socket = initializeSocket(userId);
+  const socket = initializeSocket(userInfo?.userId);
   const { isLoaded, isSignedIn, user } = useUser();
 
   const [userRole, setUserRole] = useState(user?.unsafeMetadata?.role);
 
+
   useEffect(() => {
     if (selectedConversation && selectedConversation.messages) {
+      //alert(true)
       setCurrentMessages(selectedConversation.messages.map(msg => ({
         id: msg.id,
         content: msg.content,
         time: new Date(msg.created_at).toLocaleTimeString(),
-        isSender: msg.sender_id === userId,
+        isSender: msg.sender_id === userInfo.userId,
       })));
     }
-  }, [selectedConversation, userId]);
+  }, [selectedConversation]);
   // console.log(socket);
   if (!socket) {
 
@@ -53,28 +55,46 @@ const Messages = ({ conversations }) => {
   //  socket.on("newMessage", (newMessage) => {
   //   console.log("Received new message:", newMessage);
   // });
-  socket.on('newMessage', (data) => {
-    //  console.log(data);
-    console.log("Received new message:", data);
-    let newMessage = {
-      // id: data.id,
-      content: data.message,
-      time: new Date(data.createdAt).toLocaleTimeString(),
-      isSender: data.senderId === userId ? true : false,
-    }
-    console.log(data);
-    setCurrentMessages([...currentMessages, newMessage]);
-  })
   useEffect(() => {
+    const handleNewMessage = (data) => {
+      console.log("Received new message:", data);
+      console.log(userInfo.userId);
 
-  }, [userId, socket, selectedConversation]);
+      let newMessage = {
+        id: data.id,
+        content: data.message,
+        time: new Date(data.createdAt).toLocaleTimeString(),
+        isSender: data.senderId === userInfo.userId,
+        senderType: data.senderType,
+      };
+
+      console.log(newMessage);
+
+      setCurrentMessages((prevMessages) => {
+        console.log("Updated messages:", [...prevMessages, newMessage]);
+        return [...prevMessages, newMessage];
+      });
+    };
+
+    // ❌ Remove any existing listeners before adding a new one
+    socket.off("newMessage", handleNewMessage);
+    socket.on("newMessage", handleNewMessage);
+
+    return () => {
+      // Cleanup when component unmounts to prevent memory leaks
+      socket.off("newMessage", handleNewMessage);
+    };
+  }, [socket, userInfo.userId]); // Dependency array
+
 
   const handleSendMessage = () => {
     if (message.trim() !== '') {
       let formData = {
-        content: message, conversationID: selectedConversation.id, senderId: userInfo.userId, senderType: userInfo.role === "admin" ? "SuperAdmin" : "vendor"
+        content: message, conversationID: selectedConversation.id, senderId: userInfo.userId, senderType: userInfo.role
       }
       // console.log(formdata);
+      //setCurrentMessages(prev => [...prev, formData]);
+
 
       socket.emit("sendMessage", { formData });
       setMessage('');
