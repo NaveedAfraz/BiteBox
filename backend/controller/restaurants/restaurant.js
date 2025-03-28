@@ -17,17 +17,17 @@ const addrestaurant = async (req, res) => {
       image,
       country,
     } = req.body;
-    console.log(image, "image");
+    // console.log(image, "image");
 
     if (!Name || !PhoneNumber || !Cuisine || !OpeningHours || !image) {
-      console.log(Name, PhoneNumber, Cuisine, OpeningHours, image);
+      // console.log(Name, PhoneNumber, Cuisine, OpeningHours, image);
       return res
         .status(400)
         .json({ message: "All Restrdents fields are required" });
     }
     connection = await pool.getConnection();
     if (!Name || !addressType || !city || !street || !postalCode || !email) {
-      console.log(city, street, postalCode);
+      // console.log(city, street, postalCode);
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -36,7 +36,7 @@ const addrestaurant = async (req, res) => {
     const query = "SELECT userID FROM USERS WHERE email = ?";
     const [result1] = await connection.execute(query, [email]);
 
-    console.log(result1[0].userID);
+    // console.log(result1[0].userID);
     const { userID } = result1[0];
     const q = "SELECT * FROM Restaurant WHERE Name = ?";
     const [rows] = await connection.execute(q, [Name]);
@@ -52,10 +52,10 @@ const addrestaurant = async (req, res) => {
     }
 
     if (rows.length > 0 && rows.status === "approved") {
-      console.log(rows);
+      // console.log(rows);
       return res.status(400).json({ message: "Restaurant already exists" });
     }
-    console.log(userID, "userID");
+    // console.log(userID, "userID");
     let status = "pending";
     const q1 =
       "INSERT INTO Restaurant (Name , PhoneNumber,Cuisine,OpeningHours,ClosingHours,userID,RestaurantImage,status) VALUES (?,?,?,?,?,?,?,?)";
@@ -84,11 +84,11 @@ const addrestaurant = async (req, res) => {
       country,
       userID,
     ]);
-    console.log(result2);
+    // console.log(result2);
     const addressID = result2.insertId;
     const q3 = "UPDATE Restaurant SET addressID = ? WHERE restaurantID = ?";
     const [result3] = await connection.execute(q3, [addressID, restaurantID]);
-    console.log("Updated Restaurant with AddressID:", result3);
+    // console.log("Updated Restaurant with AddressID:", result3);
 
     if (result3.affectedRows === 1) {
       await connection.commit();
@@ -103,7 +103,7 @@ const addrestaurant = async (req, res) => {
         .json({ message: "Failed to update restaurant with address" });
     }
   } catch (err) {
-    console.log(err, "error creating restaurant for");
+    // console.log(err, "error creating restaurant for");
     if (connection) await connection.rollback();
     return res.status(500).json({ message: "Servefr error" });
   } finally {
@@ -115,7 +115,7 @@ const approvalORreject = async (req, res) => {
   let connection;
   try {
     const { title, restaurantID, itemID, status } = req.body;
-    console.log(title, restaurantID, itemID, status);
+    // console.log(title, restaurantID, itemID, status);
 
     if (!title || !status) {
       return res.status(400).json({
@@ -151,7 +151,7 @@ const approvalORreject = async (req, res) => {
       });
     }
 
-    console.log("Update result:", result);
+    // console.log("Update result:", result);
 
     if (result.affectedRows === 1) {
       await connection.commit();
@@ -165,7 +165,7 @@ const approvalORreject = async (req, res) => {
         .json({ message: `${title} not found or update failed` });
     }
   } catch (err) {
-    console.log("Error approving or rejecting:", err);
+    // console.log("Error approving or rejecting:", err);
     await connection.rollback();
     return res
       .status(500)
@@ -185,11 +185,11 @@ const fetchRestaurants = async function (req, res) {
         message: "Restaurant ID is required",
       });
     }
-    console.log(id);
+    // console.log(id);
 
     const q = "SELECT * FROM Restaurant WHERE userID = ?";
     const [restaurantResult] = await connection.execute(q, [id]);
-    console.log(restaurantResult);
+    // console.log(restaurantResult);
 
     if (restaurantResult.length === 0) {
       return res
@@ -210,15 +210,15 @@ const fetchRestaurants = async function (req, res) {
     const [ordersDetailsResult] = await connection.execute(ordersDetailsQuery, [
       restaurantID,
     ]);
-    console.log(ordersDetailsResult, "ordersDetailsResult");
+    // console.log(ordersDetailsResult, "ordersDetailsResult");
 
     const [itemsResult] = await connection.execute(itemsQuery, [restaurantID]);
-    console.log(itemsResult, "items: ");
+    // console.log(itemsResult, "items: ");
 
     const [reviewsResult] = await connection.execute(reviewsQuery, [
       restaurantID,
-    ]); // Fetch reviews
-    console.log(reviewsResult, "reviews: "); // Log reviews
+    ]); // Fetch reviewss
+    // console.log(reviewsResult, "reviews: "); // Log reviews
 
     connection.commit();
     return res.status(200).json({
@@ -249,17 +249,17 @@ const additem = async function (req, res) {
       foodType,
       discountedAmount,
     } = req.body;
-    console.log(
-      name,
-      price,
-      quantity,
-      category,
-      description,
-      photoUrl,
-      restaurantID,
-      foodType,
-      discountedAmount
-    );
+    // // console.log(
+    //   name,
+    //   price,
+    //   quantity,
+    //   category,
+    //   description,
+    //   photoUrl,
+    //   restaurantID,
+    //   foodType,
+    //   discountedAmount
+    // );
 
     if (
       !name ||
@@ -272,15 +272,15 @@ const additem = async function (req, res) {
       !foodType ||
       !discountedAmount
     ) {
-      console.log(
-        restaurantID,
-        "restaurantID",
-        name,
-        price,
-        quantity,
-        category,
-        description
-      );
+      // // console.log(
+      //   restaurantID,
+      //   "restaurantID",
+      //   name,
+      //   price,
+      //   quantity,
+      //   category,
+      //   description
+      // );
 
       return res.status(400).json({
         message: "All fields are required",
@@ -316,11 +316,11 @@ const additem = async function (req, res) {
       status,
     ];
     const result = await pool.query(q, params);
-    console.log(result);
+    // console.log(result);
 
     return res.json({ message: "Item created successfully" });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     return res.status(500).json({ message: "Server error" });
   }
 };
@@ -346,12 +346,12 @@ const fetchByCategory = async function (req, res) {
         .status(404)
         .json({ message: "No items found in this category" });
     }
-    console.log(result);
+    // console.log(result);
     return res
       .status(200)
       .json({ message: "Items found", data: result, success: true });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     return res.status(500).json({ message: "Server error" });
   }
 };
@@ -371,14 +371,14 @@ const fetchTopByBrand = async function (req, res) {
       .status(200)
       .json({ message: "Items found", data: result, success: true });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     return res.status(500).json({ message: "Server error" });
   }
 };
 
 const sortingANDsearching = async (req, res) => {
   const { search, sort, order, foodType } = req.body;
-  console.log(sort, order, foodType);
+  // console.log(sort, order, foodType);
 
   try {
     let query;
@@ -426,10 +426,10 @@ const sortingANDsearching = async (req, res) => {
       query += ` ORDER BY Name ASC`;
     }
 
-    // console.log("Executing query:", query, "with values:", values);
+    // // console.log("Executing query:", query, "with values:", values);
 
     const [result] = await pool.execute(query, values);
-    //  console.log(result);
+    //  // console.log(result);
 
     if (!result || result.length === 0) {
       return res.status(404).json({
@@ -444,7 +444,7 @@ const sortingANDsearching = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    console.error("Error in sortingANDsearching:", error);
+    // console.error("Error in sortingANDsearching:", error);
     return res.status(500).json({
       message: "Server error",
       error: error.message,
@@ -457,7 +457,7 @@ const fetchAllRestaurantsRandItems = async (req, res) => {
     // First, fetch all restaurants
     const restaurantQuery = `SELECT * FROM Restaurant`;
     const [restaurants] = await pool.execute(restaurantQuery);
-    console.log(restaurants, "rest");
+    // console.log(restaurants, "rest");
 
     // For each restaurant, fetch up to 5 random items
     for (const restaurant of restaurants) {
@@ -479,13 +479,13 @@ const fetchAllRestaurantsRandItems = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return res.status(500).json({ message: "Server error" });
   }
 };
 const fetchAllUsers = async (req, res) => {
   const { userID } = req.params;
-  console.log(userID);
+  // console.log(userID);
 
   if (!userID) {
     return res.status(400).json({ message: "User ID is required" });
@@ -493,7 +493,7 @@ const fetchAllUsers = async (req, res) => {
   try {
     const query = "SELECT * FROM USERS WHERE userID != ?";
     const [result] = await pool.execute(query, [userID]);
-    console.log(result);
+    // console.log(result);
 
     res.json({
       message: "Users fetched successfully",
@@ -501,7 +501,7 @@ const fetchAllUsers = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    console.log(error.message);
+    // console.log(error.message);
     return res.status(500).json({ message: "Server error" });
   }
 };
@@ -510,7 +510,7 @@ const updateUser = async (req, res) => {
   try {
     const { userID } = req.params;
     const { status } = req.body;
-    console.log(userID, status);
+    // console.log(userID, status);
 
     if (!userID || !status) {
       return res.status(400).json({ message: "ALL FILEDS ARE required" });
@@ -523,7 +523,7 @@ const updateUser = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return res.status(500).json({ message: "internal Server Error" });
   }
 };
@@ -531,20 +531,20 @@ const updateUser = async (req, res) => {
 const deleteRestaurant = async (req, res) => {
   try {
     const { restaurantID } = req.params;
-    console.log(restaurantID);
+    // console.log(restaurantID);
     if (!restaurantID) {
       return res.status(400).json({ message: "Restaurant ID is required" });
     }
     const query = "DELETE FROM Restaurant WHERE restaurantID =?";
     const [result] = await pool.execute(query, [restaurantID]);
-    console.log(result);
+    // console.log(result);
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "Restaurant not found" });
     }
     res.json({ message: "Restaurant deleted successfully" });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return res.status(500).json({ message: "internal Server Error" });
   }
 };
@@ -560,7 +560,7 @@ const deleteItem = async (req, res) => {
 
     const query = "DELETE FROM items WHERE itemID =?";
     const [result] = await pool.execute(query, [itemID]);
-    console.log(result);
+    // console.log(result);
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "Item not found" });
     }
@@ -571,7 +571,7 @@ const deleteItem = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    console.error("Error deleting item:", error);
+    // console.error("Error deleting item:", error);
     return res.status(500).json({
       success: false,
       message: "Server error while deleting item",
@@ -592,7 +592,7 @@ const updateItem = async (req, res) => {
       });
     }
     const { name, description, price } = req.body;
-    console.log(name, description, price, itemID);
+    // console.log(name, description, price, itemID);
 
     if (!name || !description || !price) {
       return res.status(400).json({
@@ -609,7 +609,7 @@ const updateItem = async (req, res) => {
       price,
       itemID,
     ]);
-    console.log(result);
+    // console.log(result);
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "Item not found" });
     }
@@ -620,7 +620,7 @@ const updateItem = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    console.error("Error updating item:", error);
+    // console.error("Error updating item:", error);
     return res.status(500).json({
       success: false,
       message: "Server error while updating item",
@@ -633,7 +633,7 @@ const fetchPendingRejectedItems = async (req, res) => {
     const query =
       "SELECT * FROM items WHERE status = 'Pending' OR status = 'rejected'";
     const [rows] = await pool.execute(query);
-    //console.log(rows, "rejected items");
+    //// console.log(rows, "rejected items");
 
     return res.status(200).json({
       success: true,
@@ -641,7 +641,7 @@ const fetchPendingRejectedItems = async (req, res) => {
       Items: rows,
     });
   } catch (error) {
-    console.error("Error fetching pending restaurants:", error);
+    // console.error("Error fetching pending restaurants:", error);
     return res.status(500).json({
       success: false,
       message: "Server error while fetching pending restaurants",
@@ -697,7 +697,7 @@ const fetchOneRestaurant = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    console.error("Error fetching restaurant:", error);
+    // console.error("Error fetching restaurant:", error);
     return res
       .status(500)
       .json({ message: "Server error while fetching restaurant" });

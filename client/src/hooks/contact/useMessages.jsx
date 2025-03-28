@@ -1,4 +1,5 @@
-import socket from "@/lib/socket";
+ 
+import { initializeSocket } from "@/lib/socket";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -7,6 +8,7 @@ const useContact = (userId) => {
   const [messages, setMessages] = useState([]);
   console.log(userId);
 
+  const socket = initializeSocket(userId);
   // Use socket to send messages
   const sendMessage = useMutation({
     mutationFn: async (formData) => {
@@ -46,14 +48,23 @@ const useContact = (userId) => {
     refetchInterval: 60000, // Refetch every minute
   });
 
-  socket.on("newMessage", (newMessage) => {
-    console.log("Received new message:", newMessage);
-    setMessages(prev => [...prev, newMessage]);
-  });
 
   // Socket event listeners
   useEffect(() => {
+    if (!socket) {
+      console.log(socket);
 
+      console.error("Socket is undefined! Check your initialization.");
+      return;
+    }
+    socket.on("newMessage", (newMessage) => {
+      console.log("Received new message:", newMessage);
+      setMessages(prev => [...prev, newMessage]);
+    });
+
+    socket.on("success", (success) => {
+      console.log("Message got successfully:", success);
+    });
 
     socket.on("messageSent", (result) => {
       console.log("Message successfully sent:", result);

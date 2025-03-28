@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChevronLeft, ChevronRight, Send } from "lucide-react";
-import socket from '@/lib/socket';
+import { initializeSocket } from "../../src/lib/socket";
 
 const Messages = ({ conversations }) => {
   const [selectedConversation, setSelectedConversation] = useState(null);
@@ -21,6 +21,7 @@ const Messages = ({ conversations }) => {
   console.log(conversations);
   console.log(selectedConversation);
 
+  const socket = initializeSocket(userId);
   useEffect(() => {
     if (selectedConversation && selectedConversation.messages) {
       setCurrentMessages(selectedConversation.messages.map(msg => ({
@@ -31,7 +32,12 @@ const Messages = ({ conversations }) => {
       })));
     }
   }, [selectedConversation, userId]);
+  console.log(socket);
+  if (!socket) {
 
+    console.error("Socket is undefined! Check your initialization.");
+    return;
+  }
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -42,7 +48,7 @@ const Messages = ({ conversations }) => {
       time: new Date(data.createdAt).toLocaleTimeString(),
       isSender: data.senderId === userId,
     }
-  // console.log(data);
+    // console.log(data);
     setCurrentMessages([...currentMessages, newMessage]);
   })
   useEffect(() => {

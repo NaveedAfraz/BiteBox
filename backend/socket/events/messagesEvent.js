@@ -7,7 +7,7 @@ const messagesEvent = (socket, io) => {
     const messageStored = await saveMessages(message);
      console.log(messageStored);
     if (messageStored) {
-      //console.log(true, message);
+      console.log(true, message);
       
       socket.emit("success", messageStored);
       socket.to(`user_${messageStored.conversationId}`).emit("newMessage");

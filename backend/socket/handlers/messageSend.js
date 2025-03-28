@@ -1,7 +1,7 @@
 const pool = require("../../db");
 
 const saveMessages = async ({ formData }) => {
-  console.log(formData, "dart");
+  //console.log(formData, "dart");
   const { content, conversationID, senderId, senderType } = formData;
   const connection = await pool.getConnection();
 
@@ -43,14 +43,14 @@ const saveMessages = async ({ formData }) => {
       let senderType = formData.senderType;
       let orderId = formData.orderId;
       let userType = formData.senderType;
-      console.log(title, content, senderId, senderType, orderId, userType);
+      //console.log(title, content, senderId, senderType, orderId, userType);
 
       // First, fetch the restaurant ID associated with the order
       const [orderDetails] = await connection.execute(
         "SELECT restaurantID FROM orders WHERE orderID = ?",
         [orderId]
       );
-      console.log(orderDetails, "orderDetails");
+      //console.log(orderDetails, "orderDetails");
       if (orderDetails.length === 0) {
         throw new Error("Order not found");
       }
@@ -62,7 +62,7 @@ const saveMessages = async ({ formData }) => {
         "SELECT userID FROM Restaurant WHERE restaurantID = ?",
         [restaurantId]
       );
-      console.log(restaurantDetails);
+     //ccconsole.log(restaurantDetails);
 
       // Update title with restaurant name if available
       // title = title || `Conversation with ${restaurantDetails[0]?.Name || 'Restaurant'}`;
@@ -123,7 +123,7 @@ const saveMessages = async ({ formData }) => {
     }
   } catch (error) {
     await connection.rollback();
-    console.error("Error in saveMessages:", error);
+    //console.error("Error in saveMessages:", error);
     return {
       success: false,
       error: error.message || "Failed to save message",

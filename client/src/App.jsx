@@ -25,6 +25,8 @@ import Orders from "./pages/Orders";
 import MessageDashboard from "./pages/messagesDashboard";
 import MessagesDashboard from "./pages/messagesDashboard";
 import useAuth from "./hooks/auth/useAuth";
+import { userDetails } from "./store/auth";
+import { initializeSocket } from "./lib/socket";
 const Nav = ({ showSearch, setShowSearch }) => {
   // console.log("...");  
 
@@ -45,19 +47,30 @@ function App() {
   // const { userId } = useAuth();
   const { user, isLoaded, updateUserMetadata } = useUser();
   // // console.log(user);
+
+  useEffect(() => {
+    //let userId = "756"; // Replace with actual user ID logic
+    let randomUserId = Math.floor(Math.random() * 10)
+    const socket = initializeSocket(randomUserId);
+    console.log(socket);
+
+    if (!socket) {
+      console.error("Socket not initialized!");
+      return;
+    }
+    console.log("Socket instance:", socket);
+    socket.on("connect", () => console.log("Socket connected:", socket.id));
+
+    return () => {
+      if (socket) socket.disconnect();
+    };
+  }, []);
   const [showSearch, setShowSearch] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false)
   const navigate = useNavigate();
   const { loginAuth, useLoggedIn, signupAuth } = useAuth();
   const { data: loggedInData, refetch: refetchLoggedIn, isLoading } = useLoggedIn(user?.primaryEmailAddress?.emailAddress);
-
-  // useEffect(() => {
-  //   //console.log(loggedInData);
-  //   // if (loggedInData) { 
-
-  //   // }
-  // }, [loggedInData])
-  // console.log(user);
+  console.log(loggedInData);
 
   const location = useLocation();
   useEffect(() => {
@@ -101,7 +114,9 @@ function App() {
     };
     updateUserRole();
   }, [user, isLoaded]);
+
   // console.log(user);
+
 
   const handleRoleSelect = async (role) => {
     try {

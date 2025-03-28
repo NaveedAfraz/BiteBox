@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useSelector } from "react-redux";
 import useOrders from "@/hooks/Restaurant/useOrder";
-import socket from "@/lib/socket";
+import { initializeSocket } from "../lib/socket";
 
 const Contact = () => {
   const [selectedOrderID, setSelectedOrderID] = useState();
@@ -18,7 +18,7 @@ const Contact = () => {
   console.log(messages, "messages");
 
   const { fetchOrders } = useOrders()
-
+  const socket = initializeSocket(userInfo?.userId);
   const { refetch: refetchOrders } = fetchOrders(userInfo?.userId);
   const { orderIDs } = useSelector(state => state.restaurant);
   // console.log(orderIDs, "orderIDs");
