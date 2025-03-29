@@ -25,13 +25,9 @@ const Messages = ({ conversations }) => {
   const userId = userInfo?.userId;
   console.log(conversations);
   console.log(selectedConversation);
-
   const socket = initializeSocket(userInfo?.userId);
   const { isLoaded, isSignedIn, user } = useUser();
-
-  const [userRole, setUserRole] = useState(user?.unsafeMetadata?.role);
-
-
+  //const [userRole, setUserRole] = useState(user?.unsafeMetadata?.role);
   useEffect(() => {
     if (selectedConversation && selectedConversation.messages) {
       //alert(true)
@@ -44,17 +40,10 @@ const Messages = ({ conversations }) => {
     }
   }, [selectedConversation]);
   // console.log(socket);
-  if (!socket) {
-
-    console.error("Socket is undefined! Check your initialization.");
-    return;
-  }
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
-  //  socket.on("newMessage", (newMessage) => {
-  //   console.log("Received new message:", newMessage);
-  // });
+
   useEffect(() => {
     const handleNewMessage = (data) => {
       console.log("Received new message:", data);
@@ -72,11 +61,9 @@ const Messages = ({ conversations }) => {
 
       setCurrentMessages((prevMessages) => {
         console.log("Updated messages:", [...prevMessages, newMessage]);
-        return [...prevMessages, newMessage];
+        return [...prevMessages, newMessage]; 
       });
     };
-
-    // ❌ Remove any existing listeners before adding a new one
     socket.off("newMessage", handleNewMessage);
     socket.on("newMessage", handleNewMessage);
 
@@ -84,7 +71,7 @@ const Messages = ({ conversations }) => {
       // Cleanup when component unmounts to prevent memory leaks
       socket.off("newMessage", handleNewMessage);
     };
-  }, [socket, userInfo.userId]); // Dependency array
+  }, [socket, userInfo.userId]); 
 
 
   const handleSendMessage = () => {
@@ -92,24 +79,21 @@ const Messages = ({ conversations }) => {
       let formData = {
         content: message, conversationID: selectedConversation.id, senderId: userInfo.userId, senderType: userInfo.role
       }
-      // console.log(formdata);
-      //setCurrentMessages(prev => [...prev, formData]);
-
-
       socket.emit("sendMessage", { formData });
       setMessage('');
     }
   };
-
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       handleSendMessage();
     }
   };
-
+  if (!socket) {
+    console.error("Socket is undefined! Check your initialization.");
+    return;
+  }
   return (
     <Card className="w-full h-[calc(100vh-100px)] flex flex-row overflow-hidden">
-      {/* Sidebar - part of the main card */}
       <div className={`border-r ${isSidebarOpen ? 'w-64' : 'w-12'} transition-all duration-300 flex flex-col bg-gray-50`}>
         <Button
           variant="ghost"
