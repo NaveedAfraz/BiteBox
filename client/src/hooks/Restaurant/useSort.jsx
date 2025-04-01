@@ -14,74 +14,73 @@ function useFilteredItems() {
 
   const fetchFilteredItems = async () => {
     const response = await axios.post(
-      "${import.meta.env.VITE_API_URL
-}/api/restaurant / sort",
-  { search, sort, order, foodType },
-  { withCredentials: true }
+      `${import.meta.env.VITE_API_URL}/api/restaurant/sort`,
+      { search, sort, order, foodType },
+      { withCredentials: true }
     );
-  console.log(response);
+    console.log(response);
 
-  return response.data;
-};
+    return response.data;
+  };
 
-const query = useQuery({
-  queryKey: ["filteredItems", { search, sort, order, foodType }],
-  queryFn: fetchFilteredItems,
-  enabled: false,
-  retry: 2,
-});
+  const query = useQuery({
+    queryKey: ["filteredItems", { search, sort, order, foodType }],
+    queryFn: fetchFilteredItems,
+    enabled: false,
+    retry: 2,
+  });
 
-const refetch = () => {
-  query.refetch();
-};
-const handleFilter = (filterType, value, buttonOrder) => {
-  console.log(filterType, value, buttonOrder);
+  const refetch = () => {
+    query.refetch();
+  };
+  const handleFilter = (filterType, value, buttonOrder) => {
+    console.log(filterType, value, buttonOrder);
 
-  if (filterType == "clear") {
-    setFoodType("");
-    setSearch("");
-    setSort("name");  // Reset to default sort
-    setOrder("asc");
-    setTimeout(() => { query.refetch() }, [100])
-    return;
-  }
-
-
-  switch (filterType) {
-    case "search":
-      setSearch(value);
-      break;
-    case "sort":
-      setSort(value);
-      setOrder(buttonOrder || "asc");
-      break;
-    case "foodType":
-      setFoodType(value);
-      break;
-    default:
-      break;
-  }
-};
-
-useEffect(() => {
-  if (query.isFetching) return;
-  query.refetch();
-}, [search, sort, order, foodType]);
+    if (filterType == "clear") {
+      setFoodType("");
+      setSearch("");
+      setSort("name");  // Reset to default sort
+      setOrder("asc");
+      setTimeout(() => { query.refetch() }, [100])
+      return;
+    }
 
 
-return {
-  search,
-  sort,
-  order,
-  foodType,
-  refetch,
-  setSearch,
-  setSort,
-  setOrder,
-  setFoodType,
-  handleFilter,
-  ...query,
-};
+    switch (filterType) {
+      case "search":
+        setSearch(value);
+        break;
+      case "sort":
+        setSort(value);
+        setOrder(buttonOrder || "asc");
+        break;
+      case "foodType":
+        setFoodType(value);
+        break;
+      default:
+        break;
+    }
+  };
+
+  useEffect(() => {
+    if (query.isFetching) return;
+    query.refetch();
+  }, [search, sort, order, foodType]);
+
+
+  return {
+    search,
+    sort,
+    order,
+    foodType,
+    refetch,
+    setSearch,
+    setSort,
+    setOrder,
+    setFoodType,
+    handleFilter,
+    ...query,
+  };
 }
 
 export default useFilteredItems;
