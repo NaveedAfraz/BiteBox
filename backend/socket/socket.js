@@ -8,14 +8,14 @@ const server = http.createServer(app);
 //const io = new Server(server);
 const io = require("socket.io")(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: "https://bite-box-three.vercel.app",
     methods: ["GET", "POST"],
     credentials: true,
   },
   transports: ["websocket", "polling"],
   pingTimeout: 60000,
 });
- 
+
 io.on("connection", (socket) => {
   // const userId = socket.handshake.query.userId; // Get user ID from client
   // onlineUsers[userId] = socket.id; // Store user socket ID
@@ -30,7 +30,7 @@ io.on("connection", (socket) => {
     console.log(`Socket ${socket.id} left room ${room}`);
   });
   //console.log(`User ${userId} connected with socket ID ${socket.id}`);
- // console.log(onlineUsers);
+  // console.log(onlineUsers);
 
   messagesEvent(socket, io);
   socket.on("disconnect", () => {
