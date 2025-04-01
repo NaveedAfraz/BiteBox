@@ -8,7 +8,7 @@ const paypal = require("@paypal/checkout-server-sdk");
 const { server, app } = require("./socket/socket");
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://bite-box-three.vercel.app",
     credentials: true,
   })
 );
@@ -227,7 +227,7 @@ app.get("/payment-canceled", (req, res) => {
   // Redirect to your frontend checkout page
   res.redirect(`${process.env.FRONTEND_URL}/checkout?status=canceled`);
 });
- 
+
 app.use("/api/auth", authRoute);
 app.use("/api/restaurant", restaurantRoute);
 app.use("/api/address", addressRoute);
