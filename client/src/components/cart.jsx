@@ -61,7 +61,8 @@ function Cart({ cart, selectedAddress, refetch }) {
     try {
       // Create a PayPal order on your backend
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/create-paypal-order`,
+        `${import.meta.env.VITE_API_URL
+        }/api/create-paypal-order`,
         { IDs: { userID: userInfo.userId, cartID: cart.cartId, restaurantID: cartItems.items[0].restaurantID, addressID: selectedAddress }, orderData: orderData.items, amount: subtotal, taxAmount: taxAmount },
         { withCredentials: true }
       );
@@ -84,7 +85,7 @@ function Cart({ cart, selectedAddress, refetch }) {
       setIsProcessing(false);
     }
   };
- 
+
 
   return (
     <div className="shadow-md rounded-b-2xl p-2 md:rounded-bl-none bg-white md:rounded-r-2xl w-full max-w-xl z-[3] ">

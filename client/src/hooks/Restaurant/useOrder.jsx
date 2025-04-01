@@ -4,7 +4,8 @@ import axios from 'axios';
 import { useDispatch } from 'react-redux';
 
 // Base API URL
-const BASE_URL = `${process.env.REACT_APP_API_URL}`;
+const BASE_URL = `${import.meta.env.VITE_API_URL
+  }`;
 
 const useOrders = (restaurantId) => {
   const queryClient = useQueryClient();
@@ -59,7 +60,8 @@ const useOrders = (restaurantId) => {
     queryKey: ['userOrders', userId],
     queryFn: async () => {
       console.log(userId);
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/fetchUserOrders/${userId}`);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL
+        }/api/orders/fetchUserOrders/${userId}`);
       console.log(response);
 
       const sortedOrders = response.data.sort(

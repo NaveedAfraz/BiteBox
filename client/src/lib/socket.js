@@ -11,7 +11,7 @@ export const initializeSocket = (userId) => {
   }
 
   if (!socket) {
-    socket = io(`${process.env.REACT_APP_API_URL}`, {
+    socket = io(`${import.meta.env.VITE_API_URL}`, {
       query: { userId },
     });
 

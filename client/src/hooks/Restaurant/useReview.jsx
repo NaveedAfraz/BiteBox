@@ -3,7 +3,8 @@ import axios from "axios"
 
 const useReviews = () => {
 
-  const URL = `${process.env.REACT_APP_API_URL}`
+  const URL = `${import.meta.env.VITE_API_URL
+    }`
 
   const addreview = useMutation({
     mutationFn: async ({ restaurantId, title, rating, comment, userID, itemID, orderID }) => {

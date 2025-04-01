@@ -10,7 +10,8 @@ const useCart = () => {
     return useQuery({
       queryKey: ['cart', userId],
       queryFn: async () => {
-        const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/cart/getCart/${userId}`);
+        const { data } = await axios.get(`${import.meta.env.VITE_API_URL
+          }/api/cart/getCart/${userId}`);
         console.log(userId);
         return data.data;
       },
@@ -25,7 +26,8 @@ const useCart = () => {
     return useMutation({
       mutationFn: async (cartItem) => {
         console.log(cartItem);
-        const data = await axios.post(`${process.env.REACT_APP_API_URL}/api/cart/addItem`, cartItem);
+        const data = await axios.post(`${import.meta.env.VITE_API_URL
+          }/api/cart/addItem`, cartItem);
         console.log(data);
 
         return data;
@@ -42,7 +44,8 @@ const useCart = () => {
       mutationFn: async (args) => {
         console.log(args);
 
-        const { data } = await axios.delete(`${process.env.REACT_APP_API_URL}/api/cart/deleteItem`, {
+        const { data } = await axios.delete(`${import.meta.env.VITE_API_URL
+          }/api/cart/deleteItem`, {
           data: args
         });
         console.log(data);

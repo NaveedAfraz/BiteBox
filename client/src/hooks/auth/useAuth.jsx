@@ -9,7 +9,8 @@ const useAuth = () => {
     mutationFn: async ({ formData }) => {
       try {
         console.log(formData);
-        const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/login`, {
+        const response = await axios.post(`${import.meta.env.VITE_API_URL
+          }/api/auth/login`, {
           email: formData.email,
           password: formData.password,
           role: formData.role,
@@ -30,7 +31,8 @@ const useAuth = () => {
     mutationFn: async ({ formData }) => {
       try {
         console.log(formData);
-        const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/signup`, {
+        const response = await axios.post(`${import.meta.env.VITE_API_URL
+          }/api/auth/signup`, {
           email: formData.email,
           role: formData.role,
           username: formData.username
@@ -52,7 +54,8 @@ const useAuth = () => {
       console.log(email);
       if (email) {
         try {
-          const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/auth/loggedIn/${email}`, {
+          const response = await axios.get(`${import.meta.env.VITE_API_URL
+            }/api/auth/loggedIn/${email}`, {
             withCredentials: true
           });
           // console.log("Response from server:", response.data);

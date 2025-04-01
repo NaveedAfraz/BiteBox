@@ -35,7 +35,8 @@ const useContact = (userId) => {
     queryFn: async () => {
       try {
         const res = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/contact/fetchMessages/${userId}`
+          `${import.meta.env.VITE_API_URL
+          }/api/contact/fetchMessages/${userId}`
         );
         console.log(res);
 
