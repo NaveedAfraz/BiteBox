@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import CardComponent from "../components/CardComponent";
-import MenuComponent from "../components/MenuComponent";
+import MenuComponent from "../components/menuComponent";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 
 import { Card, CardContent, CardDescription, CardTitle, CardFooter, CardHeader } from "@/components/ui/card";
