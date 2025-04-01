@@ -3,7 +3,7 @@ import axios from "axios"
 
 const useReviews = () => {
 
-  const URL = "http://localhost:3006"
+  const URL = `${process.env.REACT_APP_API_URL}`
 
   const addreview = useMutation({
     mutationFn: async ({ restaurantId, title, rating, comment, userID, itemID, orderID }) => {
@@ -40,7 +40,7 @@ const useReviews = () => {
   const fetchReviews = ({ restaurantId, userID, orderID }) => useQuery({
     queryKey: ["reviews"],
     queryFn: async () => {
-      console.log(restaurantId, userID,orderID, "data for review");
+      console.log(restaurantId, userID, orderID, "data for review");
 
       try {
         const res = await axios.get(`${URL}/api/reviews/getReviews/${restaurantId}/${orderID}`)

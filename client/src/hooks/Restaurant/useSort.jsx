@@ -9,12 +9,12 @@ function useFilteredItems() {
   const [order, setOrder] = useState("asc");
   const [foodType, setFoodType] = useState("");
   useEffect(() => {
-     console.log("mounted to useFilteredItems");
+    console.log("mounted to useFilteredItems");
   }, [])
- 
+
   const fetchFilteredItems = async () => {
     const response = await axios.post(
-      "http://localhost:3006/api/restaurant/sort",
+      "${process.env.REACT_APP_API_URL}/api/restaurant/sort",
       { search, sort, order, foodType },
       { withCredentials: true }
     );

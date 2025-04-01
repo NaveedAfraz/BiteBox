@@ -19,7 +19,7 @@ const OrderConfirmation = () => {
       const cartID = localStorage.getItem('cartID')
       // console.log('Order ID:', orderId);
       try {
-        const response = await axios.get(`http://localhost:3006/api/capture-paypal-order?orderId=${orderId}&paypalID=${paypalOrderID}&cartID=${cartID}`);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/capture-paypal-order?orderId=${orderId}&paypalID=${paypalOrderID}&cartID=${cartID}`);
         console.log(response);
 
         setOrderDetails(response.data.orderDetails);

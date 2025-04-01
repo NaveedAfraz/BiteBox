@@ -11,13 +11,13 @@ export const initializeSocket = (userId) => {
   }
 
   if (!socket) {
-    socket = io("http://localhost:3006", {
+    socket = io(`${process.env.REACT_APP_API_URL}`, {
       query: { userId },
     });
 
     socket.on("connect", () => {
       console.log("Socket connected with ID:", socket.id);
-    }); 
+    });
 
     socket.on("disconnect", () => {
       console.log("Socket disconnected");

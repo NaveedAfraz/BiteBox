@@ -61,7 +61,7 @@ function Cart({ cart, selectedAddress, refetch }) {
     try {
       // Create a PayPal order on your backend
       const response = await axios.post(
-        "http://localhost:3006/api/create-paypal-order",
+        `${process.env.REACT_APP_API_URL}/api/create-paypal-order`,
         { IDs: { userID: userInfo.userId, cartID: cart.cartId, restaurantID: cartItems.items[0].restaurantID, addressID: selectedAddress }, orderData: orderData.items, amount: subtotal, taxAmount: taxAmount },
         { withCredentials: true }
       );

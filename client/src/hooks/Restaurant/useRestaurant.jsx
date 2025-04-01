@@ -11,9 +11,9 @@ const useRestaurant = () => {
       console.log(formData, restaurantData);
       let api;
       if (formData.role == "vendor") {
-        api = "http://localhost:3006/api/restaurant/AddrestaurantAndAddresses"
+        api = `${process.env.REACT_APP_API_URL}/api/restaurant/AddrestaurantAndAddresses`
       } else {
-        api = "http://localhost:3006/api/restaurant/customeraddresses"
+        api = `${process.env.REACT_APP_API_URL}/api/restaurant/customeraddresses`
       }
 
       try {
@@ -50,7 +50,7 @@ const useRestaurant = () => {
     queryFn: async () => {
       console.log(userID);
       try {
-        const response = await axios.get(`http://localhost:3006/api/restaurant/fetchRestaurant/${userID}`, {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/restaurant/fetchRestaurant/${userID}`, {
           withCredentials: true,
         });
         console.log(response);
@@ -68,7 +68,7 @@ const useRestaurant = () => {
     queryKey: ["items"],
     queryFn: async () => {
       try {
-        const response = await axios.get(`http://localhost:3006/api/restaurant/fetchPendingRejectedItems`, {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/restaurant/fetchPendingRejectedItems`, {
           withCredentials: true,
         });
         //console.log(response);
@@ -84,7 +84,7 @@ const useRestaurant = () => {
     queryKey: ["restaurant"],
     queryFn: async () => {
       try {
-        const response = await axios.get(`http://localhost:3006/api/restaurant/fetchAllRestaurants`, {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/restaurant/fetchAllRestaurants`, {
           withCredentials: true,
         });
         console.log(response.data);
@@ -108,7 +108,7 @@ const useRestaurant = () => {
     queryFn: async () => {
       console.log(userID);
       try {
-        const response = await axios.get(`http://localhost:3006/api/restaurant/fetchAllUsers/${userID}`, {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/restaurant/fetchAllUsers/${userID}`, {
           withCredentials: true,
         });
         console.log(response);
@@ -123,7 +123,7 @@ const useRestaurant = () => {
     mutationFn: async (formData) => {
       try {
         console.log(formData);
-        const response = await axios.post("http://localhost:3006/api/restaurant/addItem", {
+        const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/restaurant/addItem`, {
           ...formData,
         }, {
           withCredentials: true,
@@ -140,7 +140,7 @@ const useRestaurant = () => {
     mutationFn: async (formData) => {
       try {
         // console.log(formData);
-        const response = await axios.put(`http://localhost:3006/api/restaurant/updateUserStatus/${formData.userID}`, {
+        const response = await axios.put(`${process.env.REACT_APP_API_URL}/api/restaurant/updateUserStatus/${formData.userID}`, {
           status: formData.status,
         }, {
           withCredentials: true,
@@ -157,7 +157,7 @@ const useRestaurant = () => {
     mutationFn: async (formData) => {
       console.log(formData.restaurantID);
       try {
-        const response = await axios.delete(`http://localhost:3006/api/restaurant/deleteRestaurant/${formData.restaurantID}`,
+        const response = await axios.delete(`${process.env.REACT_APP_API_URL}/api/restaurant/deleteRestaurant/${formData.restaurantID}`,
           { withCredentials: true },
         );
         console.log(response);
@@ -171,7 +171,7 @@ const useRestaurant = () => {
   const deleteItem = useMutation({
     mutationFn: async (formData) => {
       try {
-        const response = await axios.delete(`http://localhost:3006/api/restaurant/deleteItem/${formData.itemID}`, {
+        const response = await axios.delete(`${process.env.REACT_APP_API_URL}/api/restaurant/deleteItem/${formData.itemID}`, {
           withCredentials: true,
         });
         console.log(response);
@@ -187,7 +187,7 @@ const useRestaurant = () => {
       try {
         console.log(formdata);
 
-        const response = await axios.put(`http://localhost:3006/api/restaurant/updateItem/${formdata.id}`, {
+        const response = await axios.put(`${process.env.REACT_APP_API_URL}/api/restaurant/updateItem/${formdata.id}`, {
           ...formdata,
         }, {
           withCredentials: true,
@@ -205,7 +205,7 @@ const useRestaurant = () => {
       try {
 
         // console.log(formData.get("status"), formData.get("restaurantId"));
-        const response = await axios.put(`http://localhost:3006/api/restaurant/approveORreject`, {
+        const response = await axios.put(`${process.env.REACT_APP_API_URL}/api/restaurant/approveORreject`, {
           restaurantID: formData.get("restaurantId"),
           status: formData.get("status"),
           title: formData.get("title"),
@@ -227,7 +227,7 @@ const useRestaurant = () => {
       queryFn: async () => {
         try {
           const response = await axios.get(
-            `http://localhost:3006/api/restaurant/fetchOneRestaurant/${restaurantID}`,
+            `${process.env.REACT_APP_API_URL}/api/restaurant/fetchOneRestaurant/${restaurantID}`,
             { withCredentials: true }
           );
           return response.data;
@@ -241,7 +241,7 @@ const useRestaurant = () => {
     });
   };
 
-  return { Add_Adresses, getAllUsers, fetchOneRestaurant, fetchAllRestaurant, addItem, updateUserStatus, deleteRestaurant, updateItem, deleteItem, approveORrejectRestaurant, getPendingRejectedItems ,fetchRestaurant}
+  return { Add_Adresses, getAllUsers, fetchOneRestaurant, fetchAllRestaurant, addItem, updateUserStatus, deleteRestaurant, updateItem, deleteItem, approveORrejectRestaurant, getPendingRejectedItems, fetchRestaurant }
 };
 
 export default useRestaurant;

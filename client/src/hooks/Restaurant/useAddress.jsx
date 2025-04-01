@@ -7,7 +7,7 @@ const useAddress = () => {
     queryKey: ["address"],
     queryFn: async () => {
       try {
-        const response = await axios(`http://localhost:3006/api/address/fetchAddresses/${userID}`)
+        const response = await axios(`${process.env.REACT_APP_API_URL}/api/address/fetchAddresses/${userID}`)
         console.log(response);
         return response.data;
       } catch (error) {
@@ -25,7 +25,7 @@ const useAddress = () => {
     mutationFn: async ({ addressData }) => {
       console.log(addressData);
       try {
-        const response = await axios.post("http://localhost:3006/api/address/addAddress", addressData, {
+        const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/address/addAddress`, addressData, {
           withCredentials: true,
         })
         console.log(response);
@@ -41,7 +41,7 @@ const useAddress = () => {
       console.log(addressID, userID);
 
       try {
-        const response = await axios.delete(`http://localhost:3006/api/address/deleteAddress/${addressID}/${userID}`, {
+        const response = await axios.delete(`${process.env.REACT_APP_API_URL}/api/address/deleteAddress/${addressID}/${userID}`, {
           withCredentials: true,
         })
         console.log(response);
