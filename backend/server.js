@@ -28,7 +28,7 @@ const pool = require("./db");
 function getPayPalClient() {
   const clientId = process.env.PAYPAL_CLIENT_ID;
   const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
-
+  
   // For sandbox environment
   const environment = new paypal.core.SandboxEnvironment(
     clientId,

@@ -51,7 +51,9 @@ function Home({ showSearch, setShowSearch }) {
     console.log(checkStatus(), "..");
   }, [menuItems])
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="flex justify-center items-center min-h-screen">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500 mb-12"></div>
+    </div>
   }
   console.log(showSearch);
 
