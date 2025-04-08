@@ -162,7 +162,11 @@ function MenuComponent({ menu, refetch }) {
   );
 
   // console.log(menu);
-  if (menu.status === "pending" && userRole !== "admin") {
+  if (
+    (menu.status === "pending" && userRole !== "vendor") ||
+    userRole === "admin"
+  ) {
+    console.log("..");
     return null;
   }
   return (
