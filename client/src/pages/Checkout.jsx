@@ -1,21 +1,18 @@
 import Address from "@/components/address";
 import Cart from "@/components/cart";
 import useCart from "@/hooks/Restaurant/useCart";
-import useItemQuantity from "@/hooks/Restaurant/useItemQuantity";
 import React, { useState } from "react";
 import { useSearchParams } from "react-router";
-import Contact from "./contact";
 
 function Checkout() {
-  const [searchParams] = useSearchParams()
-  const userid = searchParams.get('userid')
+  const [searchParams] = useSearchParams();
+  const userid = searchParams.get("userid");
   const [selectedAddress, setSelectedAddress] = useState(false);
 
-  const { fetchCart } = useCart()
+  const { fetchCart } = useCart();
 
-  const { data: cart, isLoading, error, refetch } = fetchCart(userid)
+  const { data: cart, isLoading, error, refetch } = fetchCart(userid);
   console.log(cart);
-
 
   if (cart?.items?.length === 0) {
     return (
@@ -25,8 +22,6 @@ function Checkout() {
       </div>
     );
   }
-
-
 
   return (
     <div className="relative min-h-screen mt-24">
@@ -42,7 +37,6 @@ function Checkout() {
 
       {/* White overlay */}
       <div className="absolute inset-0 bg-white/50 backdrop-blur-sm z-[-1]" />
-
 
       <div className="flex md:flex-row flex-col mb-3.5 items-center md:items-stretch justify-center">
         <Address

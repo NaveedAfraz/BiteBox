@@ -4,18 +4,18 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 function Cart({ cart, selectedAddress, refetch }) {
-  const { userInfo } = useSelector((state) => state.auth)
+  const { userInfo } = useSelector((state) => state.auth);
   const { handleAdd, handleReduce, cartItems } = useItemQuantity();
   // console.log(cartItems);
   // console.log(userInfo);
   console.log(cart);
 
   useEffect(() => {
-    refetch()
-  }, [cartItems?.items])
+    refetch();
+  }, [cartItems?.items]);
 
-  // const [searchparams] = useSearchParams() 
-  // const userid = searchparams.get('ID')  
+  // const [searchparams] = useSearchParams()
+  // const userid = searchparams.get('ID')
   // console.log(userInfo);
   const calculateSubtotal = () => {
     let total = 0;
@@ -23,6 +23,7 @@ function Cart({ cart, selectedAddress, refetch }) {
       cart.items.forEach((item) => {
         total += item.amount * item.quantity;
       });
+      console.log(total);
     }
     return total;
   };
@@ -52,18 +53,27 @@ function Cart({ cart, selectedAddress, refetch }) {
           itemID: item.itemID,
           quantity: item.quantity,
           price: item.price || item.amount,
-          currency: "USD"
+          currency: "USD",
         };
-      })
+      }),
     };
     //console.log(orderData);
 
     try {
       // Create a PayPal order on your backend
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL
-        }/api/create-paypal-order`,
-        { IDs: { userID: userInfo.userId, cartID: cart.cartId, restaurantID: cartItems.items[0].restaurantID, addressID: selectedAddress }, orderData: orderData.items, amount: subtotal, taxAmount: taxAmount },
+        `${import.meta.env.VITE_API_URL}/api/create-paypal-order`,
+        {
+          IDs: {
+            userID: userInfo.userId,
+            cartID: cart.cartId,
+            restaurantID: cartItems.items[0].restaurantID,
+            addressID: selectedAddress,
+          },
+          orderData: orderData.items,
+          amount: subtotal,
+          taxAmount: taxAmount,
+        },
         { withCredentials: true }
       );
 
@@ -86,72 +96,73 @@ function Cart({ cart, selectedAddress, refetch }) {
     }
   };
 
-
   return (
     <div className="shadow-md rounded-b-2xl p-2 md:rounded-bl-none bg-white md:rounded-r-2xl w-full max-w-xl z-[3] ">
-
       <div className="p-4 border-b">
         <h2 className="text-xl font-bold">Your Cart</h2>
       </div>
 
-
       <div className="flex flex-col divide-y ">
-        {cart?.items?.length > 0 && cart?.items?.map((item) => (
-          <div key={item.id || item.itemID} className="p-4">
-
-            <div className="flex items-center mb-4">
-              <img
-                src={item.img}
-                alt={item.title}
-                className="w-12 h-12 rounded-md mr-3"
-              />
-              <div>
-                <h3 className="font-bold text-lg">{item.title || item.name}</h3>
-              </div>
-            </div>
-
-            <div className="flex flex-col space-y-4 ml-2">
-              <div className="flex justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center">
-                    {item.foodType === "Veg" ? (
-                      <span className="inline-block w-4 h-4 border border-green-600 mr-2">
-                        <span className="block w-2 h-2 bg-green-600 m-auto rounded-full"></span>
-                      </span>
-                    ) : (
-                      <span className="inline-block w-4 h-4 border border-red-600 mr-2">
-                        <span className="block w-2 h-2 bg-red-600 m-auto rounded-full"></span>
-                      </span>
-                    )}
-                    <span className="font-medium">{item.foodType || "Non-Veg"}</span>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="flex border rounded">
-                    <button
-                      className="px-2 py-1 text-lg cursor-pointer"
-                      onClick={() => handleReduce(item.itemID || item.id)}
-                    >
-                      −
-                    </button>
-                    <span className="px-3 py-1 border-l border-r">
-                      {item.quantity}
-                    </span>
-                    <button
-                      className="px-2 py-1 text-lg text-green-600 cursor-pointer"
-                      onClick={() => handleAdd(item)}
-                    >
-                      +
-                    </button>
-                  </div>
-                  <div className="text-right min-w-16">
-                    <span>₹{item.amount * item.quantity}</span>
-                  </div>
+        {cart?.items?.length > 0 &&
+          cart?.items?.map((item) => (
+            <div key={item.id || item.itemID} className="p-4">
+              <div className="flex items-center mb-4">
+                <img
+                  src={item.img}
+                  alt={item.title}
+                  className="w-12 h-12 rounded-md mr-3"
+                />
+                <div>
+                  <h3 className="font-bold text-lg">
+                    {item.title || item.name}
+                  </h3>
                 </div>
               </div>
+
+              <div className="flex flex-col space-y-4 ml-2">
+                <div className="flex justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center">
+                      {item.foodType === "Veg" ? (
+                        <span className="inline-block w-4 h-4 border border-green-600 mr-2">
+                          <span className="block w-2 h-2 bg-green-600 m-auto rounded-full"></span>
+                        </span>
+                      ) : (
+                        <span className="inline-block w-4 h-4 border border-red-600 mr-2">
+                          <span className="block w-2 h-2 bg-red-600 m-auto rounded-full"></span>
+                        </span>
+                      )}
+                      <span className="font-medium">
+                        {item.foodType || "Non-Veg"}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="flex border rounded">
+                      <button
+                        className="px-2 py-1 text-lg cursor-pointer"
+                        onClick={() => handleReduce(item.itemID || item.id)}
+                      >
+                        −
+                      </button>
+                      <span className="px-3 py-1 border-l border-r">
+                        {item.quantity}
+                      </span>
+                      <button
+                        className="px-2 py-1 text-lg text-green-600 cursor-pointer"
+                        onClick={() => handleAdd(item)}
+                      >
+                        +
+                      </button>
+                    </div>
+                    <div className="text-right min-w-16">
+                      <span>₹{item.amount * item.quantity}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
 
       {/* No-contact Option */}
@@ -216,8 +227,11 @@ function Cart({ cart, selectedAddress, refetch }) {
       {/* Payment Button */}
       <div className="p-4 border-t">
         <button
-          className={`w-full bg-red-500 text-white font-bold py-3 px-4 rounded-lg ${!selectedAddress ? "opacity-50 cursor-not-allowed" : "opacity-100 cursor-pointer transition duration-200 hover:bg-red-600"
-            }`}
+          className={`w-full bg-red-500 text-white font-bold py-3 px-4 rounded-lg ${
+            !selectedAddress
+              ? "opacity-50 cursor-not-allowed"
+              : "opacity-100 cursor-pointer transition duration-200 hover:bg-red-600"
+          }`}
           disabled={!selectedAddress}
           onClick={handleCheckout}
         >

@@ -42,7 +42,7 @@ function useItemQuantity(item = null) {
       } else {
         alert('You have insufficient quantity');
       }
-      setTimeout(() => refetch(), 100);
+      setTimeout(() => refetch(), 500);
     }
   };
 
@@ -55,7 +55,7 @@ function useItemQuantity(item = null) {
         cartId: cartItems.cartId,
         itemID: targetItemID
       });
-      setTimeout(() => refetch(), 100);
+      setTimeout(() => refetch(), 500);
     }
   };
 
