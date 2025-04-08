@@ -256,7 +256,7 @@ function Restaurant() {
                     </Button>
                   ))}
                 </div>
-                <div className="w-full min-h-52 h-screen mt-8">
+                <div className="w-full min-h-52 mt-8">
                   {!loading && items && items.length > 0 ? items.map((item) => (
                     <ItemCard key={item.id} item={item} loading={loading} Error={Error} />
                   )) : (!isError && items?.length != 0 ? <div className="animate-spin mx-auto mt-15 rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500 mb-12"></div> : <div className="mt-10 text-center">

@@ -15,7 +15,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 import { Input } from "./ui/input";
 import { useSelector } from "react-redux";
 import { useUser } from "@clerk/clerk-react";
@@ -23,7 +23,13 @@ import useRestaurant from "@/hooks/Restaurant/useRestaurant";
 import { Label } from "./ui/label";
 import { useNavigate } from "react-router";
 
-const EditDialogContent = ({ menu, onSubmit, onClose, formAction, prevData }) => {
+const EditDialogContent = ({
+  menu,
+  onSubmit,
+  onClose,
+  formAction,
+  prevData,
+}) => {
   ////console.log(formAction);
   // console.log(prevData);
 
@@ -87,8 +93,8 @@ const EditDialogContent = ({ menu, onSubmit, onClose, formAction, prevData }) =>
         </form>
       </DialogContent>
     </>
-  )
-}
+  );
+};
 
 function MenuComponent({ menu, refetch }) {
   const [open, setOpen] = useState(false);
@@ -99,8 +105,8 @@ function MenuComponent({ menu, refetch }) {
 
   console.log(menu, "menu");
   const navigate = useNavigate();
-  const { deleteItem, updateItem } = useRestaurant()
-  const { restaurantDetails } = useSelector((state) => state.restaurant)
+  const { deleteItem, updateItem } = useRestaurant();
+  const { restaurantDetails } = useSelector((state) => state.restaurant);
   // let admin = true;
   //// console.log(restaurantDetails);
   const [prevData, setPrevData] = useState({
@@ -111,7 +117,7 @@ function MenuComponent({ menu, refetch }) {
     category: menu.category,
     photoUrl: menu.photoUrl,
     time: menu.time,
-  })
+  });
   const handleDelete = async (menu) => {
     // e.stopPropagation();
     // alert("Delete");
@@ -119,9 +125,8 @@ function MenuComponent({ menu, refetch }) {
 
     await deleteItem.mutateAsync({ itemID: menu.itemID });
     refetch();
-  }
+  };
   ////console.log(menu);
-
 
   // const handleCardClick = () => {
 
@@ -140,26 +145,30 @@ function MenuComponent({ menu, refetch }) {
       category: formData.get("category"),
       photoUrl: menu.photoUrl,
       brand: formData.get("brand"),
-    }
-    setPrevData(updatedMenu)
+    };
+    setPrevData(updatedMenu);
     // console.log(updatedMenu);
     updateItem.mutate({ formdata: updatedMenu });
-    setOpen(false)
+    setOpen(false);
     // setTimeout(() => refetch(), 1000)
     // onClose();
   };
 
-  let initialState = null
-  const [state, formAction, isPending] = useActionState(handleSubmit, initialState);
+  let initialState = null;
+  const [state, formAction, isPending] = useActionState(
+    handleSubmit,
+    initialState
+  );
 
   // console.log(menu);
   if (menu.status === "pending") {
-
-    return null
+    return null;
   }
   return (
     <Card
-      onClick={() => navigate(`/restaurant?name=${menu.Name}&&ID=${menu.restaurantID}`)}
+      onClick={() =>
+        navigate(`/restaurant?name=${menu.Name}&&ID=${menu.restaurantID}`)
+      }
       className="relative w-full max-w-sm border-0 shadow-lg overflow-hidden rounded-lg cursor-pointer hover:scale-102 transition-all duration-300 mb-4"
     >
       <div className="relative h-40 w-full overflow-hidden">
@@ -170,14 +179,12 @@ function MenuComponent({ menu, refetch }) {
         />
       </div>
 
-      {/* Card Content */}
       <CardContent className="p-4">
         <CardTitle className="text-lg font-bold mb-1">
           <p className="text-sm text-gray-500">{menu.brand}</p>
           <p>{menu.Name}</p>
         </CardTitle>
 
-        {/* Rating & Time */}
         {(menu.rating || menu.time) && (
           <p className="text-sm text-gray-500 mb-1">
             {menu.rating && <span>{menu.rating}</span>}
@@ -186,33 +193,42 @@ function MenuComponent({ menu, refetch }) {
           </p>
         )}
 
-        {/* Description */}
         {menu.desc && (
           <CardDescription className="text-sm text-gray-600 mb-2">
             {menu.desc}
           </CardDescription>
         )}
 
-        {/* Offer & Price */}
+        {/* Price and Discount Section with Icons */}
+        <div className="flex items-center gap-2 mb-1">
+          {menu.Amount && (
+            <>
+              <DollarSign className="h-4 w-4 text-gray-700" />
+              <span className="text-sm font-semibold text-gray-800">
+                {menu.Amount}
+              </span>
+            </>
+          )}
+        </div>
+
         {menu.discountedAmount && (
-          <p className="text-sm font-semibold text-green-600 mb-1">
-            {menu.discountedAmount}
+          <div className="flex items-center gap-2 mb-1">
+            <Tag className="h-4 w-4 text-green-600" />
+            <span className="text-sm font-semibold text-green-600">
+              {menu.discountedAmount}
+            </span>
+          </div>
+        )}
+
+        {menu.foodType && (
+          <p className="text-sm font-semibold text-gray-800 mb-1">
+            {menu.foodType}
           </p>
         )}
-        {menu.quantity && (
-          <p className="text-sm text-gray-500">Quantity: {menu.quantity}</p>)}
-        {menu.Amount && (
-          <p className="text-sm font-semibold text-gray-800">{menu.Amount}</p>
-        )}
-        {menu.foodType && (
-          <p className="text-sm font-semibold text-gray-800">{menu.foodType}</p>
-        )}
-        {admin == "vendor" || admin == "admin" ? (
+
+        {admin === "vendor" || admin === "admin" ? (
           <div className="w-full relative bottom-[-20px] flex gap-2">
-            <Button
-              variant="destructive"
-              onClick={() => handleDelete(menu)}
-            >
+            <Button variant="destructive" onClick={() => handleDelete(menu)}>
               <Trash2 className="h-4 w-4" />
             </Button>
 
@@ -221,7 +237,7 @@ function MenuComponent({ menu, refetch }) {
                 <Button
                   variant="secondary"
                   onClick={(e) => {
-                    e.stopPropagation()
+                    e.stopPropagation();
                   }}
                 >
                   <Edit className="h-4 w-4" />
@@ -237,14 +253,11 @@ function MenuComponent({ menu, refetch }) {
               />
             </Dialog>
           </div>
-        ) : <div className="">
-          {/* <Button
-            variant="default"
-            onClick={(e) => { e.stopPropagation() }}
-          >Add</Button> */}
-        </div>}
+        ) : (
+          <div></div>
+        )}
       </CardContent>
-    </Card >
+    </Card>
   );
 }
 

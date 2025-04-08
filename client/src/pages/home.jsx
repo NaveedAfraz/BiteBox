@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import { FaSearch, FaShoppingCart, FaUser } from "react-icons/fa";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  categories,
-  bestSellers,
+
   specialOffers,
-  testimonials,
+
 } from "@/config/details";
 import { Link } from "react-router";
 import { Input } from "@/components/ui/input";
