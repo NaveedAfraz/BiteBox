@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 
 function Cart({ cart, selectedAddress, refetch }) {
   const { userInfo } = useSelector((state) => state.auth);
-  const { handleAdd, handleReduce, cartItems } = useItemQuantity();
+  const { handleAdd, handleReduce, cartItems, adding } = useItemQuantity();
   // console.log(cartItems);
   // console.log(userInfo);
   console.log(cart);
@@ -142,6 +142,7 @@ function Cart({ cart, selectedAddress, refetch }) {
                       <button
                         className="px-2 py-1 text-lg cursor-pointer"
                         onClick={() => handleReduce(item.itemID || item.id)}
+                        disabled={adding}
                       >
                         −
                       </button>
@@ -151,6 +152,7 @@ function Cart({ cart, selectedAddress, refetch }) {
                       <button
                         className="px-2 py-1 text-lg text-green-600 cursor-pointer"
                         onClick={() => handleAdd(item)}
+                        disabled={adding}
                       >
                         +
                       </button>
