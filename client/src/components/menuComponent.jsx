@@ -100,8 +100,8 @@ const EditDialogContent = ({
 function MenuComponent({ menu, refetch }) {
   const [open, setOpen] = useState(false);
   const { user, isLoaded, updateUserMetadata } = useUser();
-  const admin = user?.unsafeMetadata?.role;
-  console.log(admin);
+  const userRole = user?.unsafeMetadata?.role;
+  console.log(userRole);
   console.log(menu);
 
   console.log(menu, "menu");
@@ -162,7 +162,7 @@ function MenuComponent({ menu, refetch }) {
   );
 
   // console.log(menu);
-  if (menu.status === "pending") {
+  if (menu.status === "pending" && userRole !== "admin") {
     return null;
   }
   return (
@@ -227,7 +227,7 @@ function MenuComponent({ menu, refetch }) {
           </p>
         )}
 
-        {admin === "vendor" || admin === "admin" ? (
+        {userRole === "vendor" || userRole === "admin" ? (
           <div className="w-full relative bottom-[-20px] flex gap-2">
             <Button variant="destructive" onClick={() => handleDelete(menu)}>
               <Trash2 className="h-4 w-4" />
