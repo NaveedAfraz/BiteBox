@@ -50,7 +50,6 @@ function useItemQuantity(item = null) {
       setTimeout(() => {
         refetch();
         setAdding(false);
-        alert("Item added to cart");
         toast("Item quantity updated");
       }, 500);
     }
