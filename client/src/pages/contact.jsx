@@ -169,12 +169,6 @@ const Contact = () => {
             </div>
           </div>
         </section>
-
-        <section className="w-full h-64">
-          <div className="w-full h-full bg-gray-300 flex items-center justify-center">
-            <p className="text-gray-700 text-xl">Map Placeholder</p>
-          </div>
-        </section>
       </main>
     </div>
   );
