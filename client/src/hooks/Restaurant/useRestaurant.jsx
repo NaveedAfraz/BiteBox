@@ -56,7 +56,7 @@ const useRestaurant = () => {
           }/api/restaurant/fetchRestaurant/${userID}`, {
           withCredentials: true,
         });
-        console.log(response);
+        console.log(response,"....");
         dispatch(setMenuItems(response.data.items))
         dispatch(setRestaurantDetails(response.data.restaurant))
         return response.data;
