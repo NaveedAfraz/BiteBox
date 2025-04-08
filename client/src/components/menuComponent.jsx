@@ -7,7 +7,7 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import { Button } from "./ui/button";
-import { Delete, Edit, Trash2 } from "lucide-react";
+import { Delete, DollarSign, Edit, Tag, Trash2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -200,11 +200,11 @@ function MenuComponent({ menu, refetch }) {
         )}
 
         {/* Price and Discount Section with Icons */}
-        <div className="flex items-center gap-2 mb-1">
+        <div className="flex items-center  gap-2 mb-1">
           {menu.Amount && (
             <>
               <DollarSign className="h-4 w-4 text-gray-700" />
-              <span className="text-sm font-semibold text-gray-800">
+              <span className="text-sm font-semibold line-through text-gray-800">
                 {menu.Amount}
               </span>
             </>
