@@ -51,7 +51,7 @@ BiteBox is a comprehensive restaurant platform that revolutionizes the online fo
 
 1. Clone the repository
    ```
-   git clone https://github.com/yourusername/bitebox.git
+   git clone https://github.com/NaveedAfraz/BiteBox.git
    cd bitebox
    ```
 
@@ -90,9 +90,6 @@ Detailed deployment instructions can be found in the [Deployment Guide](./docs/d
 
 We welcome contributions! Please see our [Contributing Guidelines](./CONTRIBUTING.md) for more details.
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Contact
 
@@ -100,4 +97,4 @@ For questions or support, please open an issue or contact the project maintainer
 
 ---
 
-[Visit Project Website](https://bitebox.example.com) | [Report Bug](https://github.com/yourusername/bitebox/issues) | [Request Feature](https://github.com/yourusername/bitebox/issues)
+[Visit Project Website](https://bite-box-three.vercel.app/)
