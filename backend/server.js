@@ -28,7 +28,7 @@ const pool = require("./db");
 function getPayPalClient() {
   const clientId = process.env.PAYPAL_CLIENT_ID;
   const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
-  
+
   // For sandbox environment
   const environment = new paypal.core.SandboxEnvironment(
     clientId,
@@ -78,7 +78,7 @@ app.post("/api/create-paypal-order", async (req, res) => {
       application_context: {
         return_url: `${process.env.APP_URL}/payment-success`,
         cancel_url: `${process.env.APP_URL}/payment-canceled`,
-        brand_name: "Your Food Website Name",
+        brand_name: "BiteBox",
         shipping_preference: "NO_SHIPPING",
         user_action: "PAY_NOW",
       },
@@ -216,15 +216,14 @@ app.get("/api/capture-paypal-order", async (req, res) => {
 });
 // Handle successful payment
 app.get("/payment-success", (req, res) => {
-  // Redirect to your frontend success page
+  const token = req.query.token;
   res.redirect(
-    `${process.env.FRONTEND_URL}/order-confirmation?orderId=${req.query.token}`
+    `${process.env.FRONTEND_URL}/order-confirmation?orderId=${token}`
   );
 });
 
 // Handle canceled payment
 app.get("/payment-canceled", (req, res) => {
-  // Redirect to your frontend checkout page
   res.redirect(`${process.env.FRONTEND_URL}/checkout?status=canceled`);
 });
 
