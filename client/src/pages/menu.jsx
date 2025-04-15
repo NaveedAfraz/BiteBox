@@ -1,9 +1,22 @@
 import React, { useEffect } from "react";
 import CardComponent from "../components/CardComponent";
 import MenuComponent from "../components/menuComponent";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
-import { Card, CardContent, CardDescription, CardTitle, CardFooter, CardHeader } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardTitle,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { filterButtons } from "../config/details";
 import useRestaurant from "@/hooks/Restaurant/useRestaurant";
@@ -14,7 +27,9 @@ import useFilteredItems from "@/hooks/Restaurant/useSort";
 function Menu() {
   const { fetchAllRestaurant } = useRestaurant();
   const { data: AllRestaurant } = fetchAllRestaurant();
-  const { menuItems, restaurantDetails } = useSelector((state) => state.restaurant);
+  const { menuItems, restaurantDetails } = useSelector(
+    (state) => state.restaurant
+  );
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -36,21 +51,22 @@ function Menu() {
     setSearchParams(params);
   }, [search, sort, order, foodType, setSearchParams]);
 
-
   useEffect(() => {
     const checkStatus = () => {
-      const result = filteredItems?.data.filter((item) => item.status == "approved")
+      const result = filteredItems?.data.filter(
+        (item) => item.status == "approved"
+      );
       console.log(result);
 
       if (result) {
-        setItem(result)
+        setItem(result);
       } else {
-        setItem(null)
+        setItem(null);
       }
       return result;
-    }
+    };
     console.log(checkStatus(), "..");
-  }, [filteredItems?.data])
+  }, [filteredItems?.data]);
   console.log(filteredItems);
 
   return (
@@ -72,29 +88,35 @@ function Menu() {
         </div>
 
         <div className="container mx-auto px-4 relative">
-          {<h1 className="text-2xl font-bold absolute top-10 left-10">
-            What's cooking for you today?
-          </h1>}
+          {
+            <h1 className="text-2xl font-bold absolute top-10 left-10">
+              What's cooking for you today?
+            </h1>
+          }
           <div className="flex gap-8 overflow-x-auto scrollbar-hide">
             <CardComponent categories={menuItems} title=" " Items={items} />
           </div>
         </div>
         <div className="container mx-auto px-4 mt-10">
           <h1 className="text-2xl font-bold ml-10">Our Top Brands </h1>
-          <div className="flex gap-5 overflow-x-auto scrollbar-hide">
+          <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
             {restaurantDetails.length > 0 &&
               restaurantDetails.map((restaurant) => (
                 <Card
                   key={restaurant.restaurantID}
-                  onClick={() => navigate(`/restaurant?name=${restaurant.Name}&&ID=${restaurant.restaurantID}`)}
-                  className="w-[300px] h-[400px] flex flex-col items-center justify-center border-0 shadow-lg rounded-lg"
+                  onClick={() =>
+                    navigate(
+                      `/restaurant?name=${restaurant.Name}&&ID=${restaurant.restaurantID}`
+                    )
+                  }
+                  className="min-w-[300px] h-[400px] flex flex-col items-center justify-center border-0 shadow-lg rounded-lg snap-center cursor-pointer hover:shadow-xl transition-shadow"
                 >
-                  <CardHeader>
-                    <div className="w-full">
+                  <CardHeader className="w-full">
+                    <div className="w-[250px] h-[250px] mx-auto overflow-hidden rounded-full">
                       <img
                         src={restaurant.RestaurantImage}
                         alt={restaurant.Name}
-                        className="w-[100vw] h-[250px] object-cover rounded-[50%]"
+                        className="w-full h-full object-cover"
                       />
                     </div>
                     <CardTitle className="text-center mt-4">
@@ -120,13 +142,15 @@ function Menu() {
                 onClick={() =>
                   handleFilter(button.filterType, button.value, button.order)
                 }
-                className={`flex items-center gap-2 ${(button.filterType === "foodType" && button.value === foodType) ||
+                className={`flex items-center gap-2 ${
+                  (button.filterType === "foodType" &&
+                    button.value === foodType) ||
                   (button.filterType === "sort" &&
                     button.value === sort &&
                     button.order === order)
-                  ? "bg-green-900"
-                  : "default"
-                  }`}
+                    ? "bg-green-900"
+                    : "default"
+                }`}
               >
                 {button.icon} {button.name}
               </Button>
