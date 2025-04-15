@@ -1,6 +1,7 @@
 const express = require("express");
 // const app = express();
 const dotenv = require("dotenv");
+dotenv.config();
 const path = require("path");
 const cors = require("cors");
 const cloudinary = require("./cloudinary");
@@ -15,7 +16,6 @@ app.use(
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-dotenv.config();
 const authRoute = require("./routes/auth/authRoute");
 const restaurantRoute = require("./routes/restaurants/restaurant");
 const cartRoute = require("./routes/Cart/cartRoute");
@@ -71,6 +71,8 @@ app.post("/api/create-paypal-order", async (req, res) => {
         quantity: item.quantity.toString(),
       };
     });
+
+    console.log(`Using APP_URL for PayPal return_url: ${process.env.APP_URL}`);
 
     // Configure the order request
     request.requestBody({
