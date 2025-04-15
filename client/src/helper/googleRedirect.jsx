@@ -9,7 +9,9 @@ function OAuthCallback() {
   const { loginAuth, useLoggedIn } = useAuth();
   const [hasProcessed, setHasProcessed] = useState(false);
 
-  const { data: loggedInData, isLoading: isLoggedInLoading } = useLoggedIn(user?.primaryEmailAddress?.emailAddress);
+  const { data: loggedInData, isLoading: isLoggedInLoading } = useLoggedIn(
+    user?.primaryEmailAddress?.emailAddress
+  );
   useEffect(() => {
     if (loginAuth.isSuccess) {
       navigate("/");
@@ -29,10 +31,10 @@ function OAuthCallback() {
         const formData = {
           email,
           role,
-          isSocialLogin: true
+          isSocialLogin: true,
         };
 
-        sessionStorage.setItem('selectedRole', role);
+        sessionStorage.setItem("selectedRole", role);
 
         if (!loggedInData || !loggedInData.email) {
           console.log("User not logged in, initiating login process");
@@ -44,12 +46,30 @@ function OAuthCallback() {
       }
     };
     handleSocialLogin();
-  }, [isLoaded, user, hasProcessed, loginAuth, loggedInData, isLoggedInLoading, navigate]);
+  }, [
+    isLoaded,
+    user,
+    hasProcessed,
+    loginAuth,
+    loggedInData,
+    isLoggedInLoading,
+    navigate,
+  ]);
+
+  // Common loading/processing layout
+  const LoadingIndicator = ({ message }) => (
+    <div className="min-h-screen flex flex-col items-center justify-center pt-24 px-4 text-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+      <p className="text-lg font-semibold text-gray-700">{message}</p>
+    </div>
+  );
 
   if (isLoggedInLoading) {
-    return <div>Checking login status...</div>;
+    return <LoadingIndicator message="Checking login status..." />;
   }
-  return <div>Processing your login...</div>;
+
+  // Show processing indicator while login mutation or navigation occurs
+  return <LoadingIndicator message="Processing your login..." />;
 }
 
 export default OAuthCallback;
