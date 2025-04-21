@@ -5,6 +5,10 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 const useContact = (userId) => {
+  if (userId === undefined) {
+    console.error("userId is undefined! Check your initialization.");
+    return;
+  }
   const [messages, setMessages] = useState([]);
   console.log(userId);
 
