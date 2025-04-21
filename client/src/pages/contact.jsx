@@ -50,18 +50,18 @@ const Contact = () => {
       return;
     }
 
-    // let formdata = {
-    //   title: title || null,
-    //   message: message || null,
-    //   senderId: userInfo?.userId || null,
-    //   senderType: "customer",
-    //   orderId: selectedOrderID || null,
-    //   userType: "restaurant",
-    //   status: "active"
-    // }
-    // console.log(formdata, "formdatadd");
+    let formdata = {
+      title: title || null,
+      message: message || null,
+      senderId: userInfo?.userId || null,
+      senderType: "customer",
+      orderId: selectedOrderID || null,
+      userType: "restaurant",
+      status: "active"
+    }
+    console.log(formdata, "formdatadd");
     
-    // userInfo.userId && sendMessage.mutate(formdata);
+    userInfo.userId && sendMessage.mutate(formdata);
   }
 
   const intialState = null;
