@@ -5,10 +5,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 const useContact = (userId) => {
-  if (userId === undefined) {
-    console.error("userId is undefined! Check your initialization.");
-    return;
-  }
+   
   const [messages, setMessages] = useState([]);
   console.log(userId);
 
@@ -52,8 +49,12 @@ const useContact = (userId) => {
     },
     refetchInterval: 60000, // Refetch every minute
   });
-
-
+ console.log("runinnggg");
+ 
+  if (userId === undefined) {
+    console.error("userId is undefined! Check your initialization.");
+    return;
+  }
   // Socket event listeners
   useEffect(() => {
     if (!socket) {
