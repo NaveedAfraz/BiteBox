@@ -18,12 +18,22 @@ const Contact = () => {
   console.log(messages, "messages");
 
   const { fetchOrders } = useOrders()
-  const socket = initializeSocket(userInfo?.userId);
+  // const socket = initializeSocket(userInfo?.userId);
+  const [socket, setSocket] = useState(null);
   const { refetch: refetchOrders } = fetchOrders(userInfo?.userId);
   const { orderIDs } = useSelector(state => state.restaurant);
   // console.log(orderIDs, "orderIDs");
 
   const stringOrderIDs = orderIDs.map(String);
+
+  useEffect(() => {
+    setSocket(initializeSocket(userInfo?.userId));
+    return () => {
+      if (socket) {
+        socket.disconnect();
+      }
+    };
+  }, [userInfo?.userId]);
 
   // let orderIDs = [1, 2, 3, 4, 5]
   const handleSubmit = async (prevValue, formData) => {
@@ -57,10 +67,11 @@ const Contact = () => {
   console.log(selectedOrderID);
   useEffect(() => {
     socket.emit('order-selected', selectedOrderID);
+    console.log("running useEffect", selectedOrderID);
     if (selectedOrderID) {
       console.log(true);
     }
-  }, [selectedOrderID])
+  }, [selectedOrderID, userInfo?.userId]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -134,7 +145,7 @@ const Contact = () => {
                             <SelectValue placeholder="OrderID" />
                           </SelectTrigger>
                           <SelectContent>
-                            {stringOrderIDs.map((orderID, index) => (
+                            {stringOrderIDs.length > 0 && stringOrderIDs.map((orderID, index) => (
                               <SelectItem key={index} value={orderID}>
                                 {orderID}
                               </SelectItem>
