@@ -12,30 +12,30 @@ import useOrders from "@/hooks/Restaurant/useOrder";
 import { initializeSocket } from "../lib/socket";
 
 const Contact = () => {
-   const [selectedOrderID, setSelectedOrderID] = useState(null);
-  // const { userInfo } = useSelector(state => state.auth);
-  // const { sendMessage, messages, isLoading } = useContact(userInfo?.userId);
-  // console.log(messages, "messages");
+  const [selectedOrderID, setSelectedOrderID] = useState(null);
+  const { userInfo } = useSelector(state => state.auth);
+  const { sendMessage, messages, isLoading } = useContact(userInfo?.userId);
+  console.log(messages, "messages");
 
-  // const { fetchOrders } = useOrders()
-  // // const socket = initializeSocket(userInfo?.userId);
-  // const [socket, setSocket] = useState(null);
-  // const { refetch: refetchOrders } = fetchOrders(userInfo?.userId);
+  const { fetchOrders } = useOrders()
+  // const socket = initializeSocket(userInfo?.userId);
+  const [socket, setSocket] = useState(null);
+  const { refetch: refetchOrders } = fetchOrders(userInfo?.userId);
   const { orderIDs } = useSelector(state => state.restaurant);
   // console.log(orderIDs, "orderIDs");
 
   const stringOrderIDs = orderIDs.map(String);
 
-  // useEffect(() => {
-  //   setSocket(initializeSocket(userInfo?.userId));
-  //   return () => {
-  //     if (socket) {
-  //       socket.disconnect();
-  //     }
-  //   };
-  // }, [userInfo?.userId]);
+  useEffect(() => {
+    setSocket(initializeSocket(userInfo?.userId));
+    return () => {
+      if (socket) {
+        socket.disconnect();
+      }
+    };
+  }, [userInfo?.userId]);
 
-  // // let orderIDs = [1, 2, 3, 4, 5]
+  // let orderIDs = [1, 2, 3, 4, 5]
   const handleSubmit = async (prevValue, formData) => {
     const title = formData.get('title');
     const message = formData.get('message');
@@ -60,20 +60,20 @@ const Contact = () => {
       status: "active"
     }
     console.log(formdata, "formdatadd");
-    
+
     userInfo.userId && sendMessage.mutate(formdata);
   }
 
   const intialState = null;
-   const [state, formAction, isPending] = useActionState(handleSubmit, intialState)
-  // console.log(selectedOrderID);
-  // useEffect(() => {
-  //   socket.emit('order-selected', selectedOrderID);
-  //   console.log("running useEffect", selectedOrderID);
-  //   if (selectedOrderID) {
-  //     console.log(true);
-  //   }
-  // }, [selectedOrderID, userInfo?.userId]);
+  const [state, formAction, isPending] = useActionState(handleSubmit, intialState)
+  console.log(selectedOrderID);
+  useEffect(() => {
+    socket.emit('order-selected', selectedOrderID);
+    console.log("running useEffect", selectedOrderID);
+    if (selectedOrderID) {
+      console.log(true);
+    }
+  }, [selectedOrderID, userInfo?.userId]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -139,10 +139,11 @@ const Contact = () => {
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="superAdmin">Super Admin</SelectItem>
-                            <SelectItem value="Vendor">Vendor</SelectItem>
+                            {userInfo?.userId && <SelectItem value="Vendor">Vendor</SelectItem>}
                           </SelectContent>
                         </Select>
-                        <Select value={selectedOrderID} onValueChange={setSelectedOrderID}>
+
+                        {userInfo?.userId && <Select value={selectedOrderID} onValueChange={setSelectedOrderID}>
                           <SelectTrigger className="w-[130px]">
                             <SelectValue placeholder="OrderID" />
                           </SelectTrigger>
@@ -153,7 +154,7 @@ const Contact = () => {
                               </SelectItem>
                             ))}
                           </SelectContent>
-                        </Select>
+                        </Select>}
                       </div>
 
                       <div>
