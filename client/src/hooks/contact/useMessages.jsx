@@ -9,7 +9,8 @@ const useContact = (userId) => {
   const [messages, setMessages] = useState([]);
   console.log(userId);
 
-  const socket = initializeSocket(userId);
+  const socket = initializeSocket(userId || null);
+  console.log(socket, "socket");
   // Use socket to send messages
   const sendMessage = useMutation({
     mutationFn: async (formData) => {
@@ -51,10 +52,10 @@ const useContact = (userId) => {
   });
  console.log("runinnggg");
  
-  if (userId === undefined) {
-    console.error("userId is undefined! Check your initialization.");
-    return;
-  }
+  // if (userId === undefined) {
+  //   console.error("userId is undefined! Check your initialization.");
+  //   return;
+  // }
   // Socket event listeners
   useEffect(() => {
     if (!socket) {
