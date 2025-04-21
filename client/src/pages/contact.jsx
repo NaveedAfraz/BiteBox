@@ -12,7 +12,7 @@ import useOrders from "@/hooks/Restaurant/useOrder";
 import { initializeSocket } from "../lib/socket";
 
 const Contact = () => {
-  // const [selectedOrderID, setSelectedOrderID] = useState();
+   const [selectedOrderID, setSelectedOrderID] = useState(null);
   // const { userInfo } = useSelector(state => state.auth);
   // const { sendMessage, messages, isLoading } = useContact(userInfo?.userId);
   // console.log(messages, "messages");
