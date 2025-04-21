@@ -40,7 +40,10 @@ const Contact = () => {
     const title = formData.get('title');
     const message = formData.get('message');
     console.log(title, message);
-
+    if (!userInfo?.userId) {
+      toast("Please login to send a message");
+      return;
+    }
     if (!title) {
       toast("Please enter a title");
       return;
@@ -59,7 +62,7 @@ const Contact = () => {
       userType: "restaurant",
       status: "active"
     }
-     console.log(formdata, "formdatadd");
+    console.log(formdata, "formdatadd");
 
     userInfo.userId && sendMessage.mutate(formdata);
   }
