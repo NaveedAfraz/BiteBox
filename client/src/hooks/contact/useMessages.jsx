@@ -91,7 +91,7 @@ const useContact = (userId) => {
       socket.off("newConversation");
       socket.off("messageError");
     };
-  }, []);
+  }, [userId]);
   console.log(messageHistory);
 
   console.log(messages);
