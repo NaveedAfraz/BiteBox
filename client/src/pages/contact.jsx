@@ -12,68 +12,68 @@ import useOrders from "@/hooks/Restaurant/useOrder";
 import { initializeSocket } from "../lib/socket";
 
 const Contact = () => {
-  const [selectedOrderID, setSelectedOrderID] = useState();
-  const { userInfo } = useSelector(state => state.auth);
-  const { sendMessage, messages, isLoading } = useContact(userInfo?.userId);
-  console.log(messages, "messages");
+  // const [selectedOrderID, setSelectedOrderID] = useState();
+  // const { userInfo } = useSelector(state => state.auth);
+  // const { sendMessage, messages, isLoading } = useContact(userInfo?.userId);
+  // console.log(messages, "messages");
 
-  const { fetchOrders } = useOrders()
-  // const socket = initializeSocket(userInfo?.userId);
-  const [socket, setSocket] = useState(null);
-  const { refetch: refetchOrders } = fetchOrders(userInfo?.userId);
+  // const { fetchOrders } = useOrders()
+  // // const socket = initializeSocket(userInfo?.userId);
+  // const [socket, setSocket] = useState(null);
+  // const { refetch: refetchOrders } = fetchOrders(userInfo?.userId);
   const { orderIDs } = useSelector(state => state.restaurant);
   // console.log(orderIDs, "orderIDs");
 
   const stringOrderIDs = orderIDs.map(String);
 
-  useEffect(() => {
-    setSocket(initializeSocket(userInfo?.userId));
-    return () => {
-      if (socket) {
-        socket.disconnect();
-      }
-    };
-  }, [userInfo?.userId]);
+  // useEffect(() => {
+  //   setSocket(initializeSocket(userInfo?.userId));
+  //   return () => {
+  //     if (socket) {
+  //       socket.disconnect();
+  //     }
+  //   };
+  // }, [userInfo?.userId]);
 
-  // let orderIDs = [1, 2, 3, 4, 5]
-  const handleSubmit = async (prevValue, formData) => {
-    const title = formData.get('title');
-    const message = formData.get('message');
-    console.log(title, message);
+  // // let orderIDs = [1, 2, 3, 4, 5]
+  // const handleSubmit = async (prevValue, formData) => {
+  //   const title = formData.get('title');
+  //   const message = formData.get('message');
+  //   console.log(title, message);
 
-    if (!title) {
-      toast("Please enter a title");
-      return;
-    }
-    if (!message) {
-      toast("Please enter a message");
-      return;
-    }
+  //   if (!title) {
+  //     toast("Please enter a title");
+  //     return;
+  //   }
+  //   if (!message) {
+  //     toast("Please enter a message");
+  //     return;
+  //   }
 
-    let formdata = {
-      title: title,
-      message: message,
-      senderId: userInfo?.userId,
-      senderType: "customer",
-      orderId: selectedOrderID,
-      userType: "restaurant",
-      status: "active"
-    }
-    console.log(formdata, "formdatadd");
+  //   let formdata = {
+  //     title: title,
+  //     message: message,
+  //     senderId: userInfo?.userId,
+  //     senderType: "customer",
+  //     orderId: selectedOrderID,
+  //     userType: "restaurant",
+  //     status: "active"
+  //   }
+  //   console.log(formdata, "formdatadd");
     
-    userInfo.userId && sendMessage.mutate(formdata);
-  }
+  //   userInfo.userId && sendMessage.mutate(formdata);
+  // }
 
-  const intialState = null;
-  const [state, formAction, isPending] = useActionState(handleSubmit, intialState)
-  console.log(selectedOrderID);
-  useEffect(() => {
-    socket.emit('order-selected', selectedOrderID);
-    console.log("running useEffect", selectedOrderID);
-    if (selectedOrderID) {
-      console.log(true);
-    }
-  }, [selectedOrderID, userInfo?.userId]);
+  // const intialState = null;
+  // const [state, formAction, isPending] = useActionState(handleSubmit, intialState)
+  // console.log(selectedOrderID);
+  // useEffect(() => {
+  //   socket.emit('order-selected', selectedOrderID);
+  //   console.log("running useEffect", selectedOrderID);
+  //   if (selectedOrderID) {
+  //     console.log(true);
+  //   }
+  // }, [selectedOrderID, userInfo?.userId]);
 
   return (
     <div className="min-h-screen flex flex-col">

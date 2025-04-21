@@ -7,7 +7,7 @@ export const initializeSocket = (userId) => {
 
   if (!userId) {
     console.error("User ID is missing, socket connection not established.");
-    return null;
+    return;
   }
 
   if (!socket) {
