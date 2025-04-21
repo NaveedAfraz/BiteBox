@@ -59,7 +59,9 @@ const Contact = () => {
       userType: "restaurant",
       status: "active"
     }
-    sendMessage.mutate(formdata);
+    console.log(formdata, "formdatadd");
+    
+    userInfo.userId && sendMessage.mutate(formdata);
   }
 
   const intialState = null;
