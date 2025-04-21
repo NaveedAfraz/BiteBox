@@ -51,11 +51,11 @@ const Contact = () => {
     }
 
     let formdata = {
-      title: title,
-      message: message,
-      senderId: userInfo?.userId,
+      title: title || null,
+      message: message || null,
+      senderId: userInfo?.userId || null,
       senderType: "customer",
-      orderId: selectedOrderID,
+      orderId: selectedOrderID || null,
       userType: "restaurant",
       status: "active"
     }
