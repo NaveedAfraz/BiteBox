@@ -36,33 +36,33 @@ const Contact = () => {
   // }, [userInfo?.userId]);
 
   // // let orderIDs = [1, 2, 3, 4, 5]
-  // const handleSubmit = async (prevValue, formData) => {
-  //   const title = formData.get('title');
-  //   const message = formData.get('message');
-  //   console.log(title, message);
+  const handleSubmit = async (prevValue, formData) => {
+    const title = formData.get('title');
+    const message = formData.get('message');
+    console.log(title, message);
 
-  //   if (!title) {
-  //     toast("Please enter a title");
-  //     return;
-  //   }
-  //   if (!message) {
-  //     toast("Please enter a message");
-  //     return;
-  //   }
+    if (!title) {
+      toast("Please enter a title");
+      return;
+    }
+    if (!message) {
+      toast("Please enter a message");
+      return;
+    }
 
-  //   let formdata = {
-  //     title: title,
-  //     message: message,
-  //     senderId: userInfo?.userId,
-  //     senderType: "customer",
-  //     orderId: selectedOrderID,
-  //     userType: "restaurant",
-  //     status: "active"
-  //   }
-  //   console.log(formdata, "formdatadd");
+    let formdata = {
+      title: title,
+      message: message,
+      senderId: userInfo?.userId,
+      senderType: "customer",
+      orderId: selectedOrderID,
+      userType: "restaurant",
+      status: "active"
+    }
+    console.log(formdata, "formdatadd");
     
-  //   userInfo.userId && sendMessage.mutate(formdata);
-  // }
+    userInfo.userId && sendMessage.mutate(formdata);
+  }
 
   const intialState = null;
    const [state, formAction, isPending] = useActionState(handleSubmit, intialState)
