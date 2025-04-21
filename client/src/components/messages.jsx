@@ -90,10 +90,10 @@ const Messages = ({ conversations }) => {
   };
   console.log("selectedConversation", selectedConversation);
 
-  // if (!socket) {
-  //   console.error("Socket is undefined! Check your initialization.");
-  //   return;
-  // }
+  if (!socket) {
+    console.error("Socket is undefined! Check your initialization.");
+    return;
+  }
   return (
     <Card className="w-full h-[calc(100vh-100px)] flex flex-row overflow-hidden">
       <div className={`border-r ${isSidebarOpen ? 'w-64' : 'w-12'} transition-all duration-300 flex flex-col bg-gray-50`}>

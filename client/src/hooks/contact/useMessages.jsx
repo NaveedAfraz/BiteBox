@@ -9,7 +9,7 @@ const useContact = (userId) => {
   const [messages, setMessages] = useState([]);
   console.log(userId);
 
-  const socket = initializeSocket(userId || null);
+  const socket = initializeSocket(userId);
   console.log(socket, "socket");
   // Use socket to send messages
   const sendMessage = useMutation({

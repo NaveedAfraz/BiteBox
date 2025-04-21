@@ -67,13 +67,13 @@ const Contact = () => {
   const intialState = null;
   const [state, formAction, isPending] = useActionState(handleSubmit, intialState)
   console.log(selectedOrderID);
-  useEffect(() => {
-    socket.emit('order-selected', selectedOrderID);
-    console.log("running useEffect", selectedOrderID);
-    if (selectedOrderID) {
-      console.log(true);
-    }
-  }, [selectedOrderID, userInfo?.userId]);
+  // useEffect(() => {
+  //   socket.emit('order-selected', selectedOrderID);
+  //   console.log("running useEffect", selectedOrderID);
+  //   if (selectedOrderID) {
+  //     console.log(true);
+  //   }
+  // }, [selectedOrderID, userInfo?.userId]);
 
   return (
     <div className="min-h-screen flex flex-col">
