@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSignUp, useSignIn, useUser } from "@clerk/clerk-react";
+import { useSignUp, useSignIn, useUser, useClerk } from "@clerk/clerk-react";
 import { useLocation, useNavigate } from "react-router";
 import { FcGoogle } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,66 +14,68 @@ function CustomSignUpForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
-  const [role, setRole] = useState("customer"); // Set default role
+  const [role, setRole] = useState();
   const [error, setError] = useState(null);
   const [processing, setProcessing] = useState(false);
-  const { data: loggedInData, isLoading, refetch: refetchLoggedIn } = useLoggedIn(email);
+  const { data: loggedInData, isLoading, isError, error: loggedInError, refetch: refetchLoggedIn } = useLoggedIn(email);
   const location = useLocation();
   const { toggleAuth } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  const { user } = useUser();
-
-  // Set auth state based on path
+  const { user } = useUser()
+  // console.log(user, "ua");
   useEffect(() => {
     if (location.pathname === "/login") {
       dispatch(toggleAuthState("Login"));
     } else {
       dispatch(toggleAuthState("Sign Up"));
     }
-  }, [location.pathname, dispatch]);
+  }, [location.pathname]);
+  console.log(loggedInData);
 
-  // Check user authentication when email changes
-  useEffect(() => {
-    const checkUserAuthentication = async () => {
-      if (email) {
-        try {
-          await refetchLoggedIn();
-        } catch (error) {
-          console.error("Error checking authentication:", error);
-        }
+  const checkUserAuthentication = async (email) => {
+    try {
+      await refetchLoggedIn();
+      if (loggedInData) {
+        console.log("User authenticated:", loggedInData);
+        // You might want to set some state or perform some action based on this data
+      } else {
+        console.log("User not authenticated");
       }
-    };
-    
-    checkUserAuthentication();
-  }, [email, refetchLoggedIn]);
+    } catch (error) {
+      console.error("Error checking authentication:", error);
+      setError("Error checking authentication. Please try again.");
+    }
+  };
 
+  useEffect(() => {
+    if (email) {
+      checkUserAuthentication(email);
+    }
+  }, [email, loggedInData]);
+
+  // console.log(loggedInData);
+  // const { signOut } = useClerk()
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
 
-    if (username.trim().length === 0) {
-      setError("Please enter username");
-      return;
-    }
-    
+    if (username.trim().length === 0) return alert("Please enter username");
     setProcessing(true);
-    
     try {
       if (toggleAuth !== "Login") {
         // Handle Sign Up
+        console.log(role)
         const result = await signUp.create({
           emailAddress: email,
           password: password,
           unsafeMetadata: { role },
         });
-        
         const formData = {
           email,
           password,
           role,
           username,
-        };
-
+        }
         if (result.status === "missing_requirements") {
           if (result.unverifiedFields.includes("email_address")) {
             await signUp.prepareEmailAddressVerification();
@@ -81,44 +83,45 @@ function CustomSignUpForm() {
           }
         } else if (result.status === "complete") {
           if (result.createdSessionId) {
-            await setActive({ session: result.createdSessionId });
-            signupAuth.mutate({ formData });
+            alert("login success")  // never works cuz verfiy email is mandatory
+            signUp.mutate({ formData })
             navigate("/");
           }
         }
       } else {
         // Handle Login
-        if (!loggedInData || !loggedInData.email) {
-          setError("Account not found. Please sign up first.");
-          setProcessing(false);
+        if (!loggedInData && !loggedInData?.email && !user) {
+          alert("Please sign up")
+          // await signOut({ redirectUrl: '/login' });
+          // loginAuth.mutate({ formData });
           return;
-        }
-        
-        const result = await signIn.create({
-          identifier: email,
-          password: password,
-        });
-        
-        const formData = {
-          email,
-          password,
-          role,
-          username,
-        };
+        } else {
+          const result = await signIn.create({
+            identifier: email,
+            password: password,
+          });
+          console.log(result);
+          const formData = {
+            email,
+            password,
+            role,
+            username,
+          }
+        //  console.log(role);
 
-        if (result.status === "complete") {
-          sessionStorage.setItem('selectedRole', role);
-          await setActive({ session: result.createdSessionId });
-          loginAuth.mutate({ formData });
+          if (result.status === "complete") {
+            sessionStorage.setItem('selectedRole', role);
+            await setActive({ session: result.createdSessionId });
+            // navigate("/"); 
+          }
         }
       }
-    } catch (err) {
-      console.error("Auth error:", err);
-      
-      if (err.message?.includes("verification strategy is not valid")) {
+    } catch (signInErr) {
+      console.log("Sign-in error: ", signInErr);
+      if (signInErr.message?.includes("verification strategy is not valid")) {
         setError("This email was registered with a social account. Please sign in with Google using this email.");
       } else {
-        setError(err.errors ? err.errors[0].message : err.message);
+        setError(signInErr.errors ? signInErr.errors[0].message : signInErr.message);
       }
     } finally {
       setProcessing(false);
@@ -127,16 +130,11 @@ function CustomSignUpForm() {
 
   const handleGoogleSignIn = async () => {
     if (!isSignInLoaded) return;
-    
     try {
-      // Store role selection
-      sessionStorage.setItem('selectedRole', role || 'customer');
-      
-      // Start the OAuth flow
       await signIn.authenticateWithRedirect({
         strategy: "oauth_google",
         redirectUrl: "/sso-callback",
-        redirectUrlComplete: "/sso-callback",
+        // redirectUrlComplete: "/",
       });
     } catch (err) {
       setError(err.message || "An error occurred with Google sign-in");
@@ -146,7 +144,7 @@ function CustomSignUpForm() {
   if (!isSignUpLoaded || !isSignInLoaded) {
     return <div>Loading authentication system...</div>;
   }
-
+ 
   return (
     <>
       <form
@@ -155,7 +153,7 @@ function CustomSignUpForm() {
       >
         <h2 className="text-2xl font-bold mb-4">{toggleAuth}</h2>
         <input
-          type="text"
+          type="username"
           placeholder="Username"
           className="w-full border p-2 mb-4 rounded"
           value={username}
@@ -183,16 +181,19 @@ function CustomSignUpForm() {
           disabled={processing}
         />
 
-        <select
-          className="w-full border p-2 mb-4 rounded"
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
-          disabled={processing}
-        >
-          <option value="customer">Customer</option>
-          <option value="vendor">Vendor</option>
-          <option value="admin">Admin</option>
-        </select>
+        {location.pathname === "sign-up" &&
+          <select
+            className="w-full border p-2 mb-4 rounded"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            disabled={processing}
+          >
+            <option value="customer">Customer</option>
+            <option value="vendor">Vendor</option>
+            <option value="admin">Admin</option>
+          </select>
+        }
+        <div id="clerk-captcha" className="mb-4"></div>
 
         {error && <p className="text-red-500 mb-4">{error}</p>}
 
@@ -209,11 +210,11 @@ function CustomSignUpForm() {
           <button
             type="button"
             onClick={() => {
-              navigate(toggleAuth === "Login" ? "/sign-up" : "/login");
+              toggleAuth == "Login" ? navigate("/sign-up") : navigate("/login");
             }}
             className="text-blue-500 underline"
           >
-            {toggleAuth === "Login" ? "Sign up" : "Login"}
+            {toggleAuth == "Login" ? <p>Sign up</p> : <p>Login</p>}
           </button>
         </p>
       </form>
