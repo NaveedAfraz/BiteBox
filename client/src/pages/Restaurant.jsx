@@ -26,10 +26,10 @@ function Restaurant() {
 
   const menu = [
     { id: 1, name: "All" },
-    { id: 2, name: "pizza", price: 100 },
-    { id: 3, name: "burger", price: 50 },
-    { id: 4, name: "Salad", price: 20 },
-    { id: 5, name: "Drink", price: 10 },
+    { id: 2, name: "pizza" },
+    { id: 3, name: "burger" },
+    { id: 4, name: "Salad" },
+    { id: 5, name: "Drink" },
   ];
   const [Error, setError] = useState()
 
@@ -93,7 +93,7 @@ function Restaurant() {
 
     //console.log(item);
     if (filteredItems) {
-      const filteredItemsMenuBtn = filteredItems.data.filter((Item) => Item.category === item.name
+      const filteredItemsMenuBtn = filteredItems.data.filter((Item) => Item.category === item.name && Item.restaurantID === restaurantID
       )
       console.log(filteredItemsMenuBtn);
       // alert("Filtered")
