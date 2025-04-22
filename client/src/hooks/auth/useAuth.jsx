@@ -51,18 +51,20 @@ const useAuth = () => {
   const useLoggedIn = (email) => useQuery({
     queryKey: ["loggedIn", email],
     queryFn: async () => {
-      console.log(email,"email in useLoggedIn");
+      console.log(email, "email in useLoggedIn");
       if (email) {
         try {
           const response = await axios.get(`${import.meta.env.VITE_API_URL
             }/api/auth/loggedIn/${email}`, {
             withCredentials: true
           });
+          console.log(response, "response from server in useLoggedIn");
+
           console.log("Response from server:", response.data);
           dispatch(userDetails(response.data))
           return response.data;
         } catch (err) {
-          console.log(err);
+          console.log(err,"eerrror in useLoggedIn");
           throw new Error("Failed to fetch loggedIn status");
         }
       }
