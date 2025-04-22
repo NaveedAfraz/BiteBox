@@ -91,9 +91,11 @@ function Restaurant() {
     setIndex(index)
     // console.log(items);
 
-    //console.log(item);
+    console.log("Selected Item:", item);
+    console.log("Handling filter button click for:", item.name); 
+    console.log(item);
     if (filteredItems) {
-      const filteredItemsMenuBtn = filteredItems.data.filter((Item) => Item.category === item.name && Item.restaurantID === restaurantID
+      const filteredItemsMenuBtn = filteredItems.data.filter((Item) => Item.category === item.name && Item.restaurantID === item.restaurantID
       )
       console.log(filteredItemsMenuBtn);
       // alert("Filtered")
