@@ -5,13 +5,26 @@ import useAuth from "@/hooks/auth/useAuth";
 
 function OAuthCallback() {
   const navigate = useNavigate();
-  const { user, isLoaded } = useUser();
-  const { signUp } = useClerk();
+  const { user, isLoaded, isSignedIn } = useUser();
+  const clerk = useClerk();
   const { loginAuth, useLoggedIn, signupAuth } = useAuth();
   const [hasProcessed, setHasProcessed] = useState(false);
+  const [timeoutOccurred, setTimeoutOccurred] = useState(false);
   
   const userEmail = user?.primaryEmailAddress?.emailAddress;
   const { data: loggedInData, isLoading: isLoggedInLoading } = useLoggedIn(userEmail);
+  
+  // Add timeout to prevent infinite waiting
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (!user && isLoaded) {
+        console.log("Timeout occurred waiting for user data");
+        setTimeoutOccurred(true);
+      }
+    }, 5000); // 5 seconds timeout
+    
+    return () => clearTimeout(timeoutId);
+  }, [user, isLoaded]);
   
   // Handle successful login/signup redirect
   useEffect(() => {
@@ -20,23 +33,45 @@ function OAuthCallback() {
     }
   }, [loginAuth.isSuccess, signupAuth.isSuccess, navigate]);
   
+  // Redirect to login if timeout occurred
+  useEffect(() => {
+    if (timeoutOccurred) {
+      console.log("Redirecting to login page due to timeout");
+      navigate("/login?error=auth-timeout");
+    }
+  }, [timeoutOccurred, navigate]);
+  
   // Handle social login processing
   useEffect(() => {
     const handleSocialLogin = async () => {
-      // Don't process if already processed or still loading
-      if (!isLoaded || hasProcessed || isLoggedInLoading) {
+      // Check if the user is loaded and signed in
+      if (!isLoaded) {
+        return; // Still loading, wait
+      }
+      
+      // If user is loaded but not signed in, redirect to login
+      if (isLoaded && !isSignedIn && !clerk.isReady) {
+        console.log("User not signed in after OAuth process");
+        navigate("/login?error=auth-failed");
+        return;
+      }
+      
+      // Don't process if already processed
+      if (hasProcessed) {
         return;
       }
   
       // Check if we have a user from Clerk
       if (user) {
+        console.log("User found, processing social login");
         setHasProcessed(true);
         
         const email = user.primaryEmailAddress?.emailAddress;
         // Get role from session storage or default to customer
         const role = sessionStorage.getItem("selectedRole") || "customer";
-        const username = user.username || user.firstName || 
-          'user' + Math.random().toString(36).substring(2, 8);
+        const username = user.username || 
+                         user.firstName || 
+                         'user' + Math.random().toString(36).substring(2, 8);
         
         // Prepare form data
         const formData = {
@@ -46,34 +81,26 @@ function OAuthCallback() {
           isSocialLogin: true,
         };
         
-        // Store selected role for future use
-        sessionStorage.setItem("selectedRole", role);
-        
         try {
           // Check if user exists in our system
           if (!loggedInData || !loggedInData.email) {
-            console.log("New user, creating account");
-            // Create user in our system
-            await signupAuth.mutate({ formData });
+            console.log("Creating new user in system:", formData);
+            signupAuth.mutate({ formData });
           } else {
-            console.log("User exists, logging in");
-            // User already exists, just log them in
+            console.log("User exists, logging in:", formData);
             loginAuth.mutate({ formData });
           }
         } catch (error) {
           console.error("Error during social login processing:", error);
-          navigate("/login?error=social-login-failed");
+          navigate("/login?error=process-failed");
         }
-      } else {
-        // No user from Clerk yet, but we don't want to redirect to login
-        // as this may be part of the OAuth flow
-        console.log("No Clerk user yet, waiting...");
       }
     };
     
     handleSocialLogin();
   }, [
     isLoaded,
+    isSignedIn,
     user,
     hasProcessed,
     loginAuth,
@@ -81,6 +108,7 @@ function OAuthCallback() {
     loggedInData,
     isLoggedInLoading,
     navigate,
+    clerk.isReady
   ]);
   
   // Loading indicator component
@@ -93,19 +121,38 @@ function OAuthCallback() {
   
   // Show appropriate loading state
   if (!isLoaded) {
-    return <LoadingIndicator message="Loading user data..." />;
+    return <LoadingIndicator message="Loading authentication data..." />;
+  }
+  
+  if (isLoaded && !isSignedIn && !timeoutOccurred) {
+    return <LoadingIndicator message="Waiting for authentication to complete..." />;
   }
   
   if (isLoggedInLoading) {
-    return <LoadingIndicator message="Checking login status..." />;
+    return <LoadingIndicator message="Verifying account status..." />;
   }
   
-  if (loginAuth.isLoading || signupAuth.isLoading || hasProcessed) {
-    return <LoadingIndicator message="Processing your login..." />;
+  if (loginAuth.isLoading || signupAuth.isLoading) {
+    return <LoadingIndicator message="Processing your account..." />;
   }
   
-  // Fallback loading state
-  return <LoadingIndicator message="Completing authentication..." />;
+  if (hasProcessed) {
+    return <LoadingIndicator message="Finalizing authentication..." />;
+  }
+  
+  // Fallback loading state with a retry button
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mb-4"></div>
+      <p className="text-lg text-gray-600">Completing authentication...</p>
+      <button 
+        onClick={() => navigate("/login")}
+        className="mt-8 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      >
+        Return to Login
+      </button>
+    </div>
+  );
 }
 
 export default OAuthCallback;
