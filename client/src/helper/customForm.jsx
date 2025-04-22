@@ -177,10 +177,15 @@ function CustomSignUpForm() {
   const handleGoogleSignIn = async () => {
     if (!isSignInLoaded) return;
     try {
+      // Store role selection if available
+      if (role) {
+        sessionStorage.setItem('selectedRole', role);
+      }
+      
       await signIn.authenticateWithRedirect({
         strategy: "oauth_google",
         redirectUrl: "/sso-callback",
-        // redirectUrlComplete: "/",
+        redirectUrlComplete: `${window.location.pathname}?oauth_callback=true`, // Add this line
       });
     } catch (err) {
       setError(err.message || "An error occurred with Google sign-in");
