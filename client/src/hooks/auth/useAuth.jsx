@@ -52,7 +52,7 @@ const useAuth = () => {
     queryKey: ["loggedIn", email],
     queryFn: async () => {
       console.log(email, "email in useLoggedIn");
-      if (email) {
+      
         try {
           const response = await axios.get(`${import.meta.env.VITE_API_URL
             }/api/auth/loggedIn/${email}`, {
@@ -67,7 +67,7 @@ const useAuth = () => {
           console.log(err,"eerrror in useLoggedIn");
           throw new Error("Failed to fetch loggedIn status");
         }
-      }
+     
       return null;
     },
     enabled: !!email,
