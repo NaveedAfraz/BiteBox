@@ -23,6 +23,7 @@ import useFilteredItems from "@/hooks/Restaurant/useSort";
 import { useEffect, useRef, useState } from "react";
 import useRestaurant from "@/hooks/Restaurant/useRestaurant";
 function Restaurant() {
+  const [searchParams] = useSearchParams();
   const restaurantID = searchParams.get("ID");
   const menu = [
     { id: 1, name: "All", restaurantId: restaurantID },
@@ -46,7 +47,6 @@ function Restaurant() {
   } = useFilteredItems();
   // console.log(filteredItems);
 
-  const [searchParams] = useSearchParams();
   const { fetchOneRestaurant } = useRestaurant();
 
   const { data: restaurant, isLoading, error } = fetchOneRestaurant(restaurantID);
