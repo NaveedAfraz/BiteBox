@@ -7,6 +7,8 @@ const useAuth = () => {
   const dispatch = useDispatch()
   const loginAuth = useMutation({
     mutationFn: async ({ formData }) => {
+      console.log(formData, "formData in loginAuth");
+      
       try {
         console.log(formData);
         const response = await axios.post(`${import.meta.env.VITE_API_URL
