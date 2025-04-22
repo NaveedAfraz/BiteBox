@@ -58,7 +58,7 @@ const useAuth = () => {
             }/api/auth/loggedIn/${email}`, {
             withCredentials: true
           });
-          // console.log("Response from server:", response.data);
+          console.log("Response from server:", response.data);
           dispatch(userDetails(response.data))
           return response.data;
         } catch (err) {
