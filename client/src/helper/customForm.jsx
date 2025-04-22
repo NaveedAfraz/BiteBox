@@ -146,7 +146,7 @@ function CustomSignUpForm() {
   //   return <div>Loading authentication system...</div>;
   // }
  
-  return (
+  return ( 
     <>
       <form
         onSubmit={handleSubmit}
