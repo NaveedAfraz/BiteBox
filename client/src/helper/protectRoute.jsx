@@ -17,7 +17,7 @@ function ProtectedRoute({ children }) {
   const { loginAuth, useLoggedIn, signupAuth } = useAuth();
   const { data: loggedInData, refetch: refetchLoggedIn } =
     useLoggedIn(user?.primaryEmailAddress?.emailAddress);
-  //console.log(loggedInData);
+  console.log(loggedInData,"data");
 
   // Check if the user is banned when loggedInData changes
   useEffect(() => {

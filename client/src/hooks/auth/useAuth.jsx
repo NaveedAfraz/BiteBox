@@ -51,7 +51,7 @@ const useAuth = () => {
   const useLoggedIn = (email) => useQuery({
     queryKey: ["loggedIn", email],
     queryFn: async () => {
-      console.log(email);
+      console.log(email,"email in useLoggedIn");
       if (email) {
         try {
           const response = await axios.get(`${import.meta.env.VITE_API_URL
