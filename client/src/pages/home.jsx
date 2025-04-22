@@ -21,6 +21,7 @@ import {
 import { useSelector } from "react-redux";
 import useRestaurant from "@/hooks/Restaurant/useRestaurant";
 import useReviews from "@/hooks/Restaurant/useReview";
+import { toast } from "sonner";
 
 function Home({ showSearch, setShowSearch }) {
   //console.log(specialOffers);
@@ -49,6 +50,15 @@ function Home({ showSearch, setShowSearch }) {
     }
     console.log(checkStatus(), "..");
   }, [menuItems])
+
+  useEffect(() => {
+    if (isLoading) {
+      setTimeout(() => {
+        toast("Bear With Us! Loading...",)
+      }, 3000);
+    }
+  }, [isLoading])
+
   if (isLoading) {
     return <div className="flex justify-center items-center min-h-screen">
       <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500 mb-12"></div>
