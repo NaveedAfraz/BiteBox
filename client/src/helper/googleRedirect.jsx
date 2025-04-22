@@ -8,75 +8,65 @@ function OAuthCallback() {
   const { user, isLoaded } = useUser();
   const { loginAuth, useLoggedIn } = useAuth();
   const [hasProcessed, setHasProcessed] = useState(false);
-
-  const { data: loggedInData, isLoading: isLoggedInLoading } = useLoggedIn(
-    user?.primaryEmailAddress?.emailAddress
-  );
-  console.log(loggedInData, "loggedInData");
-  console.log(user, "user");
-  console.log(isLoggedInLoading, "isLoggedInLoading");
-  console.log(loginAuth, "loginAuth");
-  console.log(hasProcessed, "hasProcessed");
-  console.log(isLoaded, "isLoaded");
-
+  
+  const userEmail = user?.primaryEmailAddress?.emailAddress;
+  
+  const { data: loggedInData, isLoading: isLoggedInLoading } = useLoggedIn(userEmail);
+  
+  // Handle successful login redirect
   useEffect(() => {
     if (loginAuth.isSuccess) {
       navigate("/");
     }
   }, [loginAuth.isSuccess, navigate]);
-
+  
+  // Handle social login processing
   useEffect(() => {
-    const handleSocialLogin = () => {
-      if (user && !hasProcessed && !isLoggedInLoading) {
-        setHasProcessed(true);
-
-        console.log(user, "userr");
-
-        const email = user.primaryEmailAddress?.emailAddress;
-        const role = user.unsafeMetadata?.role || "customer";
-
-        const formData = {
-          email,
-          role,
-          isSocialLogin: true,
-        };
-
-        sessionStorage.setItem("selectedRole", role);
-
-        if (!loggedInData || !loggedInData.email) {
-          console.log("User not logged in, initiating login process");
-          loginAuth.mutate({ formData });
-        } else {
-          console.log("User already logged in", loggedInData);
-          navigate("/");
-        }
+    // Only process if user is loaded, not already processed, and login check completed
+    if (isLoaded && user && !hasProcessed && !isLoggedInLoading) {
+      setHasProcessed(true);
+      
+      const email = user.primaryEmailAddress?.emailAddress;
+      const role = user.unsafeMetadata?.role || "customer";
+      
+      // Store selected role for future use
+      sessionStorage.setItem("selectedRole", role);
+      
+      // If user not already logged in, initiate login process
+      if (!loggedInData || !loggedInData.email) {
+        loginAuth.mutate({ 
+          formData: {
+            email,
+            role,
+            isSocialLogin: true
+          }
+        });
+      } else {
+        // User already logged in, redirect to home
+        navigate("/");
       }
-    };
-    handleSocialLogin();
-  }, [
-    isLoaded,
-    user,
-    hasProcessed,
-    loginAuth,
-    loggedInData,
-    isLoggedInLoading,
-    navigate,
-  ]);
-
-  // Common loading/processing layout
+    }
+  }, [isLoaded, user, hasProcessed, loginAuth, loggedInData, isLoggedInLoading, navigate]);
+  
+  // Loading indicator component
   const LoadingIndicator = ({ message }) => (
-    <div className="min-h-screen flex flex-col items-center justify-center pt-24 px-4 text-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
-      <p className="text-lg font-semibold text-gray-700">{message}</p>
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mb-4"></div>
+      <p className="text-lg text-gray-600">{message}</p>
     </div>
   );
-
+  
+  // Show appropriate loading state
   if (isLoggedInLoading) {
     return <LoadingIndicator message="Checking login status..." />;
   }
-
-  // Show processing indicator while login mutation or navigation occurs
-  return <LoadingIndicator message="Processing your login..." />;
+  
+  if (loginAuth.isLoading || hasProcessed) {
+    return <LoadingIndicator message="Processing your login..." />;
+  }
+  
+  // Fallback loading state for initial render
+  return <LoadingIndicator message="Initializing..." />;
 }
 
 export default OAuthCallback;
