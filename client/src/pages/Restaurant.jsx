@@ -99,9 +99,9 @@ function Restaurant() {
       console.log(filteredItemsMenuBtn);
       // alert("Filtered")
       setItems(filteredItemsMenuBtn)
-      setSelectedFilter(item.name);
+      setSelectedFilter(item);
     }
-    setSelectedFilter(item.name)
+    setSelectedFilter(item)
     refetch()
   }
   //console.log(items);
@@ -110,7 +110,7 @@ function Restaurant() {
   useEffect(() => {
     if (selectedFilter) {
       console.log(selectedFilter.name);
-      handlefilterBTN({ name: selectedFilter }, Index);
+      handlefilterBTN({ name: selectedFilter.name, restaurantId: restaurantID }, Index);
     }
     //console.log("m");
 
