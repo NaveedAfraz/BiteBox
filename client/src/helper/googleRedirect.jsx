@@ -16,7 +16,9 @@ function OAuthCallback() {
   console.log(user, "user");
   console.log(isLoggedInLoading, "isLoggedInLoading");
   console.log(loginAuth, "loginAuth");
-  
+  console.log(hasProcessed, "hasProcessed");
+  console.log(isLoaded, "isLoaded");
+
   useEffect(() => {
     if (loginAuth.isSuccess) {
       navigate("/");
@@ -28,7 +30,7 @@ function OAuthCallback() {
       if (isLoaded && user && !hasProcessed && !isLoggedInLoading) {
         setHasProcessed(true);
 
-        console.log(user);
+        console.log(user,"userr");
 
         const email = user.primaryEmailAddress?.emailAddress;
         const role = user.unsafeMetadata?.role || "customer";
