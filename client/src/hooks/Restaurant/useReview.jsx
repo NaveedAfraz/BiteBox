@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
+import { toast } from "sonner"
 
 const useReviews = () => {
 
@@ -15,7 +16,7 @@ const useReviews = () => {
         console.log("Review added successfully")
         return res.data
       } catch (error) {
-        alert(error.response.data.message)
+        toast(error.response.data.message)
         console.error("Error adding review", error)
       }
     }

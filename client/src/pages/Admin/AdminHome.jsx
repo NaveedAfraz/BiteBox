@@ -112,7 +112,7 @@ function AdminHome() {
   let sidebarItems = userRole === "admin" ? superAdminItems : vendorItems;
   // const [searchParams] = useSearchParams();
   //console.log(isLoaded);
-  alert(userInfo?.userId);
+  // alert(userInfo?.userId);
   if (!isLoaded) return <div className="flex items-center justify-center min-h-screen">
     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-600"></div>
   </div>

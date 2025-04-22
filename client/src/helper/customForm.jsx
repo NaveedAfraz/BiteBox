@@ -5,6 +5,7 @@ import { FcGoogle } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleAuthState } from "@/store/auth";
 import useAuth from "@/hooks/auth/useAuth";
+import { toast } from "sonner";
 
 function CustomSignUpForm() {
   const { signUp, setActive, isLoaded: isSignUpLoaded } = useSignUp();
@@ -83,7 +84,7 @@ function CustomSignUpForm() {
           }
         } else if (result.status === "complete") {
           if (result.createdSessionId) {
-            alert("login success")  // never works cuz verfiy email is mandatory
+            toast("login success")  // never works cuz verfiy email is mandatory
             signUp.mutate({ formData })
             navigate("/");
           }
@@ -91,7 +92,7 @@ function CustomSignUpForm() {
       } else {
         // Handle Login
         if (!loggedInData && !loggedInData?.email && !user) {
-          alert("Please sign up")
+          toast("Please sign up")
           // await signOut({ redirectUrl: '/login' });
           // loginAuth.mutate({ formData });
           return;
