@@ -23,13 +23,13 @@ import useFilteredItems from "@/hooks/Restaurant/useSort";
 import { useEffect, useRef, useState } from "react";
 import useRestaurant from "@/hooks/Restaurant/useRestaurant";
 function Restaurant() {
-
+  const restaurantID = searchParams.get("ID");
   const menu = [
-    { id: 1, name: "All" },
-    { id: 2, name: "pizza" },
-    { id: 3, name: "burger" },
-    { id: 4, name: "Salad" },
-    { id: 5, name: "Drink" },
+    { id: 1, name: "All", restaurantId: restaurantID },
+    { id: 2, name: "pizza", restaurantId: restaurantID },
+    { id: 3, name: "burger", restaurantId: restaurantID },
+    { id: 4, name: "Salad", restaurantId: restaurantID },
+    { id: 5, name: "Drink", restaurantId: restaurantID },
   ];
   const [Error, setError] = useState()
 
@@ -47,7 +47,6 @@ function Restaurant() {
   // console.log(filteredItems);
 
   const [searchParams] = useSearchParams();
-  const restaurantID = searchParams.get("ID");
   const { fetchOneRestaurant } = useRestaurant();
 
   const { data: restaurant, isLoading, error } = fetchOneRestaurant(restaurantID);
@@ -92,10 +91,10 @@ function Restaurant() {
     // console.log(items);
 
     console.log("Selected Item:", item);
-    console.log("Handling filter button click for:", item.name); 
+    console.log("Handling filter button click for:", item.name);
     console.log(item);
     if (filteredItems) {
-      const filteredItemsMenuBtn = filteredItems.data.filter((Item) => Item.category === item.name && Item.restaurantID === item.restaurantID
+      const filteredItemsMenuBtn = filteredItems.data.filter((Item) => Item.category === item.name && Item.restaurantID === item.restaurantId
       )
       console.log(filteredItemsMenuBtn);
       // alert("Filtered")
