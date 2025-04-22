@@ -28,7 +28,7 @@ function AdminHome() {
   const [userRole, setUserRole] = useState(user?.unsafeMetadata?.role);
   //console.log(userRole);
   const { userInfo } = useSelector((state) => state.auth);
-  // console.log(userInfo);
+  console.log(userInfo, "userInfo");
 
   useEffect(() => {
     setUserRole(user?.unsafeMetadata?.role);

@@ -55,7 +55,7 @@ function Home({ showSearch, setShowSearch }) {
     if (isLoading) {
       setTimeout(() => {
         toast("Bear With Us! Loading...",)
-      }, 3000);
+      }, 1000);
     }
   }, [isLoading])
 
@@ -64,7 +64,7 @@ function Home({ showSearch, setShowSearch }) {
       <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500 mb-12"></div>
     </div>
   }
-  console.log(showSearch);
+  //console.log(showSearch);
 
   return (
     <>
