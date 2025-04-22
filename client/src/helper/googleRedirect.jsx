@@ -27,10 +27,10 @@ function OAuthCallback() {
 
   useEffect(() => {
     const handleSocialLogin = () => {
-      if (!hasProcessed && !isLoggedInLoading) {
+      if (user && !hasProcessed && !isLoggedInLoading) {
         setHasProcessed(true);
 
-        console.log(user,"userr");
+        console.log(user, "userr");
 
         const email = user.primaryEmailAddress?.emailAddress;
         const role = user.unsafeMetadata?.role || "customer";

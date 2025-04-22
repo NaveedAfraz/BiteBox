@@ -107,7 +107,7 @@ function CustomSignUpForm() {
             role,
             username,
           }
-        //  console.log(role);
+          //  console.log(role);
 
           if (result.status === "complete") {
             sessionStorage.setItem('selectedRole', role);
@@ -128,6 +128,52 @@ function CustomSignUpForm() {
     }
   };
 
+  // Add this function to handle OAuth verification after Google sign-in
+  const handleOAuthVerification = async () => {
+    try {
+      // Check if this is coming from an OAuth callback
+      const searchParams = new URLSearchParams(window.location.search);
+      const isOAuthCallback = searchParams.get('oauth_callback') === 'true';
+
+      if (isOAuthCallback && user) {
+        // This is a sign-in from OAuth and we have a user from Clerk
+        console.log("OAuth sign-in detected, checking if user exists in our system");
+
+        // Check if user exists in your system
+        await refetchLoggedIn();
+
+        if (!loggedInData) {
+          console.log("New Google user, creating account in our system");
+
+          // Create user in your system
+          const formData = {
+            email: user.primaryEmailAddress.emailAddress,
+            username: user.username || user.firstName || 'user' + Math.random().toString(36).substring(2, 8),
+            role: sessionStorage.getItem('selectedRole') || 'customer', // Default role
+          };
+
+          // Call your API to create the user
+          await signupAuth.mutate({ formData });
+
+          console.log("User created successfully");
+        }
+
+        // Remove the query parameter
+        navigate(location.pathname, { replace: true });
+      }
+    } catch (error) {
+      console.error("Error during OAuth verification:", error);
+      setError("Failed to complete Google sign-in process. Please try again.");
+    }
+  };
+
+  // Add this effect to check for OAuth login
+  useEffect(() => {
+    if (user && location.search.includes('oauth_callback=true')) {
+      handleOAuthVerification();
+    }
+  }, [user, location]);
+
   const handleGoogleSignIn = async () => {
     if (!isSignInLoaded) return;
     try {
@@ -144,7 +190,7 @@ function CustomSignUpForm() {
   if (!isSignUpLoaded || !isSignInLoaded) {
     return <div>Loading authentication system...</div>;
   }
- 
+
   return (
     <>
       <form
