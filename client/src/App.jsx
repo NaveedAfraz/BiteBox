@@ -46,7 +46,7 @@ const Nav = ({ showSearch, setShowSearch }) => {
 function App() {
   // const { userId } = useAuth();
   const { user, isLoaded, updateUserMetadata } = useUser();
-  // // console.log(user);
+  console.log(user ,"user");
 
   useEffect(() => {
     //let userId = "756"; // Replace with actual user ID logic
@@ -76,7 +76,7 @@ function App() {
   useEffect(() => {
     const userRole = user?.unsafeMetadata?.role;
     // setRole(userRole);
-    console.log(userRole);
+    console.log(userRole , "role");
     // dispatch(userRole)
     if (userRole === "admin") {
       sessionStorage.removeItem('selectedRole');

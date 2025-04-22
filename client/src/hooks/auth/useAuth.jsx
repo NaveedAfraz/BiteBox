@@ -8,7 +8,7 @@ const useAuth = () => {
   const loginAuth = useMutation({
     mutationFn: async ({ formData }) => {
       console.log(formData, "formData in loginAuth");
-      
+
       try {
         console.log(formData);
         const response = await axios.post(`${import.meta.env.VITE_API_URL
@@ -20,7 +20,7 @@ const useAuth = () => {
         }, {
           withCredentials: true
         })
-        console.log(response,"response from server in loginAuth");
+        console.log(response, "response from server in loginAuth");
         console.log("Response from server:", response.data);
         return response.data;
       } catch (err) {
@@ -55,23 +55,21 @@ const useAuth = () => {
     queryKey: ["loggedIn", email],
     queryFn: async () => {
       console.log(email, "email in useLoggedIn");
-      
-        try {
-          const response = await axios.get(`${import.meta.env.VITE_API_URL
-            }/api/auth/loggedIn/${email}`, {
-            withCredentials: true
-          });
-          console.log(response, "response from server in useLoggedIn");
 
-          console.log("Response from server:", response.data);
-          dispatch(userDetails(response.data))
-          return response.data;
-        } catch (err) {
-          console.log(err,"eerrror in useLoggedIn");
-          throw new Error("Failed to fetch loggedIn status");
-        }
-     
-      return null;
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL
+          }/api/auth/loggedIn/${email}`, {
+          withCredentials: true
+        });
+        console.log(response, "response from server in useLoggedIn");
+
+        console.log("Response from server:", response.data);
+        dispatch(userDetails(response.data))
+        return response.data;
+      } catch (err) {
+        console.log(err, "eerrror in useLoggedIn");
+        throw new Error("Failed to fetch loggedIn status");
+      }
     },
     enabled: !!email,
   });
