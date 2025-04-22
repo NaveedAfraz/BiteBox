@@ -30,7 +30,7 @@ function Home({ showSearch, setShowSearch }) {
   console.log(menuItems, restaurantDetails, "menuItems");
   const { data: AllRestaurant, isLoading } = fetchAllRestaurant()
   const [filterItems, setFilterItems] = useState(null)
-
+  const [loading, setloading] = useState(true)
   const { userInfo } = useSelector((state) => state.auth);
   const { fetchReviews } = useReviews();
   const { data: reviewsData, refetch } = fetchReviews({ restaurantId: null, userID: null, orderID: null });
@@ -52,12 +52,13 @@ function Home({ showSearch, setShowSearch }) {
   }, [menuItems])
 
   useEffect(() => {
-    if (isLoading) {
+    if (loading) {
       setTimeout(() => {
         toast("Bear With Us! Loading...",)
+        setloading(false)
       }, 4000);
     }
-  }, [isLoading])
+  }, [loading])
 
   if (isLoading) {
     return <div className="flex justify-center items-center min-h-screen">

@@ -26,7 +26,7 @@ function AdminHome() {
   const { isLoaded, isSignedIn, user } = useUser();
 
   const [userRole, setUserRole] = useState(user?.unsafeMetadata?.role);
-  //console.log(userRole);
+  console.log(user,"details");
   const { userInfo } = useSelector((state) => state.auth);
   console.log(userInfo, "userInfo");
 
