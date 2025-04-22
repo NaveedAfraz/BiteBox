@@ -27,7 +27,7 @@ function OAuthCallback() {
 
   useEffect(() => {
     const handleSocialLogin = () => {
-      if (isLoaded && user && !hasProcessed && !isLoggedInLoading) {
+      if (!hasProcessed && !isLoggedInLoading) {
         setHasProcessed(true);
 
         console.log(user,"userr");
