@@ -18,7 +18,8 @@ const useAuth = () => {
         }, {
           withCredentials: true
         })
-        console.log(response);
+        console.log(response,"response from server in loginAuth");
+        console.log("Response from server:", response.data);
         return response.data;
       } catch (err) {
         console.log(err);

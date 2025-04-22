@@ -12,6 +12,10 @@ function OAuthCallback() {
   const { data: loggedInData, isLoading: isLoggedInLoading } = useLoggedIn(
     user?.primaryEmailAddress?.emailAddress
   );
+  console.log(loggedInData, "loggedInData");
+  console.log(user, "user");
+  console.log(isLoggedInLoading, "isLoggedInLoading");
+  
   useEffect(() => {
     if (loginAuth.isSuccess) {
       navigate("/");
