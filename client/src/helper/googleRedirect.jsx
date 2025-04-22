@@ -15,6 +15,7 @@ function OAuthCallback() {
   console.log(loggedInData, "loggedInData");
   console.log(user, "user");
   console.log(isLoggedInLoading, "isLoggedInLoading");
+  console.log(loginAuth, "loginAuth");
   
   useEffect(() => {
     if (loginAuth.isSuccess) {
