@@ -116,8 +116,6 @@ function App() {
   }, [user, isLoaded]);
 
   // console.log(user);
-
-
   const handleRoleSelect = async (role) => {
     try {
       await user.update({ unsafeMetadata: { role } });

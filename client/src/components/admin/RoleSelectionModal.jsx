@@ -10,7 +10,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { useSignUp, useSignIn, useUser, useClerk } from "@clerk/clerk-react";
 import useAuth from "@/hooks/auth/useAuth";
-import useAddresses from "@/hooks/Restaurant/useRestaurant";
 import { Input } from "../ui/input";
 import useRestaurant from "@/hooks/Restaurant/useRestaurant";
 
@@ -164,7 +163,7 @@ function RoleSelectionModal({ isOpen, onRoleSelect, setIsModalOpen }) {
   };
 
   return (
-    <Dialog open={isOpen} onClose={() => onRoleSelect("")}>
+    <Dialog open={isOpen} onClose={() => onRoleSelect("")} className="sm:max-w-lg sm:w-full">
       <DialogContent className="sm:max-w-lg sm:w-full">
         <DialogHeader>
           <DialogTitle>Select Your Role</DialogTitle>
@@ -190,7 +189,7 @@ function RoleSelectionModal({ isOpen, onRoleSelect, setIsModalOpen }) {
         )}
 
         {showInputs && (
-          <div className="max-w-md w-full mx-auto space-y-4 p-4 border rounded-lg shadow">
+          <div className="max-w-md w-full mx-auto space-y-4 p-4 border h-[70vh] overflow-auto rounded-lg shadow">
             <h1 className="font-bold text-lg">Restaurant Details</h1>
 
             {/* Restaurant fields */}

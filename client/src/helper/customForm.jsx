@@ -142,9 +142,9 @@ function CustomSignUpForm() {
     }
   };
 
-  if (!isSignUpLoaded || !isSignInLoaded) {
-    return <div>Loading authentication system...</div>;
-  }
+  // if (!isSignUpLoaded || !isSignInLoaded) {
+  //   return <div>Loading authentication system...</div>;
+  // }
  
   return (
     <>

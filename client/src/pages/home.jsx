@@ -56,7 +56,7 @@ function Home({ showSearch, setShowSearch }) {
       setTimeout(() => {
         toast("Bear With Us! Loading...",)
         setloading(false)
-      }, 4000);
+      }, 2000);
     }
   }, [loading])
 
