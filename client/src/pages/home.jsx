@@ -54,7 +54,10 @@ function Home({ showSearch, setShowSearch }) {
   useEffect(() => {
     if (loading) {
       setTimeout(() => {
-        toast("Bear With Us! Loading...",)
+        toast("Bear with us for a few seconds! While we load the data", {
+          duration: 2000,
+          icon: "🍔",
+        })
         setloading(false)
       }, 2000);
     }
