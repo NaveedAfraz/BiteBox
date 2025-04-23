@@ -108,7 +108,7 @@ function CustomSignUpForm() {
             role,
             username,
           }
-        //  console.log(role);
+          //  console.log(role);
 
           if (result.status === "complete") {
             sessionStorage.setItem('selectedRole', role);
@@ -130,6 +130,8 @@ function CustomSignUpForm() {
   };
 
   const handleGoogleSignIn = async () => {
+    toast("Google sign-in is not available for some time due to a bug. Please use email and password to sign in.");
+    return;
     if (!isSignInLoaded) return;
     try {
       await signIn.authenticateWithRedirect({
@@ -145,8 +147,8 @@ function CustomSignUpForm() {
   // if (!isSignUpLoaded || !isSignInLoaded) {
   //   return <div>Loading authentication system...</div>;
   // }
- 
-  return ( 
+
+  return (
     <>
       <form
         onSubmit={handleSubmit}

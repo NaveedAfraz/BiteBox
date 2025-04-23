@@ -101,7 +101,7 @@ function RoleSelectionModal({ isOpen, onRoleSelect, setIsModalOpen }) {
       };
       onRoleSelect(selectedRole);
       console.log(formData);
-      setShowInputs(true);
+      if (selectedRole != 'customer') setShowInputs(true);
       signupAuth.mutate({ formData });
     }
     else {
@@ -183,7 +183,6 @@ function RoleSelectionModal({ isOpen, onRoleSelect, setIsModalOpen }) {
               <option value="">-- Select a role --</option>
               <option value="customer">Customer</option>
               <option value="vendor">Vendor</option>
-              <option value="admin">Admin</option>
             </select>
           </div>
         )}
