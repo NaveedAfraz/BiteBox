@@ -101,8 +101,12 @@ function RoleSelectionModal({ isOpen, onRoleSelect, setIsModalOpen }) {
       };
       onRoleSelect(selectedRole);
       console.log(formData);
-      if (selectedRole != 'customer') setShowInputs(true);
-      setTimeout(() => { setShowInputs(false) }, 1000)
+      if (selectedRole != 'customer') {
+        setShowInputs(true)
+      }
+      else {
+        setTimeout(() => { setIsModalOpen(false) }, 1000)
+      }
       signupAuth.mutate({ formData });
     }
     else {
