@@ -130,8 +130,8 @@ function CustomSignUpForm() {
   };
 
   const handleGoogleSignIn = async () => {
-    // toast("Google sign-in is not available for some time due to a bug. Please use email and password to sign in.");
-    // return;
+    toast("Google sign-in is not available for some time due to a bug. Please use email and password to sign in.");
+    return;
     if (!isSignInLoaded) return;
     try {
       await signIn.authenticateWithRedirect({
