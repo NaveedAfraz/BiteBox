@@ -31,12 +31,12 @@ function RoleSelectionModal({ isOpen, onRoleSelect, setIsModalOpen }) {
     addressType: "",
   });
 
-  // Image state
+  // Image  upload function
   const [imageFile, setImageFile] = useState(null);
   const [imageUrl, setImageUrl] = useState("");
   const [uploadStatus, setUploadStatus] = useState("");
 
-  // Restaurant data state
+  // R  
   const [restaurantData, setRestaurantData] = useState({
     Name: "",
     PhoneNumber: "",
@@ -44,21 +44,20 @@ function RoleSelectionModal({ isOpen, onRoleSelect, setIsModalOpen }) {
     Description: "",
     OpeningHours: "",
     ClosingHours: "",
-    ImageUrl: "", // Store the uploaded image URL here
+    ImageUrl: "",   
   });
-
-  // Cloudinary constants - these should be defined in an environment variable in production
+ 
   const CLOUD_NAME = 'dvntoejlv';
   const UPLOAD_PRESET = 'bitebox_menu_items';
 
-  // Handle image file selection
+  
   const handleImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setImageFile(e.target.files[0]);
     }
   };
 
-  // Upload image to Cloudinary
+      
   const handleImageUpload = async (file) => {
     if (!file) return null;
 
@@ -76,7 +75,7 @@ function RoleSelectionModal({ isOpen, onRoleSelect, setIsModalOpen }) {
       const result = await response.json();
       if (result.secure_url) {
         setImageUrl(result.secure_url);
-        // Update restaurant data with the image URL
+         
         setRestaurantData({
           ...restaurantData,
           ImageUrl: result.secure_url
@@ -177,7 +176,7 @@ function RoleSelectionModal({ isOpen, onRoleSelect, setIsModalOpen }) {
           </DialogDescription>
         </DialogHeader>
 
-        {/* Role Selection Dropdown */}
+  
         {!showInputs && (
           <div className="py-3">
             <select

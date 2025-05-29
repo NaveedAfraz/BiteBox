@@ -27,6 +27,7 @@ import MessagesDashboard from "./pages/messagesDashboard";
 import useAuth from "./hooks/auth/useAuth";
 import { initializeSocket } from "./lib/socket";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react"  
 const Nav = ({ showSearch, setShowSearch }) => {
   // console.log("...");  
 
@@ -129,6 +130,7 @@ function App() {
   return (
     <>
       <Analytics /> 
+      <SpeedInsights />
       <RoleSelectionModal isOpen={isModalOpen} onRoleSelect={handleRoleSelect} setIsModalOpen={setIsModalOpen} />
       <Routes>
         <Route path="/admin/login" element={<AdminLogin />} />
