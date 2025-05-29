@@ -3,33 +3,32 @@ import { Link, useNavigate } from "react-router";
 import { LogIn } from "lucide-react";
 import CustomSignUpForm from "../helper/customForm"; // adjust the path as needed
 import { UserButton, useUser } from "@clerk/clerk-react";
+import AnimatedWelcomeText from "../components/admin/AnimatedWelcomeText";
 
 function Signup() {
   const welcomeText = "Welcome Back To BiteBox!";
-  const [step, setStep] = useState(0);
-  const [isResetting, setIsResetting] = useState(false);
   const navigate = useNavigate();
 
   const { user } = useUser()
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setStep((prev) => {
-        if (prev >= welcomeText.length) {
-          if (!isResetting) {
-            setIsResetting(true);
-            setTimeout(() => {
-              setStep(0);
-              setIsResetting(false);
-            }, 2000);
-          }
-          return prev;
-        }
-        return prev + 1;
-      });
-    }, 200);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setStep((prev) => {
+  //       if (prev >= welcomeText.length) {
+  //         if (!isResetting) {
+  //           setIsResetting(true);
+  //           setTimeout(() => {
+  //             setStep(0);
+  //             setIsResetting(false);
+  //           }, 2000);
+  //         }
+  //         return prev;
+  //       }
+  //       return prev + 1;
+  //     });
+  //   }, 200);
 
-    return () => clearInterval(interval);
-  }, [isResetting, welcomeText]);
+  //   return () => clearInterval(interval);
+  // }, [isResetting, welcomeText]);
 
 
   return (
@@ -58,10 +57,7 @@ function Signup() {
           {/* Left Side: Animated Welcome Text */}
           <div className="hidden lg:flex bg-white text-center justify-center items-center p-8">
             <div className="max-w-lg">
-              <h1 className="text-4xl lg:text-5xl text-teal-950 font-bold">
-                {welcomeText.slice(0, step)}
-                <span className="animate-pulse">|</span>
-              </h1>
+              <AnimatedWelcomeText text={welcomeText} />
               <p className="mt-6 text-teal-950 text-lg">
                 Welcome Back! Discover amazing food from local restaurants in your area.
               </p>

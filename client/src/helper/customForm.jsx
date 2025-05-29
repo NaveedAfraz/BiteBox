@@ -60,7 +60,10 @@ function CustomSignUpForm() {
     e.preventDefault();
     setError(null);
 
-    if (username.trim().length === 0) return alert("Please enter username");
+
+    if (email.trim().length === 0) return toast("Please enter email");
+    if (password.trim().length === 0) return toast("Please enter password");
+
     setProcessing(true);
     try {
       if (toggleAuth !== "Login") {
@@ -143,7 +146,8 @@ function CustomSignUpForm() {
       setError(err.message || "An error occurred with Google sign-in");
     }
   };
-  i
+  console.log(location.pathname.split("/")[1]);
+
   // if (!isSignUpLoaded || !isSignInLoaded) {
   //   return <div>Loading authentication system...</div>;
   // }
@@ -155,7 +159,7 @@ function CustomSignUpForm() {
         className="max-w-md mx-auto p-6 bg-white rounded-lg shadow"
       >
         <h2 className="text-2xl font-bold mb-4">{toggleAuth}</h2>
-        {location.pathname === "sign-up" &&
+        {location.pathname.split("/")[1] == "sign-up" &&
           <input
             type="username"
             placeholder="Username"
