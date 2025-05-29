@@ -143,7 +143,7 @@ function CustomSignUpForm() {
       setError(err.message || "An error occurred with Google sign-in");
     }
   };
-
+  i
   // if (!isSignUpLoaded || !isSignInLoaded) {
   //   return <div>Loading authentication system...</div>;
   // }
@@ -155,15 +155,17 @@ function CustomSignUpForm() {
         className="max-w-md mx-auto p-6 bg-white rounded-lg shadow"
       >
         <h2 className="text-2xl font-bold mb-4">{toggleAuth}</h2>
-        <input
-          type="username"
-          placeholder="Username"
-          className="w-full border p-2 mb-4 rounded"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-          disabled={processing}
-        />
+        {location.pathname === "sign-up" &&
+          <input
+            type="username"
+            placeholder="Username"
+            className="w-full border p-2 mb-4 rounded"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+            disabled={processing}
+          />
+        }
         <input
           type="email"
           placeholder="Email"

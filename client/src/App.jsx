@@ -25,8 +25,8 @@ import Orders from "./pages/Orders";
 import MessageDashboard from "./pages/messagesDashboard";
 import MessagesDashboard from "./pages/messagesDashboard";
 import useAuth from "./hooks/auth/useAuth";
-import { userDetails } from "./store/auth";
 import { initializeSocket } from "./lib/socket";
+import { Analytics } from "@vercel/analytics/react";
 const Nav = ({ showSearch, setShowSearch }) => {
   // console.log("...");  
 
@@ -128,6 +128,7 @@ function App() {
 
   return (
     <>
+      <Analytics /> 
       <RoleSelectionModal isOpen={isModalOpen} onRoleSelect={handleRoleSelect} setIsModalOpen={setIsModalOpen} />
       <Routes>
         <Route path="/admin/login" element={<AdminLogin />} />
