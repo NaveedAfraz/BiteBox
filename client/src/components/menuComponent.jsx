@@ -169,10 +169,11 @@ function MenuComponent({ menu, refetch }) {
     // console.log("..");
     return null;
   }
+
   return (
     <Card
       onClick={() =>
-        navigate(`/restaurant?name=${menu.Name}&&ID=${menu.restaurantID}`)
+       userRole != "vendor" ? navigate(`/restaurant?name=${menu.Name}&&ID=${menu.restaurantID}`) : null
       }
       className="relative w-full max-w-sm border-0 shadow-lg overflow-hidden rounded-lg cursor-pointer hover:scale-102 transition-all duration-300 mb-4"
     >
