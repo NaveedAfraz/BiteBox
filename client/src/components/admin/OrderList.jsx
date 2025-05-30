@@ -6,6 +6,7 @@ import { Chart } from '../ui/charts'
 import useOrders from '@/hooks/Restaurant/useOrder'
 import useRestaurant from '@/hooks/Restaurant/useRestaurant'
 import { useSelector } from 'react-redux'
+import { toast } from 'sonner'
 
 function OrderList() {
   const { userInfo } = useSelector((state) => state.auth);
@@ -25,13 +26,18 @@ function OrderList() {
 
   const { data: restaurantData, refetch
   } = fetchRestaurant({ userID: userInfo?.userId });
-  console.log(restaurantData);
+  console.log(restaurantData , "restaurantData");
   useEffect(() => {
-    if (restaurantData?.orders) {
+    if (restaurantData?.orders && restaurantData.length != 0) {
       setItems(restaurantData?.orders)
       setRestrudents(restaurantData?.restaurant)
     }
-  }, [restaurantData.orders])
+    else {
+      toast("No Orders")
+      setItems([])
+      setRestrudents([])
+    }
+  }, [restaurantData?.orders])
 
 
   const handleAccept = (id) => {
@@ -77,23 +83,23 @@ function OrderList() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-base truncate">Anonymous</CardTitle>
-                    <span className="text-sm font-medium text-gray-900 ml-2">{item.status}</span>
+                    <span className="text-sm font-medium text-gray-900 ml-2">{item?.status}</span>
                   </div>
                   <CardDescription className="text-xs truncate mt-0.5">
-                    {item.description}
+                    {item?.description}
                   </CardDescription>
                   <div className="text-xs text-gray-500 mt-0.5">
-                    Submitted: {item.orderDate}
+                    Submitted: {item?.orderDate}
                   </div>
                 </div>
               </div>
               <div className="flex items-center space-x-2 ml-4">
-                {item.status == "pending" &&
+                {item?.status == "pending" &&
                   <>   <Button
                     variant="destructive"
                     size="sm"
                     className="h-8 px-2"
-                    onClick={() => handleReject(item.orderID)}
+                    onClick={() => handleReject(item?.orderID)}
                   >
                     <X className="h-4 w-4" />
                   </Button>
@@ -101,7 +107,7 @@ function OrderList() {
                       variant="default"
                       size="sm"
                       className="h-8 px-2"
-                      onClick={() => handleAccept(item.orderID)}
+                      onClick={() => handleAccept(item?.orderID)}
                     >
                       <Check className="h-4 w-4" />
                     </Button></>}
