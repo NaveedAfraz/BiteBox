@@ -26,6 +26,10 @@ function useItemQuantity(item = null) {
   }, [cartItems, item]);
   const [adding, setAdding] = useState(false);
   const handleAdd = (itemToAdd) => {
+    if (!userId) {
+      toast("Please login to add items in cart")
+      return;
+    }
     // Use either the passed item or the item from the hook initialization
     const targetItem = itemToAdd || item;
     // if (itemQuantity <= 0) return alert("No suffient item quantity to add");
