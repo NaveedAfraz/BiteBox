@@ -25,6 +25,16 @@ const reviews = require("./routes/reviews/reviews");
 const contactRoute = require("./routes/contact/contactRoute");
 const pool = require("./db");
 
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Rejection:", reason);
+  process.exit(1);
+});
+
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught Exception:", err);
+  process.exit(1);
+});
+
 app.get("/api/health", (req, res) => {
   res.status(200).send("OK");
 });
