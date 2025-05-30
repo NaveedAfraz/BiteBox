@@ -11,6 +11,7 @@ function MenuItems() {
   console.log(restaurantDetails);
 
   const { fetchAllRestaurant, approveORrejectRestaurant, getPendingRejectedItems } = useRestaurant()
+  console.log(approveORrejectRestaurant);
 
   console.log(getPendingRejectedItems);
   const { data, refetch, isFetched

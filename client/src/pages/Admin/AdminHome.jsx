@@ -77,7 +77,7 @@ function AdminHome() {
 
   // console.log(user);
 
-  console.log(restaurantData.restaurant);
+  // console.log(restaurantData);
   const superAdminItems = [
     { id: "dashboard", icon: <LayoutDashboard />, label: "Dashboard" },
     { id: "restaurants", icon: <UtensilsCrossed />, label: "Restaurants" },
@@ -143,7 +143,7 @@ function AdminHome() {
         </div>
       </header>
       <div className="flex">
-        
+
         <div
           className={`h-full shadow-md transition-all duration-300 ${close ? "w-20 opacity-80" : "w-58"} md:${close ? "w-20" : "w-52"}`}
         >
@@ -209,7 +209,8 @@ function AdminHome() {
             </ul> */}
           </nav>
         </div>
- 
+
+        {/* Main Content */}
         <div className="flex-1 w-full overflow-auto">
           <main className="p-6">
             {activeTab === "dashboard" && <Dashboard />}
