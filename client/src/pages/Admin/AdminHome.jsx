@@ -200,7 +200,7 @@ function AdminHome() {
                    ${item.icon && item.label !== "Login" ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
                   >
                     <span className="mr-3">{item.icon}</span>
-                    <span className={`${close ? "hidden" : "block"}`}>
+                    <span className={`block`}>
                       <span className="font-bold">{item.label ? item.label : "Name Not Provided"}</span>
                     </span>
                   </button>
@@ -212,7 +212,6 @@ function AdminHome() {
 
         {/* Main Content */}
         <div className="flex-1 w-full overflow-auto">
-
           <main className="p-6">
             {activeTab === "dashboard" && <Dashboard />}
             {activeTab === "menuItems" && <MenuItems />}
