@@ -44,20 +44,20 @@ function RoleSelectionModal({ isOpen, onRoleSelect, setIsModalOpen }) {
     Description: "",
     OpeningHours: "",
     ClosingHours: "",
-    ImageUrl: "",   
+    ImageUrl: "",
   });
- 
+
   const CLOUD_NAME = 'dvntoejlv';
   const UPLOAD_PRESET = 'bitebox_menu_items';
 
-  
+
   const handleImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setImageFile(e.target.files[0]);
     }
   };
 
-      
+
   const handleImageUpload = async (file) => {
     if (!file) return null;
 
@@ -75,7 +75,7 @@ function RoleSelectionModal({ isOpen, onRoleSelect, setIsModalOpen }) {
       const result = await response.json();
       if (result.secure_url) {
         setImageUrl(result.secure_url);
-         
+
         setRestaurantData({
           ...restaurantData,
           ImageUrl: result.secure_url
@@ -91,6 +91,10 @@ function RoleSelectionModal({ isOpen, onRoleSelect, setIsModalOpen }) {
   };
 
   const handleSubmit = async () => {
+    if (formData.city.length === 0 || formData.street.length === 0 || formData.building.length === 0 || formData.postalCode.length === 0 || formData.additionalInfo.length === 0 || formData.addressType.length === 0) {
+      toast("Please fill all the fields")
+      return;
+    }
     if (selectedRole && !showInputs) {
       const formData = {
         email: user.primaryEmailAddress.emailAddress,
@@ -176,7 +180,7 @@ function RoleSelectionModal({ isOpen, onRoleSelect, setIsModalOpen }) {
           </DialogDescription>
         </DialogHeader>
 
-  
+
         {!showInputs && (
           <div className="py-3">
             <select

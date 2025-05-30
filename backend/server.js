@@ -25,6 +25,10 @@ const reviews = require("./routes/reviews/reviews");
 const contactRoute = require("./routes/contact/contactRoute");
 const pool = require("./db");
 
+app.get("/api/health", (req, res) => {
+  res.status(200).send("OK");
+});
+
 function getPayPalClient() {
   const clientId = process.env.PAYPAL_CLIENT_ID;
   const clientSecret = process.env.PAYPAL_CLIENT_SECRET;

@@ -143,7 +143,7 @@ function AdminHome() {
         </div>
       </header>
       <div className="flex">
-        {/* Sidebar */}
+        
         <div
           className={`h-full shadow-md transition-all duration-300 ${close ? "w-20 opacity-80" : "w-58"} md:${close ? "w-20" : "w-52"}`}
         >
