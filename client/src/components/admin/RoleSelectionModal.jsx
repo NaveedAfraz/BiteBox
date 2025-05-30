@@ -13,6 +13,7 @@ import useAuth from "@/hooks/auth/useAuth";
 import { Input } from "../ui/input";
 import useRestaurant from "@/hooks/Restaurant/useRestaurant";
 
+import { toast } from "sonner"
 function RoleSelectionModal({ isOpen, onRoleSelect, setIsModalOpen }) {
   const [selectedRole, setSelectedRole] = useState("");
   const { signUp, setActive, isLoaded: isSignUpLoaded } = useSignUp();
@@ -91,10 +92,6 @@ function RoleSelectionModal({ isOpen, onRoleSelect, setIsModalOpen }) {
   };
 
   const handleSubmit = async () => {
-    if (formData.city.length === 0 || formData.street.length === 0 || formData.building.length === 0 || formData.postalCode.length === 0 || formData.additionalInfo.length === 0 || formData.addressType.length === 0) {
-      toast("Please fill all the fields")
-      return;
-    }
     if (selectedRole && !showInputs) {
       const formData = {
         email: user.primaryEmailAddress.emailAddress,
@@ -113,6 +110,10 @@ function RoleSelectionModal({ isOpen, onRoleSelect, setIsModalOpen }) {
       signupAuth.mutate({ formData });
     }
     else {
+      if (formData.city.length === 0 || formData.street.length === 0 || formData.building.length === 0 || formData.postalCode.length === 0 || formData.additionalInfo.length === 0 || formData.addressType.length === 0) {
+        toast("Please fill all the fields")
+        return;
+      }
       // If image file exists and hasn't been uploaded yet, upload it first
       if (imageFile && !imageUrl) {
         const uploadedImageUrl = await handleImageUpload(imageFile);
