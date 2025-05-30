@@ -77,7 +77,7 @@ function AdminHome() {
 
   // console.log(user);
 
-  //console.log(restaurantData);
+  console.log(restaurantData.restaurant);
   const superAdminItems = [
     { id: "dashboard", icon: <LayoutDashboard />, label: "Dashboard" },
     { id: "restaurants", icon: <UtensilsCrossed />, label: "Restaurants" },
@@ -178,7 +178,7 @@ function AdminHome() {
                 </li>
               ))}
             </ul>
-            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mt-6 mb-2">
+            {/* <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mt-6 mb-2">
               Account
             </p>
             <ul className="space-y-1">
@@ -206,11 +206,10 @@ function AdminHome() {
                   </button>
                 </li>
               ))}
-            </ul>
+            </ul> */}
           </nav>
         </div>
-
-        {/* Main Content */}
+ 
         <div className="flex-1 w-full overflow-auto">
           <main className="p-6">
             {activeTab === "dashboard" && <Dashboard />}
