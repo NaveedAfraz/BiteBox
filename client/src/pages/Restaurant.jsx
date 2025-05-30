@@ -16,12 +16,13 @@ import {
 import { Button } from "@/components/ui/button";
 import SpecialCard from "@/components/SpecialCard";
 import { filterButtons, specialOffers } from "@/config/details";
-import { Menu } from "lucide-react";
+import { Menu, Star, Clock, Phone, MapPin, Users } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router";
 import ItemCard from "@/components/ItemCard";
 import useFilteredItems from "@/hooks/Restaurant/useSort";
 import { useEffect, useRef, useState } from "react";
 import useRestaurant from "@/hooks/Restaurant/useRestaurant";
+
 function Restaurant() {
   const [searchParams] = useSearchParams();
   const restaurantID = searchParams.get("ID");
@@ -32,7 +33,7 @@ function Restaurant() {
     { id: 4, name: "Salad", restaurantId: restaurantID },
     { id: 5, name: "Drink", restaurantId: restaurantID },
   ];
-  const [Error, setError] = useState()
+  const [Error, setError] = useState();
 
   const {
     search,
@@ -45,96 +46,57 @@ function Restaurant() {
     isLoading: loading,
     refetch
   } = useFilteredItems();
-  // console.log(filteredItems);
 
   const { fetchOneRestaurant } = useRestaurant();
-
   const { data: restaurant, isLoading, error } = fetchOneRestaurant(restaurantID);
 
-  console.log(restaurant);
-  console.log(filteredItems);
-
-  const [items, setItems] = useState()
-  const [Index, setIndex] = useState(0)
+  const [items, setItems] = useState();
+  const [Index, setIndex] = useState(0);
   const [selectedFilter, setSelectedFilter] = useState(null);
+
   useEffect(() => {
     if (restaurant && (restaurant.items && restaurant.items.length == 0)) {
-      console.log("runing");
-
-      setItems(restaurant.items)
-    }
-    else if (Index == 0) {
-      // console.log(filteredItems);
-      const filtered = filteredItems?.data.filter((restaurant) => restaurant.restaurantID == restaurantID)
-      console.log(filtered);
-      setItems(filtered)
+      setItems(restaurant.items);
+    } else if (Index == 0) {
+      const filtered = filteredItems?.data.filter((restaurant) => restaurant.restaurantID == restaurantID);
+      setItems(filtered);
     }
     if (isError) {
-      setItems("")
+      setItems("");
     }
-    if (!isError) {
-
-    }
-  }, [restaurant, restaurant?.items, Index, isError, filteredItems])
-
-  // if (loading) return <div>Loading</div>
-  // console.log(items);
-  // console.log(restaurant);
-  //console.log(isError);
-
-  console.log(items);
+  }, [restaurant, restaurant?.items, Index, isError, filteredItems]);
 
   const handlefilterBTN = function (item, index) {
-    // console.log(false);
-    // console.log(index);
-    setIndex(index)
-    // console.log(items);
-
-    console.log("Selected Item:", item);
-    console.log("Handling filter button click for:", item.name);
-    console.log(item);
+    setIndex(index);
     if (filteredItems) {
-      const filteredItemsMenuBtn = filteredItems.data.filter((Item) => Item.category === item.name && Item.restaurantID == item.restaurantId
-      )
-      console.log(filteredItemsMenuBtn);
-      // alert("Filtered")
-      setItems(filteredItemsMenuBtn)
+      const filteredItemsMenuBtn = filteredItems.data.filter((Item) => 
+        Item.category === item.name && Item.restaurantID == item.restaurantId
+      );
+      setItems(filteredItemsMenuBtn);
       setSelectedFilter(item);
     }
-    setSelectedFilter(item)
-    refetch()
-  }
-  //console.log(items);
-  // console.log(Index);
+    setSelectedFilter(item);
+    refetch();
+  };
 
   useEffect(() => {
     if (selectedFilter) {
-      console.log(selectedFilter.name);
       handlefilterBTN({ name: selectedFilter.name, restaurantId: restaurantID }, Index);
     }
-    //console.log("m");
-
-    // if (Index == 0) {
-    //   console.log("index is empty");
-
-    //   setItems(restaurant.items)
-    // }
   }, [selectedFilter, filteredItems, restaurant?.items]);
 
   useEffect(() => {
     const checkStatus = () => {
-      const result = filteredItems?.data.every((item) => item.status == "pending")
+      const result = filteredItems?.data.every((item) => item.status == "pending");
       if (result) {
-        setError("No Items Found")
+        setError("No Items Found");
       } else {
-        setError(null)
+        setError(null);
       }
       return result;
-    }
-    console.log(checkStatus(), "..");
-  }, [filteredItems?.data])
+    };
+  }, [filteredItems?.data]);
 
-  //if (loading) return <div>Loading...</div>;
   const {
     Name,
     Cuisine,
@@ -144,128 +106,182 @@ function Restaurant() {
     RestaurantImage
   } = restaurant?.restaurant || {};
 
-
-  //  if (Error) {
-  //    return <div>Error: {Error}</div>;
-  //  }
-  // if (error) return <div>Error: {error.message}</div>;
   return (
-    <div className="min-h-screen flex flex-col">
-      <main className="py-34 flex-grow">
-        {/* Top Container with Title & Breadcrumb */}
-        <div className="container mx-auto px-4 relative mb-8">
-          <Breadcrumb>
+    <div className="min-h-screen bg-gray-50">
+      {/* Hero Section with Restaurant Info */}
+      <div className="relative bg-white shadow-sm">
+        <div className="container mx-auto px-4 py-6">
+          <Breadcrumb className="mb-6">
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbLink href="/">Home</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              {/* Example city/location */}
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/hyderabad">Hyderabad</BreadcrumbLink>
+                <BreadcrumbLink href="/" className="text-gray-600 hover:text-gray-900">Home</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink href="/restaurants">
-                  {restaurant?.name}
-                </BreadcrumbLink>
+                <BreadcrumbLink href="/hyderabad" className="text-gray-600 hover:text-gray-900">Hyderabad</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <span className="text-gray-900 font-medium">{Name}</span>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
-        </div>
 
-        <section className="container mx-auto px-4">
-          <Card className="max-w-3xl overflow-hidden">
-            <div className="relative w-full h-48 overflow-hidden">
-              <img
-                className="w-[100%] h-full object-cover"
-                src={RestaurantImage}
-                alt="Restaurant"
-              />
-              <div className="absolute top-0 right-0 w-[20%] h-full"></div>
+          {/* Restaurant Header Card */}
+          <Card className="overflow-hidden w-[70%] border-0 shadow-lg">
+            <div className="relative">
+              <div className="h-64 md:h-80 overflow-hidden">
+                <img
+                  className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                  src={RestaurantImage}
+                  alt={Name}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+              </div>
+              
+              {/* Floating Info Card */}
+              <div className="absolute -bottom-8 left-6 right-6 bg-white rounded-2xl shadow-xl p-6">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <h1 className="text-2xl md:text-3xl font-bold text-gray-900">{Name}</h1>
+                      <div className="flex items-center bg-green-100 text-green-800 px-3 py-1 rounded-full">
+                        <Star className="w-4 h-4 fill-current mr-1" />
+                        <span className="font-semibold text-sm">4.2</span>
+                        <span className="text-xs ml-1">(320)</span>
+                      </div>
+                    </div>
+                    <p className="text-gray-600 mb-4">{Cuisine}</p>
+                    
+                    {/* Quick Info */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                      <div className="flex items-center text-gray-700">
+                        <Users className="w-4 h-4 mr-2" />
+                        <span>₹500 for two</span>
+                      </div>
+                      <div className="flex items-center text-gray-700">
+                        <Clock className="w-4 h-4 mr-2" />
+                        <span>{OpeningHours} - {ClosingHours}</span>
+                      </div>
+                      <div className="flex items-center text-gray-700">
+                        <Phone className="w-4 h-4 mr-2" />
+                        <span>{PhoneNumber}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <main className="container mx-auto px-4 pt-16 pb-8">
+        {/* Special Offers Section */}
+        <section className="mb-12">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="bg-gradient-to-r from-orange-500 to-red-500 w-1 h-8 rounded-full" />
+            <h2 className="text-2xl font-bold text-gray-900">Special Offers</h2>
+          </div>
+          <SpecialCard specialOffers={specialOffers} restaurantPage={true} />
+        </section>
+
+        {/* Menu Section */}
+        <section>
+          <div className="flex items-center gap-3 mb-8">
+            <div className="bg-gradient-to-r from-blue-500 to-purple-500 w-1 h-8 rounded-full" />
+            <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+              <Menu className="w-6 h-6" />
+              Menu
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            {/* Menu Categories Sidebar */}
+            <div className="lg:col-span-1">
+              <Card className="sticky top-4 border-0 shadow-md">
+                <CardHeader>
+                  <CardTitle className="text-lg">Categories</CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <div className="space-y-1">
+                    {menu.map((item, index) => (
+                      <Button
+                        key={item.id}
+                        variant="ghost"
+                        className={`w-full justify-start text-left p-4 rounded-none border-l-4 transition-all duration-200 ${
+                          index === Index 
+                            ? "bg-red-50 border-l-red-500 text-red-700 font-semibold" 
+                            : "border-l-transparent hover:bg-gray-50 hover:border-l-gray-300"
+                        }`}
+                        onClick={() => handlefilterBTN(item, index)}
+                      >
+                        {item.name}
+                      </Button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
             </div>
 
-            <CardHeader className="pb-2">
-              <div className="flex justify-between items-start">
-                <CardTitle className="text-xl">{Name}</CardTitle>
-                <div className="flex items-center">
-                  <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">4.2</span>
-                  <span className="text-xs text-gray-500 ml-1">(320 ratings)</span>
-                </div>
-              </div>
-              <p className="text-sm text-gray-600">{Cuisine}</p>
-            </CardHeader>
-
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center text-gray-700">
-                  <span className="text-sm">₹500 for two</span>
-                  <span className="mx-2">•</span>
-                  <span className="text-sm">Outlet Location</span>
-                </div>
-
-                <div className="flex justify-between text-sm text-gray-600">
-                  <div>Hours: {OpeningHours} - {ClosingHours}</div>
-                  <div>Phone: {PhoneNumber}</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <div className="mt-4">
-            <h1 className="text-2xl font-bold flex ml-4 items-center mb-6 mt-10">
-              Special Offers
-            </h1>
-            <SpecialCard specialOffers={specialOffers} restaurantPage={true} />
-          </div>
-          <div className="mt-4 flex flex-col gap-4">
-            <h1 className="text-2xl font-bold flex ml-4 items-center mb-6 mt-10">
-              <Menu className="mr-2" />
-              Menu
-            </h1>
-            <div className="flex flex-row p-4 gap-11 ">
-              <div className="rounded-lg p-4 flex flex-col gap-2 w-[0%] shadow-md  md:w-[40%] lg:w-[20%]">
-                {menu.map((item, index) => (
-                  <Button
-                    key={item.id}
-                    variant="transparent"
-                    className={`border-b-4 p-6 border-gray-200 ${index == Index ? "bg-red-500" : "solid"}`}
-                    onClick={() => handlefilterBTN(item, index)}
-                  >
-                    <h2 className="text-lg font-semibold mt-2">{item.name}</h2>
-                  </Button>
-                ))}
-              </div>
-              <div className="">
-                <h2 className="text-xl font-semibold mt-2 ml-3">Filter</h2>
-                <div className="flex flex-wrap items-center  w-full gap-3.5 p-2">
-                  {filterButtons.map((button) => (
-                    <Button
-                      variant="primary"
-                      key={button.id}
-                      onClick={() =>
-                        handleFilter(button.filterType, button.value, button.order)
-                      }
-                      className={`flex items-center gap-2 ${(button.filterType === "foodType" && button.value === foodType) ||
-                        (button?.filterType === "sort" &&
-                          button?.value === sort &&
-                          button.order === order)
-                        ? "bg-green-900"
-                        : "default"
+            <div className="lg:col-span-3">
+              <Card className="mb-6 border-0 shadow-md">
+                <CardHeader>
+                  <CardTitle className="text-lg">Filters</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-3">
+                    {filterButtons.map((button) => (
+                      <Button
+                        key={button.id}
+                        variant="outline"
+                        size="sm"
+                        onClick={() =>
+                          handleFilter(button.filterType, button.value, button.order)
+                        }
+                        className={`transition-all duration-200 ${
+                          (button.filterType === "foodType" && button.value === foodType) ||
+                          (button?.filterType === "sort" &&
+                            button?.value === sort &&
+                            button.order === order)
+                            ? "bg-orange-500 text-white border-orange-600 hover:bg-orange-700"
+                            : "hover:bg-gray-50"
                         }`}
-                    >
-                      {button.icon} {button.name}
-                    </Button>
-                  ))}
-                </div>
-                <div className="w-full min-h-52 mt-8">
-                  {!loading && items && items.length > 0 ? items.map((item) => (
-                    <ItemCard key={item.id} item={item} loading={loading} Error={Error} />
-                  )) : (!isError && items?.length != 0 ? <div className="animate-spin mx-auto mt-15 rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500 mb-12"></div> : <div className="mt-10 text-center">
-                    <p className="mt-20 font-bold">No Items Found</p>
-                  </div>)
-                  }
-                  {/* {items?.length === 0 && <div className=""> item not there of this cat</div>} */}
-                </div>
+                      >
+                        {button.icon}
+                        <span className="ml-2">{button.name}</span>
+                      </Button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+            
+              <div className="min-h-96">
+                {!loading && items && items.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {items.map((item) => (
+                      <ItemCard key={item.id} item={item} loading={loading} Error={Error} />
+                    ))}
+                  </div>
+                ) : !isError && items?.length !== 0 ? (
+                  <div className="flex justify-center items-center py-20">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500" />
+                  </div>
+                ) : (
+                  <Card className="border-0 shadow-md">
+                    <CardContent className="flex flex-col items-center justify-center py-20">
+                      <div className="text-gray-400 mb-4">
+                        <Menu className="w-16 h-16" />
+                      </div>
+                      <h3 className="text-xl font-semibold text-gray-700 mb-2">No Items Found</h3>
+                      <p className="text-gray-500 text-center">
+                        Try adjusting your filters or check back later for new items.
+                      </p>
+                    </CardContent>
+                  </Card>
+                )}
               </div>
             </div>
           </div>
