@@ -9,7 +9,10 @@ const paypal = require("@paypal/checkout-server-sdk");
 const { server, app } = require("./socket/socket");
 app.use(
   cors({
-    origin: "https://bite-box-three.vercel.app",
+    origin: [
+      "https://bite-box-three.vercel.app",
+      "https://bitebox-web.onrender.com/",
+    ],
     credentials: true,
   })
 );
