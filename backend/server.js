@@ -11,7 +11,7 @@ app.use(
   cors({
     origin: [
       "https://bite-box-three.vercel.app",
-      "https://bitebox-web.onrender.com/",
+      "https://bitebox-web.onrender.com",
     ],
     credentials: true,
   })
