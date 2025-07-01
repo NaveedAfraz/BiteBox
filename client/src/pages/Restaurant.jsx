@@ -76,14 +76,14 @@ function Restaurant() {
       setSelectedFilter(item);
     }
     setSelectedFilter(item);
-   // refetch();
+    refetch();
   };
 
   useEffect(() => {
     if (selectedFilter) {
       handlefilterBTN({ name: selectedFilter.name, restaurantId: restaurantID }, Index);
     }
-  }, [selectedFilter, filteredItems, restaurant?.items]);
+  }, [filteredItems, restaurant?.items]);
 
   useEffect(() => {
     const checkStatus = () => {
@@ -188,7 +188,7 @@ function Restaurant() {
 
         <section>
           <div className="flex items-center gap-3 mb-8">
-            <div className="bg-gradient-to-r from-blue-500 to-purple-500 w-1 h-8 rounded-full" />
+            <div className="bg-gradient-to-r from-orange-500 to-red-500 w-1 h-8 rounded-full" />
             <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
               <Menu className="w-6 h-6" />
               Menu
@@ -209,8 +209,8 @@ function Restaurant() {
                         key={item.id}
                         variant="ghost"
                         className={`w-full justify-start text-left p-4 rounded-none border-l-4 transition-all duration-200 ${index === Index
-                            ? "bg-red-50 border-l-red-500 text-red-700 font-semibold"
-                            : "border-l-transparent hover:bg-gray-50 hover:border-l-gray-300"
+                          ? "bg-red-50 border-l-red-500 text-red-700 font-semibold"
+                          : "border-l-transparent hover:bg-gray-50 hover:border-l-gray-300"
                           }`}
                         onClick={() => handlefilterBTN(item, index)}
                       >
@@ -238,11 +238,11 @@ function Restaurant() {
                           handleFilter(button.filterType, button.value, button.order)
                         }
                         className={`transition-all duration-200 ${(button.filterType === "foodType" && button.value === foodType) ||
-                            (button?.filterType === "sort" &&
-                              button?.value === sort &&
-                              button.order === order)
-                            ? "bg-orange-500 text-white border-orange-600 hover:bg-orange-700"
-                            : "hover:bg-gray-50"
+                          (button?.filterType === "sort" &&
+                            button?.value === sort &&
+                            button.order === order)
+                          ? "bg-orange-500 text-white border-orange-600 hover:bg-orange-700"
+                          : "hover:bg-gray-50"
                           }`}
                       >
                         {button.icon}
@@ -254,7 +254,7 @@ function Restaurant() {
               </Card>
 
 
-              <div className="min-h-96">
+              <div className="min-h-166">
                 {!loading && items && items.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {items.map((item) => (
