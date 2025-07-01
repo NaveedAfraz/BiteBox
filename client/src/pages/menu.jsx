@@ -142,15 +142,14 @@ function Menu() {
                 onClick={() =>
                   handleFilter(button.filterType, button.value, button.order)
                 }
-                className={`flex items-center gap-2 ${
-                  (button.filterType === "foodType" &&
-                    button.value === foodType) ||
+                className={`flex items-center gap-2 ${(button.filterType === "foodType" &&
+                  button.value === foodType) ||
                   (button.filterType === "sort" &&
                     button.value === sort &&
                     button.order === order)
-                    ? "bg-green-900"
-                    : "default"
-                }`}
+                  ? "bg-green-900"
+                  : "default"
+                  }`}
               >
                 {button.icon} {button.name}
               </Button>
@@ -161,7 +160,9 @@ function Menu() {
         <div className="container mx-auto px-4 mt-10">
           <div className="flex flex-wrap gap-4 w-full ml-10 lg:ml-0">
             {isLoading ? (
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500 mb-12"></div>
+              <div className="flex flex-col items-center mx-auto h-[80vh]">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 mt-30 border-b-2 border-red-500 mb-12"></div>
+              </div>
             ) : isError ? (
               <p className="mb-12 font-bold">Items Not Found</p>
             ) : (
