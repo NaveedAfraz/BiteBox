@@ -93,13 +93,13 @@ function Menu() {
               What's cooking for you today?
             </h1>
           }
-          <div className="flex gap-8 overflow-x-auto scrollbar-hide">
+          <div className="flex gap-8 overflow-x-auto snap-x snap-mandatory scrollbar-thin-orange">
             <CardComponent categories={menuItems} title=" " Items={items} />
           </div>
         </div>
         <div className="container mx-auto px-4 mt-10">
           <h1 className="text-2xl font-bold ml-10">Our Top Brands </h1>
-          <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
+          <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hidden">
             {restaurantDetails.length > 0 &&
               restaurantDetails.map((restaurant) => (
                 <Card

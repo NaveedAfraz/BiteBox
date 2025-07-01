@@ -117,7 +117,7 @@ function NavBar({ showSearch, setShowSearch }) {
             <Button
               variant="ghost"
               size="sm"
-              className="flex items-center gap-1 text-gray-700 hover:text-red-500"
+              className="flex items-center gap-1 text-gray-700 hover:text-red-500 cursor-pointer"
               onClick={() => navigate("/login")}
             >
               <span className="hidden sm:inline font-medium">Login</span>
@@ -146,13 +146,13 @@ function NavBar({ showSearch, setShowSearch }) {
                 autoFocus
                 className="w-full pr-10"
               />
-              <div className="absolute right-3 flex">
+              <div className="absolute right-3 flex cursor-pointer">
                 <Search className="h-5 w-5 text-gray-500" onClick={handleSearch} />
               </div>
             </div>
             <div className="mt-2 flex justify-end">
               <Button variant="ghost" size="sm" onClick={resetSearch}>
-                <X className="h-4 w-4 mr-1" />
+                <X className="h-4 w-4 mr-1 cursor-pointer" />
                 Close
               </Button>
             </div>

@@ -28,7 +28,7 @@ const CardComponent = ({ categories, title, teamMembers, Items, onItemClick }) =
 
   return (
     <div
-      className={`w-full ${teamMembers ? "flex items-center justify-center flex-col" : ""
+      className={`w-full  ${teamMembers ? "flex   items-center justify-center flex-col" : ""
         }`}
     >
       {title && (
@@ -37,7 +37,7 @@ const CardComponent = ({ categories, title, teamMembers, Items, onItemClick }) =
         </h2>
       )}
 
-      <div className={`px-5 py-8 w-full z-2 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 ${title.startsWith("The") ? "flex justify-center items-center" : null}`}>
+      <div className={`px-5 py-8 w-full z-2 overflow-x-auto scrollbar-thin-orange scrollbar-hidden ${title.startsWith("The") ? "flex justify-center items-center" : null}`}>
         <div className="flex gap-4 pb-4 mx-auto" style={{
           minWidth: `${array?.length * 320}px`,
           scrollSnapType: 'x mandatory',

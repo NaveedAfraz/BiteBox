@@ -122,3 +122,25 @@
     @apply bg-background text-foreground;
   }
 }
+
+.scrollbar-thin-orange {
+  scrollbar-width: thin;
+  scrollbar-color: #f38024 transparent;
+}
+.scrollbar-thin-orange::-webkit-scrollbar {
+  height: 2px; /* thickness */
+  background: #f38024;
+}
+.scrollbar-thin-orange::-webkit-scrollbar-thumb {
+  background-color: #f38024;
+  border-radius: 3px;
+}
+
+/* 2. Fully hide scrollbar */
+.scrollbar-hidden {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}

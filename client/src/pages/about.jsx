@@ -18,25 +18,24 @@ const About = () => {
       Name: "Customer Obsession",
       desc: "We start with the customer and work backwards.",
       img:
-        "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1496115965489-21be7e6e59a0?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     },
     {
       Name: "Quality First",
       desc: "We ensure the quality of our food and service.",
       img:
-        "https://images.unsplash.com/photo-1559628233-6fa73f3a8bd9?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1623461317265-4bec46efb4d8?q=80&w=745&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     },
     {
       Name: "Simplicity",
       desc: "We believe in making things simple and intuitive.",
       img:
-        "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+        "https://plus.unsplash.com/premium_photo-1666739031977-02b2f406f356?q=80&w=1084&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     },
     {
       Name: "Ownership",
       desc: "We take ownership of our work and our customers.",
-      img: "https://images.unsplash.com/photo-"
-        + "1559628233-6fa73f3a8bd9?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+      img: "https://images.unsplash.com/photo-1658619624873-48916dd506a0?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
 
     }
   ];
@@ -113,7 +112,7 @@ const About = () => {
           />
 
           <div className="absolute inset-0 bg-white/50 backdrop-blur-sm z-[-1]"></div>
-          <div className="mx-auto w-[80%]">
+          <div className="mx-auto w-[90%]">
             <CardComponent teamMembers={Values} title="Our Values" />
           </div>
         </section>

@@ -69,14 +69,14 @@ function Restaurant() {
   const handlefilterBTN = function (item, index) {
     setIndex(index);
     if (filteredItems) {
-      const filteredItemsMenuBtn = filteredItems.data.filter((Item) => 
+      const filteredItemsMenuBtn = filteredItems.data.filter((Item) =>
         Item.category === item.name && Item.restaurantID == item.restaurantId
       );
       setItems(filteredItemsMenuBtn);
       setSelectedFilter(item);
     }
     setSelectedFilter(item);
-    refetch();
+   // refetch();
   };
 
   useEffect(() => {
@@ -108,7 +108,6 @@ function Restaurant() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section with Restaurant Info */}
       <div className="relative bg-white shadow-sm">
         <div className="container mx-auto px-4 py-6">
           <Breadcrumb className="mb-6">
@@ -127,7 +126,7 @@ function Restaurant() {
             </BreadcrumbList>
           </Breadcrumb>
 
-          {/* Restaurant Header Card */}
+
           <Card className="overflow-hidden w-[70%] border-0 shadow-lg">
             <div className="relative">
               <div className="h-64 md:h-80 overflow-hidden">
@@ -138,8 +137,8 @@ function Restaurant() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
               </div>
-              
-              {/* Floating Info Card */}
+
+
               <div className="absolute -bottom-8 left-6 right-6 bg-white rounded-2xl shadow-xl p-6">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   <div className="flex-1">
@@ -152,8 +151,8 @@ function Restaurant() {
                       </div>
                     </div>
                     <p className="text-gray-600 mb-4">{Cuisine}</p>
-                    
-                    {/* Quick Info */}
+
+
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                       <div className="flex items-center text-gray-700">
                         <Users className="w-4 h-4 mr-2" />
@@ -176,9 +175,8 @@ function Restaurant() {
         </div>
       </div>
 
-      {/* Main Content */}
       <main className="container mx-auto px-4 pt-16 pb-8">
-        {/* Special Offers Section */}
+
         <section className="mb-12">
           <div className="flex items-center gap-3 mb-6">
             <div className="bg-gradient-to-r from-orange-500 to-red-500 w-1 h-8 rounded-full" />
@@ -187,7 +185,7 @@ function Restaurant() {
           <SpecialCard specialOffers={specialOffers} restaurantPage={true} />
         </section>
 
-        {/* Menu Section */}
+
         <section>
           <div className="flex items-center gap-3 mb-8">
             <div className="bg-gradient-to-r from-blue-500 to-purple-500 w-1 h-8 rounded-full" />
@@ -198,7 +196,7 @@ function Restaurant() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            {/* Menu Categories Sidebar */}
+
             <div className="lg:col-span-1">
               <Card className="sticky top-4 border-0 shadow-md">
                 <CardHeader>
@@ -210,11 +208,10 @@ function Restaurant() {
                       <Button
                         key={item.id}
                         variant="ghost"
-                        className={`w-full justify-start text-left p-4 rounded-none border-l-4 transition-all duration-200 ${
-                          index === Index 
-                            ? "bg-red-50 border-l-red-500 text-red-700 font-semibold" 
+                        className={`w-full justify-start text-left p-4 rounded-none border-l-4 transition-all duration-200 ${index === Index
+                            ? "bg-red-50 border-l-red-500 text-red-700 font-semibold"
                             : "border-l-transparent hover:bg-gray-50 hover:border-l-gray-300"
-                        }`}
+                          }`}
                         onClick={() => handlefilterBTN(item, index)}
                       >
                         {item.name}
@@ -240,14 +237,13 @@ function Restaurant() {
                         onClick={() =>
                           handleFilter(button.filterType, button.value, button.order)
                         }
-                        className={`transition-all duration-200 ${
-                          (button.filterType === "foodType" && button.value === foodType) ||
-                          (button?.filterType === "sort" &&
-                            button?.value === sort &&
-                            button.order === order)
+                        className={`transition-all duration-200 ${(button.filterType === "foodType" && button.value === foodType) ||
+                            (button?.filterType === "sort" &&
+                              button?.value === sort &&
+                              button.order === order)
                             ? "bg-orange-500 text-white border-orange-600 hover:bg-orange-700"
                             : "hover:bg-gray-50"
-                        }`}
+                          }`}
                       >
                         {button.icon}
                         <span className="ml-2">{button.name}</span>
@@ -257,7 +253,7 @@ function Restaurant() {
                 </CardContent>
               </Card>
 
-            
+
               <div className="min-h-96">
                 {!loading && items && items.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
