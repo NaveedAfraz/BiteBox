@@ -12,7 +12,7 @@ app.use(
     origin: [
       "https://bite-box-three.vercel.app",
       "https://bitebox-web.onrender.com",
-
+      "https://bitebox-mc9j.onrender.com",
       "http://localhost:5173",
     ],
     credentials: true,
